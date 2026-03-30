@@ -1,0 +1,5 @@
+{
+  "name": "LocalHands Platform",
+  "description": "A comprehensive platform connecting clients with local service providers, featuring role-based dashboards for clients, providers, and administrators.",
+  "requestFramePermissions": []
+}
