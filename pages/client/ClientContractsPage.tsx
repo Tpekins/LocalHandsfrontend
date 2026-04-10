@@ -50,14 +50,18 @@ const ClientContractsPage: React.FC = () => {
   };
 
   const handleAddContract = () => {
-    editContract(null);
+    setEditingContract(null);
     setFormOpen(true);
   };
 
   const handleFormSubmit = (values: any) => {
     if (editingContract) {
       // Edit
-      // Here you would update the contract in state/backend
+      const updatedContract: Contract = {
+        ...editingContract,
+        ...values,
+      };
+      editContract(updatedContract);
       message.success("Contract updated (mock)");
     } else {
       // Add
@@ -72,12 +76,12 @@ const ClientContractsPage: React.FC = () => {
       message.success("Contract added");
     }
     setFormOpen(false);
-    editContract(null);
+    setEditingContract(null);
   };
 
   const handleFormCancel = () => {
     setFormOpen(false);
-    editContract(null);
+    setEditingContract(null);
   };
 
   const { contracts, deleteContract, addContract, editContract } =
@@ -156,6 +160,11 @@ const ClientContractsPage: React.FC = () => {
   const [editingContract, setEditingContract] = React.useState<Contract | null>(
     null
   );
+  const [editForm, setEditForm] = React.useState({
+    title: '',
+    price: 0,
+    providerPhone: ''
+  });
 
   const columns = [
     {
@@ -186,14 +195,20 @@ const ClientContractsPage: React.FC = () => {
       title: "Start Date",
       dataIndex: "startDate",
       key: "startDate",
-      render: (date: Date) => date.toLocaleDateString(),
+      render: (date: Date | string) => {
+        const dateObj = typeof date === 'string' ? new Date(date) : date;
+        return dateObj.toLocaleDateString();
+      },
     },
     {
       title: "Completion Date",
       dataIndex: "completionDate",
       key: "completionDate",
-      render: (date: Date | undefined) =>
-        date ? date.toLocaleDateString() : "-",
+      render: (date: Date | string | undefined) => {
+        if (!date) return "-";
+        const dateObj = typeof date === 'string' ? new Date(date) : date;
+        return dateObj.toLocaleDateString();
+      },
     },
     {
       title: "Actions",
@@ -218,6 +233,11 @@ const ClientContractsPage: React.FC = () => {
             size="small"
             onClick={() => {
               setEditingContract(record);
+              setEditForm({
+                title: record.title,
+                price: record.price,
+                providerPhone: record.provider?.phone || ''
+              });
               setEditModalOpen(true);
             }}
           >
@@ -254,20 +274,51 @@ const ClientContractsPage: React.FC = () => {
     cardNumber: string;
     expiry: string;
     cvv: string;
+    phoneNumber?: string;
+    paymentOption?: string;
   }) => {
     setPaymentLoading(true);
     setPaymentError(undefined);
     setPaymentSuccess(false);
+    
     try {
-      // TODO: Replace with Fabshi payment API call
-      await new Promise((res) => setTimeout(res, 1500)); // Simulate async payment
+      // Validate payment information
+      if (paymentInfo.paymentOption === 'card') {
+        if (!paymentInfo.cardNumber || !paymentInfo.expiry || !paymentInfo.cvv) {
+          throw new Error("Please fill in all card details");
+        }
+        // Basic card validation (mock)
+        if (paymentInfo.cardNumber.length < 13) {
+          throw new Error("Invalid card number");
+        }
+      } else if (paymentInfo.paymentOption === 'mobile_money') {
+        if (!paymentInfo.phoneNumber) {
+          throw new Error("Phone number is required for mobile money");
+        }
+        // Basic phone validation (mock)
+        if (!paymentInfo.phoneNumber.match(/^\+237\d{8,9}$/)) {
+          throw new Error("Invalid Cameroonian phone number");
+        }
+      }
+      
+      // TODO: Replace with actual Fabshi payment API call
+      console.log("Processing payment:", {
+        amount: payingContract?.price,
+        contractTitle: payingContract?.title,
+        paymentInfo
+      });
+      
+      await new Promise((res) => setTimeout(res, 1500)); // Simulate API call
       setPaymentSuccess(true);
+      
+      // Close modal after success delay
       setTimeout(() => {
         setPaymentModalOpen(false);
         setPayingContract(null);
+        message.success("Payment processed successfully!");
       }, 1200);
-    } catch (err) {
-      setPaymentError("Payment failed. Please try again.");
+    } catch (err: any) {
+      setPaymentError(err.message || "Payment failed. Please try again.");
     } finally {
       setPaymentLoading(false);
     }
@@ -278,6 +329,24 @@ const ClientContractsPage: React.FC = () => {
     setPayingContract(null);
     setPaymentError(undefined);
     setPaymentSuccess(false);
+  };
+
+  const handleEditSubmit = () => {
+    if (editingContract) {
+      const updatedContract: Contract = {
+        ...editingContract,
+        title: editForm.title,
+        price: editForm.price,
+        provider: {
+          ...editingContract.provider,
+          phone: editForm.providerPhone
+        }
+      };
+      editContract(updatedContract);
+      message.success("Contract updated successfully");
+      setEditModalOpen(false);
+      setEditingContract(null);
+    }
   };
 
   return (
@@ -311,11 +380,11 @@ const ClientContractsPage: React.FC = () => {
         />
       </Card>
       <FabshiPaymentModal
-        visible={paymentModalOpen}
+        open={paymentModalOpen}
         amount={payingContract?.price || 0}
         contractTitle={payingContract?.title || ""}
         receiverNumber={
-          (payingContract?.provider as any)?.phone || "+237 6XX XXX XXX"
+          payingContract?.provider?.phone || "+237 6XX XXX XXX"
         }
         onCancel={handleClosePayment}
         onPay={handlePayment}
@@ -352,25 +421,28 @@ const ClientContractsPage: React.FC = () => {
             <div>
               <b>Start Date:</b>{" "}
               {viewedContract.startDate
-                ? new Date(viewedContract.startDate).toLocaleDateString()
+                ? (typeof viewedContract.startDate === 'string' ? new Date(viewedContract.startDate) : viewedContract.startDate).toLocaleDateString()
                 : "-"}
             </div>
             <div>
               <b>Completion Date:</b>{" "}
               {viewedContract.completionDate
-                ? new Date(viewedContract.completionDate).toLocaleDateString()
+                ? (typeof viewedContract.completionDate === 'string' ? new Date(viewedContract.completionDate) : viewedContract.completionDate).toLocaleDateString()
                 : "-"}
             </div>
           </div>
         )}
       </Modal>
 
-      {/* Edit Contract Modal (mocked, only title, price, provider phone) */}
+      {/* Edit Contract Modal */}
       <Modal
         open={editModalOpen}
         title="Edit Contract"
-        onCancel={() => setEditModalOpen(false)}
-        onOk={() => setEditModalOpen(false)}
+        onCancel={() => {
+          setEditModalOpen(false);
+          setEditingContract(null);
+        }}
+        onOk={handleEditSubmit}
         okText="Save"
         cancelText="Cancel"
       >
@@ -379,7 +451,8 @@ const ClientContractsPage: React.FC = () => {
             <label>
               Service:
               <input
-                defaultValue={editingContract.title}
+                value={editForm.title}
+                onChange={(e) => setEditForm({...editForm, title: e.target.value})}
                 style={{
                   width: "100%",
                   marginTop: 4,
@@ -392,7 +465,8 @@ const ClientContractsPage: React.FC = () => {
               Price:
               <input
                 type="number"
-                defaultValue={editingContract.price}
+                value={editForm.price}
+                onChange={(e) => setEditForm({...editForm, price: Number(e.target.value)})}
                 style={{
                   width: "100%",
                   marginTop: 4,
@@ -404,7 +478,8 @@ const ClientContractsPage: React.FC = () => {
             <label>
               Provider Phone:
               <input
-                defaultValue={((editingContract?.provider as any)?.phone) || ""}
+                value={editForm.providerPhone}
+                onChange={(e) => setEditForm({...editForm, providerPhone: e.target.value})}
                 style={{
                   width: "100%",
                   marginTop: 4,
