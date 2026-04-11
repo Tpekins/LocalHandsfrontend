@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 const baseURL: string =
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-  (import.meta.env.VITE_API_BASE_URL as string) || "http://localhost:3000/api";
+  (import.meta.env.VITE_API_URL as string) || "http://localhost:3000/api";
 
 const api = axios.create({
   baseURL,
