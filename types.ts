@@ -95,6 +95,7 @@ export interface Contract {
     provider: {
         id: string;
         name: string;
+        phone?: string;
     };
     title: string;
     price: number;
