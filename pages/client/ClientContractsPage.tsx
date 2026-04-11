@@ -10,14 +10,17 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useContracts } from "../../contexts/ContractsContext";
 import ContractFormModal from "../../components/contracts/ContractFormModal";
+import FabshiPaymentModal from "../../components/FabshiPaymentModal";
 import { Contract } from "../../types";
 import { formatCurrency } from "../../utils/currency";
 
 const { Title } = Typography;
 
-import FabshiPaymentModal from "../../components/FabshiPaymentModal";
-
 const ClientContractsPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const { contracts, deleteContract, addContract } = useContracts();
+
   const [formOpen, setFormOpen] = React.useState(false);
 
   const [paymentModalOpen, setPaymentModalOpen] = React.useState(false);
@@ -29,8 +32,6 @@ const ClientContractsPage: React.FC = () => {
   const [payingContract, setPayingContract] = React.useState<Contract | null>(
     null
   );
-  const navigate = useNavigate();
-  const { currentUser } = useAuth();
 
   const handleChat = () => {
     navigate("/client/chat");
@@ -50,7 +51,7 @@ const ClientContractsPage: React.FC = () => {
   };
 
   const handleAddContract = () => {
-    editContract(null);
+    setEditingContract(null);
     setFormOpen(true);
   };
 
@@ -72,16 +73,14 @@ const ClientContractsPage: React.FC = () => {
       message.success("Contract added");
     }
     setFormOpen(false);
-    editContract(null);
+    setEditingContract(null);
   };
 
   const handleFormCancel = () => {
     setFormOpen(false);
-    editContract(null);
+    setEditingContract(null);
   };
 
-  const { contracts, deleteContract, addContract, editContract } =
-    useContracts();
   let myContracts = contracts.filter(
     (contract) => contract.clientId === currentUser?.id
   );
