@@ -1,45 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>LocalHands.Africa | Local Services Platform — Founded by Tiani Pekins Ebika</title>
-  <meta name="description" content="LocalHands.Africa — connecting clients with trusted local service providers across Africa. Founded by Tiani Pekins Ebika. Find local professionals for any job, anywhere in Africa." />
-  <meta name="keywords" content="LocalHands, LocalHands Africa, local services Africa, Tiani Pekins Ebika, hire local workers, Africa marketplace" />
-  <meta name="author" content="Tiani Pekins Ebika" />
-  <link rel="canonical" href="https://localhands.africa" />
+    <title>LocalHands.Africa | Local Services Platform — Founded by Tiani Pekins Ebika</title>
+    <meta name="description" content="LocalHands.Africa — connecting clients with trusted local service providers across Africa. Founded by Tiani Pekins Ebika. Find local professionals for any job, anywhere in Africa." />
+    <meta name="keywords" content="LocalHands, LocalHands Africa, local services Africa, Tiani Pekins Ebika, hire local workers, Africa marketplace" />
+    <meta name="author" content="Tiani Pekins Ebika" />
+    <link rel="canonical" href="https://localhands.africa" />
 
-  <!-- ✅ Google Search Console Verification -->
-  <meta name="google-site-verification" content="TzzxV05K26QoV5L784A3lkfsNyvDBpwic3w5bUUiGao" />
+    <!-- Google Search Console Verification -->
+    <meta name="google-site-verification" content="TzzxV05K26QoV5L784A3lkfsNyvDBpwic3w5bUUiGao" />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="LocalHands.Africa | Local Services Platform" />
-  <meta property="og:description" content="Connecting clients with trusted local service providers across Africa. Founded by Tiani Pekins Ebika." />
-  <meta property="og:url" content="https://localhands.africa" />
-  <meta property="og:type" content="website" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="LocalHands.Africa | Local Services Platform" />
+    <meta property="og:description" content="Connecting clients with trusted local service providers across Africa. Founded by Tiani Pekins Ebika." />
+    <meta property="og:url" content="https://localhands.africa" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://localhands.africa/favicon.png" />
 
-  <!-- Twitter/X -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="LocalHands.Africa | Local Services Platform" />
-  <meta name="twitter:description" content="Connecting clients with trusted local service providers across Africa." />
-  <meta name="twitter:site" content="@TianiPekins" />
+    <!-- Twitter/X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="LocalHands.Africa | Local Services Platform" />
+    <meta name="twitter:description" content="Connecting clients with trusted local service providers across Africa." />
+    <meta name="twitter:image" content="https://localhands.africa/favicon.png" />
+    <meta name="twitter:site" content="@TianiPekins" />
 
-  <!-- ✅ Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "LocalHands Africa",
-    "url": "https://localhands.africa",
-    "email": "tiani@localhands.africa",
-    "founder": {
-      "@type": "Person",
-      "name": "Tiani Pekins Ebika",
-      "url": "https://tianipekins.me"
-    },
-    "sameAs": [
-    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "LocalHands Africa",
+      "url": "https://localhands.africa",
+      "email": "tiani@localhands.africa",
+      "founder": {
+        "@type": "Person",
+        "name": "Tiani Pekins Ebika",
+        "url": "https://tianipekins.me"
+      },
+      "sameAs": [
         "https://github.com/Tpekins",
         "https://www.linkedin.com/in/tiani-pekins-ebika/",
         "https://www.facebook.com/TianiPekins/",
@@ -51,67 +53,62 @@
         "https://zenodo.org/records/20262990",
         "https://zenodo.org/records/6784879",
         "https://localhands.africa"
-    ]
-  }
-  </script>
+      ]
+    }
+    </script>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#008080',
-            secondary: '#FFC107',
-            accent: {
-              DEFAULT: '#006666',
-              hover: '#005353'
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#008080",
+              secondary: "#FFC107",
+              accent: {
+                DEFAULT: "#006666",
+                hover: "#005353",
+              },
+              lightGray: "#f8f9fa",
+              mediumGray: "#e9ecef",
+              darkGray: "#343a40",
             },
-            lightGray: '#f8f9fa',
-            mediumGray: '#e9ecef',
-            darkGray: '#343a40',
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              poppins: ["Poppins", "sans-serif"],
+            },
           },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            poppins: ['Poppins', 'sans-serif'],
-          },
-        }
+        },
+      };
+    </script>
+    <style>
+      body { font-family: "Inter", sans-serif; }
+      h1, h2, h3, h4, h5, h6 { font-family: "Poppins", sans-serif; }
+      .recharts-default-tooltip {
+        background-color: #fff !important;
+        border: 1px solid #ccc !important;
+        border-radius: 4px !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+      }
+    </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "react/": "https://esm.sh/react@^19.1.0/",
+        "react": "https://esm.sh/react@^19.1.0",
+        "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+        "react-router-dom": "https://esm.sh/react-router-dom@^7.6.2",
+        "@heroicons/react/": "https://esm.sh/@heroicons/react@^2.2.0/",
+        "recharts": "https://esm.sh/recharts@^2.12.7"
       }
     }
-  </script>
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
-    .recharts-default-tooltip {
-      background-color: #fff !important;
-      border: 1px solid #ccc !important;
-      border-radius: 4px !important;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-    }
-  </style>
-  <script type="importmap">
-  {
-    "imports": {
-      "react/": "https://esm.sh/react@^19.1.0/",
-      "react": "https://esm.sh/react@^19.1.0",
-      "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-      "react-router-dom": "https://esm.sh/react-router-dom@^7.6.2",
-      "@heroicons/react/": "https://esm.sh/@heroicons/react@^2.2.0/",
-      "recharts": "https://esm.sh/recharts@^2.12.7"
-    }
-  }
-  </script>
-  <link rel="stylesheet" href="/index.css">
-</head>
-<body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
-</body>
+    </script>
+    <link rel="stylesheet" href="/index.css" />
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
 </html>
-
-
-
-
-
