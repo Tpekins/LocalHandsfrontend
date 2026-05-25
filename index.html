@@ -1,10 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<<<<<<< HEAD
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LocalHands</title>
+
+  <title>LocalHands.Africa | Local Services Platform — Founded by Tiani Pekins Ebika</title>
+  <meta name="description" content="LocalHands.Africa — connecting clients with trusted local service providers across Africa. Founded by Tiani Pekins Ebika. Find local professionals for any job, anywhere in Africa." />
+  <meta name="keywords" content="LocalHands, LocalHands Africa, local services Africa, Tiani Pekins Ebika, hire local workers, Africa marketplace" />
+  <meta name="author" content="Tiani Pekins Ebika" />
+  <link rel="canonical" href="https://localhands.africa" />
+
+  <!-- ✅ Google Search Console Verification -->
+  <meta name="google-site-verification" content="TzzxV05K26QoV5L784A3lkfsNyvDBpwic3w5bUUiGao" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="LocalHands.Africa | Local Services Platform" />
+  <meta property="og:description" content="Connecting clients with trusted local service providers across Africa. Founded by Tiani Pekins Ebika." />
+  <meta property="og:url" content="https://localhands.africa" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter/X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="LocalHands.Africa | Local Services Platform" />
+  <meta name="twitter:description" content="Connecting clients with trusted local service providers across Africa." />
+  <meta name="twitter:site" content="@TianiPekins" />
+
+  <!-- ✅ Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "LocalHands Africa",
+    "url": "https://localhands.africa",
+    "email": "tiani@localhands.africa",
+    "founder": {
+      "@type": "Person",
+      "name": "Tiani Pekins Ebika",
+      "url": "https://tianipekins.me"
+    },
+    "sameAs": [
+    
+        "https://github.com/Tpekins",
+        "https://www.linkedin.com/in/tiani-pekins-ebika/",
+        "https://www.facebook.com/TianiPekins/",
+        "https://x.com/TianiPekins",
+        "https://www.instagram.com/tianperkins/",
+        "https://medium.com/@TianiPekinsEbika",
+        "https://dev.to/tianipekinsebika",
+        "https://www.researchgate.net/profile/Tiani-Pekins-Ebika",
+        "https://zenodo.org/records/20262990",
+        "https://zenodo.org/records/6784879",
+        "https://localhands.africa"
+    ]
+  }
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
   <script>
@@ -12,10 +62,10 @@
       theme: {
         extend: {
           colors: {
-            primary: '#008080', // Teal
-            secondary: '#FFC107', // Amber/Gold
+            primary: '#008080',
+            secondary: '#FFC107',
             accent: {
-              DEFAULT: '#006666', // Darker Teal
+              DEFAULT: '#006666',
               hover: '#005353'
             },
             lightGray: '#f8f9fa',
@@ -31,13 +81,8 @@
     }
   </script>
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Poppins', sans-serif;
-    }
-    /* For Recharts Tooltip */
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
     .recharts-default-tooltip {
       background-color: #fff !important;
       border: 1px solid #ccc !important;
@@ -45,126 +90,28 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
     }
   </style>
-<script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.1.0/",
-    "react": "https://esm.sh/react@^19.1.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.6.2",
-    "@heroicons/react/": "https://esm.sh/@heroicons/react@^2.2.0/",
-    "recharts": "https://esm.sh/recharts@^2.12.7"
+  <script type="importmap">
+  {
+    "imports": {
+      "react/": "https://esm.sh/react@^19.1.0/",
+      "react": "https://esm.sh/react@^19.1.0",
+      "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+      "react-router-dom": "https://esm.sh/react-router-dom@^7.6.2",
+      "@heroicons/react/": "https://esm.sh/@heroicons/react@^2.2.0/",
+      "recharts": "https://esm.sh/recharts@^2.12.7"
+    }
   }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
+  </script>
+  <link rel="stylesheet" href="/index.css">
 </head>
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
-=======
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stopwatch</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #220602, #fad0c4);
-        }
-        .stopwatch {
-            text-align: center;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .time {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-        .buttons button {
-            font-size: 1rem;
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .buttons button:hover {
-            background: #ddd;
-        }
-        .start {
-            background: #4caf50;
-            color: white;
-        }
-        .stop {
-            background: #f44336;
-            color: white;
-        }
-        .reset {
-            background: #2196f3;
-            color: white;
-        }
-    </style>
-</head>
-<body>
-    <div class="stopwatch">
-        <div class="time" id="display">00:00:00</div>
-        <div class="buttons">
-            <button class="start" onclick="start()">Start</button>
-            <button class="stop" onclick="stop()">Stop</button>
-            <button class="reset" onclick="reset()">Reset</button>
-        </div>
-    </div>
-
-    <script>
-        let timer;
-        let elapsedTime = 0;
-        let running = false;
-
-        function formatTime(ms) {
-            const totalSeconds = Math.floor(ms / 1000);
-            const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-            const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-            const seconds = String(totalSeconds % 60).padStart(2, '0');
-            return `${hours}:${minutes}:${seconds}`;
-        }
-
-        function updateDisplay() {
-            document.getElementById('display').textContent = formatTime(elapsedTime);
-        }
-
-        function start() {
-            if (!running) {
-                running = true;
-                const startTime = Date.now() - elapsedTime;
-                timer = setInterval(() => {
-                    elapsedTime = Date.now() - startTime;
-                    updateDisplay();
-                }, 100);
-            }
-        }
-
-        function stop() {
-            running = false;
-            clearInterval(timer);
-        }
-
-        function reset() {
-            stop();
-            elapsedTime = 0;
-            updateDisplay();
-        }
-
-        updateDisplay();
-    </script>
->>>>>>> 697b63959eb4df02510e6d307bec12f2fb5d5102
 </body>
 </html>
+
+
+
+
+

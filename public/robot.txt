@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://localhands.africa/sitemap.xml

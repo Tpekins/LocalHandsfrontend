@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Form, Input, Button, Alert } from 'antd';
 
 interface FabshiPaymentModalProps {
-  visible: boolean;
+  open: boolean;
   amount: number;
   contractTitle: string;
   receiverNumber?: string;
@@ -14,7 +14,7 @@ interface FabshiPaymentModalProps {
 } 
 
 const FabshiPaymentModal: React.FC<FabshiPaymentModalProps> = ({
-  visible,
+  open,
   amount,
   contractTitle,
   receiverNumber,
@@ -39,7 +39,7 @@ const FabshiPaymentModal: React.FC<FabshiPaymentModalProps> = ({
 
   return (
     <Modal
-      visible={visible}
+      open={open}
       title={`Pay for Contract: ${contractTitle}`}
       onCancel={onCancel}
       onOk={handleOk}
