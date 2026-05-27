@@ -1,6 +1,6 @@
 import { 
   User, 
-  Role, 
+  UserRole, 
   Service, 
   Category, 
   ServiceOrder, 
@@ -188,7 +188,7 @@ export const generateUsers = (count: number): User[] => {
     const users: User[] = [];
     for (let i = 0; i < count; i++) {
         const name = getRandomElement(USER_NAMES);
-        const role = getRandomElement([Role.CLIENT, Role.PROVIDER, Role.ADMIN]);
+        const role = getRandomElement([UserRole.CLIENT, UserRole.PROVIDER, UserRole.ADMIN]);
         const user: User = {
             id: `user-${i + 1}`,
             name: name,
@@ -199,7 +199,7 @@ export const generateUsers = (count: number): User[] => {
             status: getRandomElement(['Active', 'Suspended', 'Pending']),
         };
 
-        if (role === Role.PROVIDER) {
+        if (role === UserRole.PROVIDER) {
             user.profileHeadline = `Expert in ${getRandomElement(ALL_SERVICE_TITLES)}`;
             user.profileBio = LOREM_IPSUM_LONG;
             user.location = getRandomElement(['Douala', 'Yaoundé', 'Bamenda', 'Buea', 'Limbe']);
@@ -220,7 +220,7 @@ export const DUMMY_USERS = generateUsers(20);
 
 export const generateServices = (count: number, providers: User[]): Service[] => {
     const services: Service[] = [];
-    const actualProviders = providers.filter(p => p.role === Role.PROVIDER);
+    const actualProviders = providers.filter(p => p.role === UserRole.PROVIDER);
     if (actualProviders.length === 0 || DUMMY_CATEGORIES.length === 0) return [];
 
     const servicesPerCategory = Math.ceil(count / DUMMY_CATEGORIES.length);
@@ -261,7 +261,7 @@ export const generateServices = (count: number, providers: User[]): Service[] =>
 
     return services;
 };
-const manualProvider = DUMMY_USERS.find(u => u.role === Role.PROVIDER);
+const manualProvider = DUMMY_USERS.find(u => u.role === UserRole.PROVIDER);
 export const DUMMY_SERVICES = [
   ...generateServices(200, DUMMY_USERS),
   ...(manualProvider ? [{
@@ -283,7 +283,7 @@ export const DUMMY_SERVICES = [
 
 export const generateServiceOrders = (count: number, clients: User[]): ServiceOrder[] => {
     const orders: ServiceOrder[] = [];
-    const actualClients = clients.filter(c => c.role === Role.CLIENT);
+    const actualClients = clients.filter(c => c.role === UserRole.CLIENT);
     if (actualClients.length === 0) return [];
 
     for (let i = 0; i < count; i++) {
@@ -308,7 +308,7 @@ export const DUMMY_SERVICE_ORDERS = generateServiceOrders(40, DUMMY_USERS);
 
 export const generateProposals = (count: number, orders: ServiceOrder[], providers: User[]): Proposal[] => {
     const proposals: Proposal[] = [];
-    const actualProviders = providers.filter(p => p.role === Role.PROVIDER);
+    const actualProviders = providers.filter(p => p.role === UserRole.PROVIDER);
     if (orders.length === 0 || actualProviders.length === 0) return [];
     
     for (let i = 0; i < count; i++) {
@@ -370,8 +370,8 @@ export const DUMMY_TESTIMONIALS = generateTestimonials(5);
 
 export const generateContracts = (count: number, clients: User[], providers: User[]): Contract[] => {
     const contracts: Contract[] = [];
-    const actualClients = clients.filter(c => c.role === Role.CLIENT);
-    const actualProviders = providers.filter(p => p.role === Role.PROVIDER);
+    const actualClients = clients.filter(c => c.role === UserRole.CLIENT);
+    const actualProviders = providers.filter(p => p.role === UserRole.PROVIDER);
 
     if (actualClients.length === 0 || actualProviders.length === 0) return [];
 
@@ -465,7 +465,7 @@ export const generateConversations = (currentUser: User, allUsers: User[]): Chat
 
 // Assuming a logged-in user for generating dummy data
 // In a real app, you would pass the actual current user.
-const MOCK_CURRENT_USER = DUMMY_USERS.find(u => u.role === Role.CLIENT) || DUMMY_USERS[0];
+const MOCK_CURRENT_USER = DUMMY_USERS.find(u => u.role === UserRole.CLIENT) || DUMMY_USERS[0];
 export const DUMMY_CONVERSATIONS = generateConversations(MOCK_CURRENT_USER, DUMMY_USERS);
 
 export const generateChartData_UsersOverTime = (users: User[]): ChartDataPoint[] => {

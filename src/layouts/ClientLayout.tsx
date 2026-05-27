@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { DropResult } from 'react-beautiful-dnd';
 import Sidebar from '../components/Sidebar';
 import { CLIENT_NAV_ITEMS } from '../constants';
-import { Role, NavItem } from '../types';
+import { UserRole, NavItem } from '../types';
 
 const ClientLayout: React.FC = () => {
   const [navItems, setNavItems] = useState<NavItem[]>(() => {
@@ -35,7 +35,7 @@ const ClientLayout: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-lightGray">
       {/* <Header /> Simplified header can be used or main header */}
       <div className="flex flex-1 pt-0"> {/* Adjusted pt-0 if header is not fixed or specific to dashboard */}
-        <Sidebar navItems={navItems} role={Role.CLIENT} onDragEnd={onDragEnd} />
+        <Sidebar navItems={navItems} role={UserRole.CLIENT} onDragEnd={onDragEnd} />
         <main className="flex-grow p-6 md:p-8 ml-64"> {/* ml-64 for sidebar width */}
           <Outlet />
         </main>

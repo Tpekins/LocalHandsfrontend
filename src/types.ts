@@ -1,148 +1,54 @@
-export enum Role {
+export enum UserRole {
   ADMIN = 'ADMIN',
   CLIENT = 'CLIENT',
   PROVIDER = 'PROVIDER',
-  GUEST = 'GUEST',
 }
 
 export enum ServiceOrderStatus {
-  PENDING = 'pending',
-  IN_PROGRESS = 'in_progress',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
-  DISPUTED = 'disputed',
-  OPEN = "OPEN",
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+  COMPLETED = 'COMPLETED',
 }
 
-export interface NavItem {
-  label: string;
-  path: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  children?: NavItem[];
+export enum ContractStatus {
+  ACTIVE = 'ACTIVE',
+  COMPLETED = 'COMPLETED',
+  DISPUTED = 'DISPUTED',
 }
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  password?: string; // This should be handled securely and not stored in plain text in a real app
-  role: Role;
-  avatar: string;
-  registeredAt: string;
-  status: string;
-  profileHeadline?: string;
-  profileBio?: string;
-  location?: string;
-  portfolioImages?: string[];
-  rating?: number;
-  reviewsCount?: number;
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
 }
 
-export interface Category {
-  id: string;
-  name: string;
-  description: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  imageUrl: string;
+export enum PaymentMethod {
+  MTN_MOBILE_MONEY = 'MTN_MOBILE_MONEY',
 }
 
-export interface Service {
-  id: string;
-  providerId: string;
-  providerName: string;
-  title: string;
-  description: string;
-  category: Category;
-  price: number;
-  priceType: 'fixed' | 'hourly' | 'negotiable';
-  location: string;
-  images: string[];
-  rating: number;
-  reviewsCount: number;
+export enum BookingStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  CANCELED = 'CANCELED',
+  COMPLETED = 'COMPLETED',
 }
 
-export interface ServiceOrder {
-    id: string;
-    clientId: string;
-    clientName: string;
-    title: string;
-    description: string;
-    category: Category;
-    budget?: number;
-    deadline: string;
-    postedDate: string;
-    status: ServiceOrderStatus;
-    proposalsCount: number;
+export enum ProposalStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
 }
 
-export interface Proposal {
-    id: string;
-    serviceOrderId: string;
-    providerId: string;
-    providerName: string;
-    providerAvatar: string;
-    coverLetter: string;
-    proposedPrice?: number;
-    estimatedDuration: string;
-    submittedDate: string;
-    status: 'Pending' | 'Accepted' | 'Rejected';
+export enum VerificationStatus {
+  PENDING = 'PENDING',
+  VERIFIED = 'VERIFIED',
+  REJECTED = 'REJECTED',
 }
 
-export interface Contract {
-    id: string;
-    clientId: string;
-    provider: {
-        id: string;
-        name: string;
-        phone?: string;
-    };
-    title: string;
-    price: number;
-    status: 'active' | 'completed' | 'cancelled';
-    startDate: Date;
-    completionDate?: Date;
-}
-
-
-export interface Review {
-    id: string;
-    serviceId: string;
-    reviewerId: string;
-    reviewerName: string;
-    reviewedId: string;
-    rating: 1 | 2 | 3 | 4 | 5;
-    comment: string;
-    date: string;
-}
-
-export interface Testimonial {
-    id: string;
-    name: string;
-    role: string;
-    avatar: string;
-    text: string;
-}
-
-export interface ChartDataPoint {
-    name: string;
-    value: number;
-}
-
-export interface ChatMessage {
-    id: string;
-    senderId: string;
-    text: string;
-    timestamp: Date;
-    imageUrl?: string;
-}
-
-export interface ChatConversation {
-    id: string;
-    participants: Pick<User, 'id' | 'name' | 'avatar'>[];
-    messages: ChatMessage[];
-    lastMessage: ChatMessage;
-    unreadCount: number;
+export enum AssetType {
+  IMAGE = 'IMAGE',
+  AREA = 'AREA',
 }
 
 export enum NotificationType {
@@ -153,15 +59,200 @@ export enum NotificationType {
   PAYMENT_RECEIVED = 'payment_received',
 }
 
+export interface NavItem {
+  label: string;
+  path: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  children?: NavItem[];
+}
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  role: UserRole;
+  profile?: Profile;
+  createdAt: string;
+  lastLogin?: string;
+}
+
+export interface Profile {
+  id: number;
+  userId: number;
+  bio?: string;
+  mobileMoneyNumber?: string;
+  bankAccountNumber?: string;
+  nationalIdUrl?: string;
+  verificationStatus?: VerificationStatus;
+  location?: string;
+  createdAt: string;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  description?: string;
+}
+
+export interface ServiceAsset {
+  id: number;
+  serviceId: number;
+  type: AssetType;
+  imageUrl?: string;
+  caption?: string;
+  areaName?: string;
+  createdAt: string;
+}
+
+export interface Provider {
+  id: number;
+  userId: number;
+  services: Service[];
+  createdAt: string;
+}
+
+export interface Service {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  status: string;
+  featured: boolean;
+  provider: User;
+  providerId: number;
+  category?: Category;
+  categoryId?: number;
+  assets: ServiceAsset[];
+  views: number;
+  createdAt: string;
+}
+
+export interface ServiceOrder {
+  id: number;
+  service: Service;
+  serviceId: number;
+  client: User;
+  clientId: number;
+  description: string;
+  budget?: number;
+  status: ServiceOrderStatus;
+  createdAt: string;
+}
+
+export interface Proposal {
+  id: number;
+  provider: User;
+  providerId: number;
+  service: Service;
+  serviceId: number;
+  coverLetter: string;
+  bidAmount: number;
+  status: ProposalStatus;
+  createdAt: string;
+}
+
+export interface Contract {
+  id: number;
+  serviceOrder: ServiceOrder;
+  serviceOrderId: number;
+  escrowAmount: number;
+  status: ContractStatus;
+  payments: Payment[];
+  createdAt: string;
+}
+
+export interface Payment {
+  id: number;
+  contractId: number;
+  amount: number;
+  paymentMethod: PaymentMethod;
+  transactionId: string;
+  status: PaymentStatus;
+  createdAt: string;
+}
+
+export interface Review {
+  id: number;
+  contractId: number;
+  reviewer: User;
+  reviewerId: number;
+  rating: number;
+  comment?: string;
+  createdAt: string;
+}
+
+export interface Booking {
+  id: number;
+  service: Service;
+  serviceId: number;
+  client: User;
+  clientId: number;
+  startTime: string;
+  endTime: string;
+  location?: string;
+  status: BookingStatus;
+  createdAt: string;
+}
+
+export interface Message {
+  id: number;
+  senderId: number;
+  sender: User;
+  receiverId: number;
+  receiver: User;
+  content: string;
+  timestamp: string;
+}
+
+export interface ServicePackage {
+  id: number;
+  providerId: number;
+  title: string;
+  description?: string;
+  price: number;
+  createdAt: string;
+}
+
 export interface Notification {
-  id: string;
-  userId: string; 
+  id: number;
+  userId: number;
   type: NotificationType;
   titleKey: string;
   descriptionKey: string;
-  titleParams?: { [key: string]: any };
-  descriptionParams?: { [key: string]: any };
-  entityId: string; // e.g., jobId, proposalId, messageThreadId
+  titleParams?: { [key: string]: unknown };
+  descriptionParams?: { [key: string]: unknown };
+  entityId: string;
   isRead: boolean;
   timestamp: string;
+}
+
+// UI-only types (no backend counterpart)
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  avatar: string;
+  text: string;
+}
+
+export interface ChartDataPoint {
+  name: string;
+  value: number;
+}
+
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  text: string;
+  timestamp: Date;
+  imageUrl?: string;
+}
+
+export interface ChatConversation {
+  id: string;
+  participants: Pick<User, 'id' | 'name'>[];
+  messages: ChatMessage[];
+  lastMessage: ChatMessage;
+  unreadCount: number;
 }

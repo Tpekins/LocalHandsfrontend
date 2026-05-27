@@ -1,10 +1,10 @@
-import { Role, NavItem } from './types';
+import { UserRole, NavItem } from './types';
 import { HomeIcon, BriefcaseIcon, UserGroupIcon, CogIcon, ChartBarIcon, UsersIcon, ShieldCheckIcon, DocumentTextIcon, PlusCircleIcon, InboxIcon, PresentationChartLineIcon, BuildingStorefrontIcon, CalendarIcon, ChatBubbleLeftRightIcon } from './components/icons/Icons'; // Placeholder, create these
 
 export const APP_NAME = "LocalHands";
 
-export const USER_ROLES: Role[] = [Role.CLIENT, Role.PROVIDER, Role.ADMIN];
-export const ACCOUNT_TYPES: Role[] = [Role.CLIENT, Role.PROVIDER];
+export const USER_ROLES: UserRole[] = [UserRole.CLIENT, UserRole.PROVIDER, UserRole.ADMIN];
+export const ACCOUNT_TYPES: UserRole[] = [UserRole.CLIENT, UserRole.PROVIDER];
 
 export const PUBLIC_NAV_ITEMS: NavItem[] = [
   { label: 'Home', path: '/', icon: HomeIcon },

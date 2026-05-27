@@ -2,10 +2,10 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Role } from '../types';
+import { UserRole } from '../types';
 
 interface ProtectedRouteProps {
-  allowedRoles: Role[];
+  allowedRoles: UserRole[];
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
@@ -27,9 +27,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
     // For simplicity, redirecting to login. A better UX would be a dedicated "access denied" page or home.
     // Or redirect to their default dashboard if they have one.
     let defaultPath = "/";
-    if (currentRole === Role.CLIENT) defaultPath = "/client/dashboard";
-    else if (currentRole === Role.PROVIDER) defaultPath = "/provider/dashboard";
-    else if (currentRole === Role.ADMIN) defaultPath = "/admin/dashboard";
+    if (currentRole === UserRole.CLIENT) defaultPath = "/client/dashboard";
+    else if (currentRole === UserRole.PROVIDER) defaultPath = "/provider/dashboard";
+    else if (currentRole === UserRole.ADMIN) defaultPath = "/admin/dashboard";
     
     return <Navigate to={defaultPath} replace />;
   }

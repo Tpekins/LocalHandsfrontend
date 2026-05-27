@@ -4,7 +4,7 @@ import { DropResult } from 'react-beautiful-dnd';
 import Sidebar from '../components/Sidebar';
 import { ADMIN_NAV_ITEMS } from '../constants';
 import { DocumentTextIcon } from '../components/icons/Icons';
-import { Role, NavItem } from '../types';
+import { UserRole, NavItem } from '../types';
 
 const AdminLayout: React.FC = () => {
     const [navItems, setNavItems] = useState<NavItem[]>(() => {
@@ -47,7 +47,7 @@ const AdminLayout: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex flex-1">
-        <Sidebar navItems={navItems} role={Role.ADMIN} onDragEnd={onDragEnd} />
+        <Sidebar navItems={navItems} role={UserRole.ADMIN} onDragEnd={onDragEnd} />
         <main className="flex-grow p-6 md:p-8 ml-64">
           <Outlet />
         </main>

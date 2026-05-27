@@ -1,5 +1,5 @@
 import React from 'react';
-import { Role } from '../types';
+import { UserRole } from '../types';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { APP_NAME } from '../constants';
@@ -55,9 +55,9 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               <li><Link to="/providers/why-local-hands" className="hover:text-white transition-colors">Why Join Us</Link></li>
               <li>
-                {currentUser?.role === Role.PROVIDER ? (
+                {currentUser?.role === UserRole.PROVIDER ? (
                   <Link to="/provider/dashboard" className="hover:text-white transition-colors">Provider Dashboard</Link>
-                ) : currentUser?.role === Role.CLIENT ? (
+                ) : currentUser?.role === UserRole.CLIENT ? (
                   <Link to="/provider/apply" className="hover:text-white transition-colors">Become a Provider</Link>
                 ) : (
                   <Link to="/register-provider" className="hover:text-white transition-colors">Become a Provider</Link>

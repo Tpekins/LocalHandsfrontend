@@ -4,7 +4,7 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal'; // For view/edit modals
 import { DUMMY_USERS } from '../../utils/dummyData';
-import { User, Role } from '../../types';
+import { User, UserRole } from '../../types';
 import { EditIcon, DeleteIcon, EyeIcon, ChevronDownIcon } from '../../components/icons/Icons'; 
 import Input from '../../components/Input';
 import Select from '../../components/Select';
@@ -165,7 +165,7 @@ interface UserModalProps {
 const UserModal: React.FC<UserModalProps> = ({ user, isEditMode, onClose, onSave }) => {
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
-    const [role, setRole] = useState<Role>(user.role);
+    const [role, setRole] = useState<UserRole>(user.role);
     const [status, setStatus] = useState<string>(user.status);
 
     const roleOptions = USER_ROLES.map(r => ({ value: r, label: r }));
@@ -185,7 +185,7 @@ const UserModal: React.FC<UserModalProps> = ({ user, isEditMode, onClose, onSave
             <form onSubmit={handleSubmit} className="space-y-4">
                 <Input label="Name" value={name} onChange={e => setName(e.target.value)} disabled={!isEditMode} required />
                 <Input label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} disabled={!isEditMode} required />
-                <Select label="Role" options={roleOptions} value={role} onChange={e => setRole(e.target.value as Role)} disabled={!isEditMode} />
+                <Select label="Role" options={roleOptions} value={role} onChange={e => setRole(e.target.value as UserRole)} disabled={!isEditMode} />
                 <Select label="Status" options={statusOptions} value={status || ''} onChange={e => setStatus(e.target.value as 'Active' | 'Suspended' | 'Pending')} disabled={!isEditMode} />
                 
                 <div className="text-xs text-gray-500">

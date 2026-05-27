@@ -2,21 +2,21 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import { NavItem, Role } from '../types';
+import { NavItem, UserRole } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { LogoutIcon } from './icons/Icons';
 
 interface SidebarProps {
   navItems: NavItem[];
-  role: Role;
+  role: UserRole;
   onDragEnd: (result: DropResult) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ navItems, role, onDragEnd }) => {
   const { settings } = useSettings();
   const { logout } = useAuth();
-  const roleColor = role === Role.CLIENT ? 'text-primary' : role === Role.PROVIDER ? 'text-secondary' : 'text-red-500';
+  const roleColor = role === UserRole.CLIENT ? 'text-primary' : role === UserRole.PROVIDER ? 'text-secondary' : 'text-red-500';
 
   return (
     <div className="w-64 bg-gray-800 text-gray-100 flex flex-col min-h-screen fixed top-0 left-0 pt-5 shadow-lg">

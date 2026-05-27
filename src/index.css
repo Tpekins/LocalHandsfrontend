@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #008080;
+  --color-secondary: #ffc107;
+  --color-accent: #006666;
+  --color-accent-hover: #005353;
+  --color-lightGray: #f8f9fa;
+  --color-mediumGray: #e9ecef;
+  --color-darkGray: #343a40;
+
+  --font-family-sans: "Inter", sans-serif;
+  --font-family-poppins: "Poppins", sans-serif;
+}
+
+body {
+  font-family: var(--font-family-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-poppins);
+}
+
+.recharts-default-tooltip {
+  background-color: #fff !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}

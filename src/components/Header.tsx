@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Role } from '../types';
+import { UserRole } from '../types';
 import Button from './Button';
 import { APP_NAME, PUBLIC_NAV_ITEMS, DEFAULT_AVATAR } from '../constants';
 import { MenuIcon, XIcon, LogoutIcon, UserCircleIcon, CogIcon, BellIcon } from '../components/icons/Icons';
@@ -47,9 +47,9 @@ const Header: React.FC = () => {
   
   const getDashboardPath = () => {
     switch(currentRole) {
-      case Role.CLIENT: return '/client/dashboard';
-      case Role.PROVIDER: return '/provider/dashboard';
-      case Role.ADMIN: return '/admin/dashboard';
+      case UserRole.CLIENT: return '/client/dashboard';
+      case UserRole.PROVIDER: return '/provider/dashboard';
+      case UserRole.ADMIN: return '/admin/dashboard';
       default: return '/';
     }
   };

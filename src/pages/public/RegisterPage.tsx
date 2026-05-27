@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '../../contexts/AuthContext';
-import { Role } from '../../types';
+import { UserRole } from '../../types';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Card from '../../components/Card';
@@ -19,7 +19,7 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState<string | undefined>(undefined);
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<Role | ''>('');
+  const [role, setRole] = useState<UserRole | null>(null);
   const [isRoleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -58,11 +58,11 @@ const RegisterPage: React.FC = () => {
   };
 
   const roleOptions = [
-    { value: Role.CLIENT, label: 'a Client looking for a service' },
-    { value: Role.PROVIDER, label: 'a Provider offering a service' },
+    { value: UserRole.CLIENT, label: 'a Client looking for a service' },
+    { value: UserRole.PROVIDER, label: 'a Provider offering a service' },
   ];
 
-  const handleRoleSelect = (selectedRole: Role) => {
+  const handleRoleSelect = (selectedRole: UserRole) => {
     setRole(selectedRole);
     setRoleDropdownOpen(false);
   };

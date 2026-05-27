@@ -2,7 +2,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
-import { Role } from '../types';
+import { UserRole } from '../types';
 
 // Layouts
 import MainLayout from '../layouts/MainLayout';
@@ -93,7 +93,7 @@ const AppRouter: React.FC = () => {
       </Route>
 
       {/* Client Routes */}
-      <Route element={<ProtectedRoute allowedRoles={[Role.CLIENT]} />}>
+      <Route element={<ProtectedRoute allowedRoles={[UserRole.CLIENT]} />}>
         <Route path="/client" element={<ClientLayout />}>
           <Route path="dashboard" element={<ClientDashboardPage />} />
           <Route path="post-job" element={<PostJobPage />} />
@@ -109,7 +109,7 @@ const AppRouter: React.FC = () => {
       </Route>
 
       {/* Provider Routes */}
-      <Route element={<ProtectedRoute allowedRoles={[Role.PROVIDER]} />}>
+      <Route element={<ProtectedRoute allowedRoles={[UserRole.PROVIDER]} />}>
         <Route path="/provider" element={<ProviderLayout />}>
         <Route path="dashboard" element={<ProviderDashboardPage />} />
           <Route path="onboarding" element={<ProviderOnboardingPage />} />
@@ -131,7 +131,7 @@ const AppRouter: React.FC = () => {
       </Route>
 
       {/* Admin Routes */}
-      <Route element={<ProtectedRoute allowedRoles={[Role.ADMIN]} />}>
+      <Route element={<ProtectedRoute allowedRoles={[UserRole.ADMIN]} />}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboardPage />} />
                     <Route path="user-management" element={<UserManagementPage />} />

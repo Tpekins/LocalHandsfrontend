@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { DUMMY_SERVICES, DUMMY_REVIEWS, DUMMY_USERS } from '../../utils/dummyData';
 import { useAuth } from '../../contexts/AuthContext';
-import { Service, Review as ReviewType, Role } from '../../types';
+import { Service, Review as ReviewType, UserRole } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
@@ -41,9 +41,9 @@ const ServiceDetailPage: React.FC = () => {
     }
 
     // direct the user to the appropriate chat area based on their role
-    if (currentUser.role === Role.CLIENT) {
+    if (currentUser.role === UserRole.CLIENT) {
       navigate(`/client/chat?recipientId=${provider.id}`);
-    } else if (currentUser.role === Role.PROVIDER) {
+    } else if (currentUser.role === UserRole.PROVIDER) {
       navigate(`/provider/chat?recipientId=${provider.id}`);
     } else {
       // default fallback (guests / admins) – you could adjust this as needed
