@@ -1,7 +1,7 @@
 import React from 'react';
 import { XIcon } from '../icons/Icons';
 
-export type Notification = {
+export type PanelNotification = {
   id: string;
   type: string;
   message: string;
@@ -12,7 +12,7 @@ export type Notification = {
 interface NotificationPanelProps {
   open: boolean;
   onClose: () => void;
-  notifications: Notification[];
+  notifications: PanelNotification[];
 }
 
 const NotificationPanel: React.FC<NotificationPanelProps> = ({ open, onClose, notifications }) => {

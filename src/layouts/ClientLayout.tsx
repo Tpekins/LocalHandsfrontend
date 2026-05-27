@@ -36,7 +36,7 @@ const ClientLayout: React.FC = () => {
       {/* <Header /> Simplified header can be used or main header */}
       <div className="flex flex-1 pt-0"> {/* Adjusted pt-0 if header is not fixed or specific to dashboard */}
         <Sidebar navItems={navItems} role={UserRole.CLIENT} onDragEnd={onDragEnd} />
-        <main className="flex-grow p-6 md:p-8 ml-64"> {/* ml-64 for sidebar width */}
+        <main className="flex-grow p-6 md:p-8 ml-0 lg:ml-64">
           <Outlet />
         </main>
       </div>

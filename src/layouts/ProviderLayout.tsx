@@ -36,7 +36,7 @@ const ProviderLayout: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-lightGray">
       <div className="flex flex-1">
         <Sidebar navItems={navItems} role={UserRole.PROVIDER} onDragEnd={onDragEnd} />
-        <main className="flex-grow p-6 md:p-8 ml-64"> {/* ml-64 for sidebar width */}
+        <main className="flex-grow p-6 md:p-8 ml-0 lg:ml-64">
           <Outlet />
         </main>
       </div>

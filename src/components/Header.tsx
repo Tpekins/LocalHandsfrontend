@@ -5,9 +5,9 @@ import { UserRole } from '../types';
 import Button from './Button';
 import { APP_NAME, PUBLIC_NAV_ITEMS } from '../constants';
 import { MenuIcon, XIcon, LogoutIcon, CogIcon, BellIcon } from '../components/icons/Icons';
-import NotificationPanel, { Notification } from './notifications/NotificationPanel';
+import NotificationPanel, { PanelNotification } from './notifications/NotificationPanel';
 
-const mockNotifications: Notification[] = [
+const mockNotifications: PanelNotification[] = [
   {
     id: '1',
     type: 'admin',

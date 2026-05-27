@@ -48,7 +48,7 @@ const AdminLayout: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex flex-1">
         <Sidebar navItems={navItems} role={UserRole.ADMIN} onDragEnd={onDragEnd} />
-        <main className="flex-grow p-6 md:p-8 ml-64">
+        <main className="flex-grow p-6 md:p-8 ml-0 lg:ml-64">
           <Outlet />
         </main>
       </div>
