@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../../contexts/AuthContext";
-import { Role } from "../../types";
+import { UserRole } from "../../types";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Card from "../../components/Card";
@@ -36,13 +36,13 @@ const LoginPage: React.FC = () => {
     if (result.success) {
       toast.success("Login successful! Redirecting...");
       switch (result.role) {
-        case Role.CLIENT:
+        case UserRole.CLIENT:
           navigate("/client/dashboard");
           break;
-        case Role.PROVIDER:
+        case UserRole.PROVIDER:
           navigate("/provider/dashboard");
           break;
-        case Role.ADMIN:
+        case UserRole.ADMIN:
           navigate("/admin/dashboard");
           break;
         default:

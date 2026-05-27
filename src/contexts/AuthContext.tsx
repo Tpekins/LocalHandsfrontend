@@ -1,20 +1,20 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { Role, User } from "../types";
+import { UserRole, User } from "../types";
 import api from "../utils/api";
 import { toast } from "sonner";
 
 interface AuthContextType {
   currentUser: User | null;
-  currentRole: Role;
+  currentRole: UserRole | null;
   isLoading: boolean;
-  login: (identifier: string, password: string) => Promise<{ success: boolean; role?: Role }>;
+  login: (identifier: string, password: string) => Promise<{ success: boolean; role?: UserRole }>;
   register: (
     name: string,
     phoneNumber: string,
     email: string,
     password: string,
-    role?: Role
+    role?: UserRole
   ) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
   refreshProfile: () => Promise<void>;
@@ -26,7 +26,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentRole, setCurrentRole] = useState<Role>(Role.GUEST);
+  const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   /* ---------------------------------------------------------------- */
@@ -47,9 +47,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } catch (err) {
       clearToken();
       setCurrentUser(null);
-      setCurrentRole(Role.GUEST);
+      setCurrentRole(null);
       console.error('refreshProfile failed, logging out', err);
-      // Optionally force reload to clear any stale state
       window.location.reload();
     }
   };
@@ -63,8 +62,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsLoading(false);
       return;
     }
-    // Set token in API (if needed)
-    // api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     refreshProfile().finally(() => setIsLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -72,7 +69,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   /* ---------------------------------------------------------------- */
   /* Auth actions                                                     */
   /* ---------------------------------------------------------------- */
-  const login = async (identifier: string, password: string): Promise<{ success: boolean; role?: Role }> => {
+  const login = async (identifier: string, password: string): Promise<{ success: boolean; role?: UserRole }> => {
     try {
       const { data } = await api.post<{ access_token: string; user: User }>(
         "/auth/login",
@@ -94,9 +91,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     phoneNumber: string,
     email: string,
     password: string,
-    role?: Role
+    role?: UserRole
   ): Promise<{ success: boolean; message: string }> => {
-    // Positive adjustment: basic client-side validation
     if (!name || !phoneNumber || !email || !password) {
       return { success: false, message: "Name, phone number, email, and password are required." };
     }
@@ -107,11 +103,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         email: email.trim(),
         password: password.trim(),
         ...(role ? { role } : {})
-        
       });
       return { success: true, message: "Registration successful! Please log in." };
     } catch (error: any) {
-      // Positive adjustment: clearer error handling
       let msg = error.response?.data?.message || "Registration failed.";
       if (Array.isArray(msg)) msg = msg.join(" ");
       toast.error(msg);
@@ -122,7 +116,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = () => {
     clearToken();
     setCurrentUser(null);
-    setCurrentRole(Role.GUEST);
+    setCurrentRole(null);
   };
 
   /* ---------------------------------------------------------------- */
