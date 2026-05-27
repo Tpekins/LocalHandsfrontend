@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { DUMMY_SERVICE_ORDERS, DUMMY_USERS } from '../../utils/dummyData';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
-import { CalendarIcon, TagIcon, ClockIcon } from '../../components/icons/Icons';
+import { CalendarIcon, TagIcon } from '../../components/icons/Icons';
 
 const ArrowLeftIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
@@ -13,7 +13,7 @@ const ArrowLeftIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 const JobDetailsPage: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
-  const job = DUMMY_SERVICE_ORDERS.find(j => j.id === jobId);
+  const job = DUMMY_SERVICE_ORDERS.find(j => j.id === Number(jobId));
   const client = DUMMY_USERS.find(u => u.id === job?.clientId);
 
   if (!job || !client) {
@@ -39,9 +39,9 @@ const JobDetailsPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-2">
             <span className="inline-block bg-blue-100 text-primary text-sm font-semibold px-3 py-1 rounded-full mb-3">
-              {job.category.name}
+              {job.service.category?.name}
             </span>
-            <h1 className="text-3xl font-poppins font-bold text-gray-800 mb-4">{job.title}</h1>
+            <h1 className="text-3xl font-poppins font-bold text-gray-800 mb-4">{job.service.title}</h1>
             <p className="text-gray-600 leading-relaxed whitespace-pre-line">{job.description}</p>
           </div>
           
@@ -52,18 +52,9 @@ const JobDetailsPage: React.FC = () => {
                 <CalendarIcon className="w-5 h-5 mr-3 text-gray-400" />
                 <div>
                   <p className="text-xs text-gray-500">Posted On</p>
-                  <p className="font-semibold">{new Date(job.postedDate).toLocaleDateString()}</p>
+                  <p className="font-semibold">{new Date(job.createdAt).toLocaleDateString()}</p>
                 </div>
               </div>
-              {job.deadline && (
-                <div className="flex items-center text-gray-700">
-                  <ClockIcon className="w-5 h-5 mr-3 text-gray-400" />
-                  <div>
-                    <p className="text-xs text-gray-500">Deadline</p>
-                    <p className="font-semibold">{new Date(job.deadline).toLocaleDateString()}</p>
-                  </div>
-                </div>
-              )}
               {job.budget && (
                 <div className="flex items-center text-gray-700">
                   <TagIcon className="w-5 h-5 mr-3 text-gray-400" />
@@ -83,10 +74,12 @@ const JobDetailsPage: React.FC = () => {
             <Card className="bg-lightGray p-5 mt-6">
                 <h3 className="text-lg font-poppins font-semibold text-gray-800 mb-3">About the Client</h3>
                 <div className="flex items-center">
-                    <img src={client.avatar} alt={client.name} className="w-12 h-12 rounded-full mr-4"/>
+                    <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold mr-4">
+                      {client.name.charAt(0).toUpperCase()}
+                    </div>
                     <div>
                         <p className="font-bold text-gray-800">{client.name}</p>
-                        <p className="text-sm text-gray-500">Member since {new Date(client.registeredAt).getFullYear()}</p>
+                        <p className="text-sm text-gray-500">Member since {new Date(client.createdAt).getFullYear()}</p>
                     </div>
                 </div>
             </Card>

@@ -16,8 +16,8 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
       {/* Image Section */}
       <div className="w-full sm:w-48 flex-shrink-0">
         <img
-          src={job.category.imageUrl || 'https://picsum.photos/400/300?random=job'}
-          alt={job.category.name}
+          src={job.service.assets[0]?.imageUrl || 'https://picsum.photos/400/300?random=job'}
+          alt={job.service.category?.name || 'Service image'}
           className="object-cover w-full h-40 sm:h-full rounded-lg"
         />
       </div>
@@ -26,18 +26,17 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
       <div className="flex-grow mt-4 sm:mt-0 w-full">
         <div className="flex flex-col sm:flex-row justify-between">
           <div>
-            <p className="text-sm text-gray-500 mb-1">{job.category.name}</p>
+            <p className="text-sm text-gray-500 mb-1">{job.service.category?.name}</p>
             <h2 className="text-xl font-poppins font-semibold text-primary mb-1 group">
               <Link to={`/provider/submit-proposal/${job.id}`} className="hover:underline group-hover:text-accent">
-                {job.title}
+                {job.service.title}
               </Link>
             </h2>
-            <p className="text-sm text-gray-600">Client: {job.clientName}</p>
-            <p className="text-xs text-gray-400">Posted: {formatDate(job.postedDate)}</p>
+            <p className="text-sm text-gray-600">Client: {job.client.name}</p>
+            <p className="text-xs text-gray-400">Posted: {formatDate(job.createdAt)}</p>
           </div>
           <div className="mt-4 sm:mt-0 text-left sm:text-right flex-shrink-0">
             {job.budget && <p className="text-lg font-semibold text-gray-800">{formatCurrency(job.budget)}</p>}
-            <p className="text-sm text-gray-500 mb-2">{job.deadline ? `Deadline: ${formatDate(job.deadline)}` : 'No deadline'}</p>
             <Link to={`/provider/submit-proposal/${job.id}`}>
               <Button variant="primary" size="md">View & Apply</Button>
             </Link>

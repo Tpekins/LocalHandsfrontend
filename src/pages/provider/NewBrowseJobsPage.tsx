@@ -5,7 +5,7 @@ import JobCard from '../../components/JobCard';
 
 const NewBrowseJobsPage: React.FC = () => {
   const openJobs = DUMMY_SERVICE_ORDERS.filter(
-    (job: ServiceOrder) => job.status === ServiceOrderStatus.OPEN
+    (job: ServiceOrder) => job.status === ServiceOrderStatus.PENDING
   );
 
   return (

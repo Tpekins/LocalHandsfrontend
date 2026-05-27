@@ -6,7 +6,7 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import { DUMMY_SERVICE_ORDERS, DUMMY_PROPOSALS } from '../../utils/dummyData';
-import { ServiceOrder, Proposal, ServiceOrderStatus } from '../../types';
+import { ServiceOrder, Proposal, ServiceOrderStatus, ProposalStatus } from '../../types';
 import { InboxIcon, ChatBubbleLeftRightIcon, CheckCircleIcon, EyeIcon } from '../../components/icons/Icons';
 
 const MyProposalsPage: React.FC = () => {
@@ -21,7 +21,7 @@ const MyProposalsPage: React.FC = () => {
 
   const proposalsForClientJobs = useMemo(() =>
     DUMMY_PROPOSALS.filter(proposal => 
-      clientJobs.some(job => job.id === proposal.serviceOrderId)
+      clientJobs.some(job => job.id === proposal.serviceId)
     ),
     [clientJobs]
   );
@@ -29,12 +29,12 @@ const MyProposalsPage: React.FC = () => {
   // Group proposals by job
   const proposalsByJob = useMemo(() => {
     return clientJobs.reduce((acc, job) => {
-      const jobProposals = proposalsForClientJobs.filter(p => p.serviceOrderId === job.id);
+      const jobProposals = proposalsForClientJobs.filter(p => p.serviceId === job.id);
       if (jobProposals.length > 0) {
         acc[job.id] = { job, proposals: jobProposals };
       }
       return acc;
-    }, {} as Record<string, { job: ServiceOrder, proposals: Proposal[] }>);
+    },     {} as Record<number, { job: ServiceOrder, proposals: Proposal[] }>);
   }, [clientJobs, proposalsForClientJobs]);
 
 
@@ -49,13 +49,13 @@ const MyProposalsPage: React.FC = () => {
       console.log('Accepted proposal:', selectedProposal);
       // Update proposal status (in dummy data for now)
       const proposalIndex = DUMMY_PROPOSALS.findIndex(p => p.id === selectedProposal.id);
-      if (proposalIndex > -1) DUMMY_PROPOSALS[proposalIndex].status = 'Accepted';
+      if (proposalIndex > -1) DUMMY_PROPOSALS[proposalIndex].status = ProposalStatus.ACCEPTED;
       
       // Update job status
-      const jobIndex = DUMMY_SERVICE_ORDERS.findIndex(j => j.id === selectedProposal.serviceOrderId);
-      if (jobIndex > -1) DUMMY_SERVICE_ORDERS[jobIndex].status = ServiceOrderStatus.IN_PROGRESS;
+      const jobIndex = DUMMY_SERVICE_ORDERS.findIndex(j => j.id === selectedProposal.serviceId);
+      if (jobIndex > -1) DUMMY_SERVICE_ORDERS[jobIndex].status = ServiceOrderStatus.ACCEPTED;
 
-      alert(`Proposal from ${selectedProposal.providerName} accepted! The job is now In Progress.`);
+      alert(`Proposal from ${selectedProposal.provider.name} accepted! The job is now In Progress.`);
       setIsModalOpen(false);
       setSelectedProposal(null);
       // Force re-render if necessary, or use state management
@@ -85,8 +85,8 @@ const MyProposalsPage: React.FC = () => {
 
       {jobEntries.map(({ job, proposals }) => (
         <Card key={job.id} className="p-6 shadow-lg mb-8">
-          <h2 className="text-2xl font-poppins font-semibold text-primary mb-1">{job.title}</h2>
-          <p className="text-sm text-gray-500 mb-4">Posted: {new Date(job.postedDate).toLocaleDateString()} - Status: <span className={`font-medium ${job.status === ServiceOrderStatus.OPEN ? 'text-green-600' : 'text-yellow-600'}`}>{job.status}</span></p>
+          <h2 className="text-2xl font-poppins font-semibold text-primary mb-1">{job.service.title}</h2>
+          <p className="text-sm text-gray-500 mb-4">Posted: {new Date(job.createdAt).toLocaleDateString()} - Status: <span className={`font-medium ${job.status === ServiceOrderStatus.PENDING ? 'text-green-600' : 'text-yellow-600'}`}>{job.status}</span></p>
           
           {proposals.length === 0 ? (
             <p className="text-gray-600">No proposals received for this job yet.</p>
@@ -97,24 +97,25 @@ const MyProposalsPage: React.FC = () => {
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                     <div>
                       <div className="flex items-center mb-2 sm:mb-0">
-                        <img src={proposal.providerAvatar || `https://picsum.photos/seed/${proposal.providerId}/40/40`} alt={proposal.providerName} className="w-10 h-10 rounded-full mr-3"/>
+                        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-sm font-semibold mr-3">
+                          {proposal.provider.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                        </div>
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-700">{proposal.providerName}</h3>
-                            <p className="text-xs text-gray-500">Submitted: {new Date(proposal.submittedDate).toLocaleDateString()}</p>
+                            <h3 className="text-lg font-semibold text-gray-700">{proposal.provider.name}</h3>
+                            <p className="text-xs text-gray-500">Submitted: {new Date(proposal.createdAt).toLocaleDateString()}</p>
                         </div>
                       </div>
                       <p className="text-sm text-gray-600 mt-2 sm:hidden">{proposal.coverLetter.substring(0,100)}...</p>
                     </div>
                     <div className="text-right mt-3 sm:mt-0">
-                      {proposal.proposedPrice && <p className="text-xl font-semibold text-primary">${proposal.proposedPrice.toFixed(2)}</p>}
-                      <p className="text-sm text-gray-500">{proposal.estimatedDuration}</p>
+                      <p className="text-xl font-semibold text-primary">${proposal.bidAmount.toFixed(2)}</p>
                     </div>
                   </div>
                   <p className="text-sm text-gray-600 my-3 hidden sm:block">{proposal.coverLetter}</p>
                   <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-gray-200">
                     <Button variant="outline" size="sm" leftIcon={<EyeIcon className="w-4 h-4"/>}>View Details</Button>
                     <Button variant="ghost" size="sm" leftIcon={<ChatBubbleLeftRightIcon className="w-4 h-4"/>}>Chat</Button>
-                    {proposal.status === 'Pending' && job.status === ServiceOrderStatus.OPEN && (
+                    {proposal.status === ProposalStatus.PENDING && job.status === ServiceOrderStatus.PENDING && (
                       <Button 
                         variant="primary" 
                         size="sm" 
@@ -124,7 +125,7 @@ const MyProposalsPage: React.FC = () => {
                         Accept Proposal
                       </Button>
                     )}
-                     {proposal.status === 'Accepted' && (
+                     {proposal.status === ProposalStatus.ACCEPTED && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
                            <CheckCircleIcon className="w-4 h-4 mr-1.5"/> Accepted
                         </span>
@@ -144,9 +145,9 @@ const MyProposalsPage: React.FC = () => {
           title="Confirm Acceptance"
         >
           <p className="text-gray-700 mb-4">
-            Are you sure you want to accept the proposal from <span className="font-semibold">{selectedProposal.providerName}</span> for the job "{proposalsByJob[selectedProposal.serviceOrderId]?.job.title}"?
+            Are you sure you want to accept the proposal from <span className="font-semibold">{selectedProposal.provider.name}</span> for the job "{proposalsByJob[selectedProposal.serviceId]?.job.service.title}"?
           </p>
-          {selectedProposal.proposedPrice && <p className="text-lg font-semibold text-primary mb-4">Proposed Price: ${selectedProposal.proposedPrice.toFixed(2)}</p>}
+          <p className="text-lg font-semibold text-primary mb-4">Proposed Price: ${selectedProposal.bidAmount.toFixed(2)}</p>
           <p className="text-sm text-gray-600 mb-6">
             Accepting this proposal will mark the job as "In Progress". You can then coordinate with the provider.
             (Payment processing would typically be handled here or in the next step in a real app).

@@ -18,8 +18,8 @@ const AdminServiceManagementPage: React.FC = () => {
 
   const filteredServices = services.filter(service => 
     service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    service.providerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    service.category.name.toLowerCase().includes(searchTerm.toLowerCase())
+    service.provider.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (service.category?.name ?? '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleViewService = (service: Service) => {
@@ -30,7 +30,7 @@ const AdminServiceManagementPage: React.FC = () => {
     setSelectedService(service);
     setModalMode('edit');
   };
-  const handleDeleteService = (serviceId: string) => {
+  const handleDeleteService = (serviceId: number) => {
     if (window.confirm('Are you sure you want to delete this service from the platform? This action might be irreversible.')) {
         setServices(prev => prev.filter(s => s.id !== serviceId));
         // Update DUMMY_SERVICES as well for demo persistence
@@ -61,7 +61,6 @@ const AdminServiceManagementPage: React.FC = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Provider</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -69,10 +68,9 @@ const AdminServiceManagementPage: React.FC = () => {
             {filteredServices.map(service => (
               <tr key={service.id} className="hover:bg-lightGray transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{service.title}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{service.providerName}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{service.category.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(service.price)}{service.priceType === 'hourly' ? ' /hr' : ''}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{service.rating.toFixed(1)} ({service.reviewsCount} reviews)</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{service.provider.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{service.category?.name ?? 'N/A'}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(service.price)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                     <Button variant="ghost" size="sm" onClick={() => handleViewService(service)} aria-label="View">
                         <EyeIcon className="w-5 h-5 text-gray-600 hover:text-gray-800"/>

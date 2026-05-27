@@ -5,7 +5,7 @@ import { EyeOutlined, EditOutlined, DeleteOutlined, MessageOutlined } from '@ant
 import { useAuth } from '../../contexts/AuthContext';
 import { useContracts } from '../../contexts/ContractsContext';
 import ContractFormModal from '../../components/contracts/ContractFormModal';
-import { Contract } from '../../types';
+import { Contract, ContractStatus } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 
 const { Title } = Typography;
@@ -17,13 +17,13 @@ const ProviderContractsPage: React.FC = () => {
   const { currentUser } = useAuth();
 
   const { contracts, deleteContract, addContract, editContract } = useContracts();
-  const myContracts = contracts.filter((contract: Contract) => contract.provider.id === currentUser?.id);
+  const myContracts = contracts.filter((contract: Contract) => contract.serviceOrder.service.provider.id === currentUser?.id);
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: ContractStatus) => {
     switch (status) {
-      case 'active': return 'blue';
-      case 'completed': return 'green';
-      case 'cancelled': return 'red';
+      case ContractStatus.ACTIVE: return 'blue';
+      case ContractStatus.COMPLETED: return 'green';
+      case ContractStatus.DISPUTED: return 'red';
       default: return 'default';
     }
   };
@@ -53,18 +53,17 @@ const ProviderContractsPage: React.FC = () => {
 
   const handleFormSubmit = (values: any) => {
     if (editContractData) {
-      // Edit
       editContract({ ...editContractData, ...values });
       message.success('Contract updated');
     } else {
-      // Add
       const newContract: Contract = {
-        ...values,
-        id: Math.random().toString(36).substr(2, 9),
-        provider: currentUser,
-        providerId: currentUser?.id || '',
-        client: { id: '', name: '' }, // placeholder, should be selected in real app
-        status: 'active',
+        id: Date.now(),
+        serviceOrder: values.serviceOrder,
+        serviceOrderId: values.serviceOrderId || 0,
+        escrowAmount: values.escrowAmount || 0,
+        status: ContractStatus.ACTIVE,
+        payments: [],
+        createdAt: new Date().toISOString(),
       };
       addContract(newContract);
       message.success('Contract added');
@@ -85,41 +84,33 @@ const ProviderContractsPage: React.FC = () => {
   const columns = [
     {
       title: 'Service',
-      dataIndex: 'title',
-      key: 'title',
+      key: 'service',
+      render: (_: any, record: Contract) => record.serviceOrder.service.title,
     },
     {
       title: 'Client',
-      dataIndex: ['client', 'name'],
       key: 'client',
+      render: (_: any, record: Contract) => record.serviceOrder.client.name,
     },
     {
       title: 'Price',
-      dataIndex: 'price',
       key: 'price',
-      render: (price: number) => formatCurrency(price),
+      render: (_: any, record: Contract) => formatCurrency(record.serviceOrder.service.price),
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status: string) => (
+      render: (status: ContractStatus) => (
         <Tag color={getStatusColor(status)}>
-          {status.toUpperCase()}
+          {status}
         </Tag>
       ),
     },
     {
       title: 'Start Date',
-      dataIndex: 'startDate',
       key: 'startDate',
-      render: (date: Date) => date.toLocaleDateString(),
-    },
-    {
-      title: 'Completion Date',
-      dataIndex: 'completionDate',
-      key: 'completionDate',
-      render: (date: Date | undefined) => date ? date.toLocaleDateString() : '-',
+      render: (_: any, record: Contract) => new Date(record.serviceOrder.createdAt).toLocaleDateString(),
     },
     {
       title: 'Actions',

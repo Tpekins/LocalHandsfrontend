@@ -5,7 +5,7 @@ import Input from '../../components/Input';
 import Card from '../../components/Card';
 import { DUMMY_SERVICE_ORDERS, DUMMY_PROPOSALS } from '../../utils/dummyData';
 import { useAuth } from '../../contexts/AuthContext';
-import { ServiceOrder, Proposal } from '../../types';
+import { ServiceOrder, Proposal, ProposalStatus } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 
 const SubmitProposalPage: React.FC = () => {
@@ -16,12 +16,11 @@ const SubmitProposalPage: React.FC = () => {
   const [job, setJob] = useState<ServiceOrder | null>(null);
   const [coverLetter, setCoverLetter] = useState('');
   const [proposedPrice, setProposedPrice] = useState<string>('');
-  const [estimatedDuration, setEstimatedDuration] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const foundJob = DUMMY_SERVICE_ORDERS.find(o => o.id === jobId);
+    const foundJob = DUMMY_SERVICE_ORDERS.find(o => o.id === Number(jobId));
     if (foundJob) {
       setJob(foundJob);
     } else {
@@ -42,27 +41,22 @@ const SubmitProposalPage: React.FC = () => {
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     const newProposal: Proposal = {
-      id: `proposal-${Date.now()}`,
-      serviceOrderId: job!.id,
+      id: Date.now(),
+      provider: currentUser!,
       providerId: currentUser!.id,
-      providerName: currentUser!.name,
-      providerAvatar: currentUser!.avatar,
+      service: job!.service,
+      serviceId: job!.serviceId,
       coverLetter,
-      proposedPrice: proposedPrice ? parseFloat(proposedPrice) : undefined,
-      estimatedDuration,
-      submittedDate: new Date().toISOString(),
-      status: 'Pending',
+      bidAmount: proposedPrice ? parseFloat(proposedPrice) : 0,
+      status: ProposalStatus.PENDING,
+      createdAt: new Date().toISOString(),
     };
 
-    DUMMY_PROPOSALS.unshift(newProposal); // Add to dummy data
-    // Update job's proposal count (optional for demo)
-    const jobIndex = DUMMY_SERVICE_ORDERS.findIndex(j => j.id === job!.id);
-    if(jobIndex > -1) DUMMY_SERVICE_ORDERS[jobIndex].proposalsCount++;
+    DUMMY_PROPOSALS.unshift(newProposal);
 
     console.log('New Proposal Submitted:', newProposal);
     setIsLoading(false);
     
-    // Redirect back to job board with a success message
     navigate('/provider/browse-jobs', { state: { proposalSubmitted: true } });
   };
 
@@ -85,8 +79,8 @@ const SubmitProposalPage: React.FC = () => {
     <div className="max-w-2xl mx-auto">
       <Card className="p-6 md:p-8 shadow-xl">
         <div className="mb-6 pb-4 border-b">
-            <h1 className="text-2xl font-poppins font-bold text-gray-800 mb-2">Apply for: {job.title}</h1>
-            <p className="text-sm text-gray-600">Client: {job.clientName}</p>
+            <h1 className="text-2xl font-poppins font-bold text-gray-800 mb-2">Apply for: {job.service.title}</h1>
+            <p className="text-sm text-gray-600">Client: {job.client.name}</p>
             <p className="text-sm text-gray-500 line-clamp-3 mt-1">{job.description}</p>
             {job.budget && <p className="text-sm text-primary font-medium mt-1">Client's Budget: {formatCurrency(job.budget)}</p>}
         </div>
@@ -120,14 +114,6 @@ const SubmitProposalPage: React.FC = () => {
                 onChange={(e) => setProposedPrice(e.target.value)}
                 min="0"
                 step="any"
-            />
-            <Input
-                label="Estimated Duration (Optional)"
-                name="estimatedDuration"
-                type="text"
-                placeholder="e.g., 2 weeks, 1 month"
-                value={estimatedDuration}
-                onChange={(e) => setEstimatedDuration(e.target.value)}
             />
           </div>
           

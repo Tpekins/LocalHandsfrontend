@@ -11,7 +11,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useContracts } from "../../contexts/ContractsContext";
 import ContractFormModal from "../../components/contracts/ContractFormModal";
 import FabshiPaymentModal from "../../components/FabshiPaymentModal";
-import { Contract } from "../../types";
+import { Contract, ContractStatus } from "../../types";
 import { formatCurrency } from "../../utils/currency";
 
 const { Title } = Typography;
@@ -65,13 +65,39 @@ const ClientContractsPage: React.FC = () => {
       editContract(updatedContract);
       message.success("Contract updated (mock)");
     } else {
-      // Add
+      // Add - construct a minimal Contract from form values
+      if (!currentUser) return;
       const newContract: Contract = {
-        ...values,
-        id: Math.random().toString(36).substr(2, 9),
-        clientId: currentUser?.id || "",
-        provider: { id: "", name: "" }, // placeholder, should be selected in real app
-        status: "active",
+        id: Date.now(),
+        serviceOrder: {
+          id: Date.now(),
+          service: {
+            id: Date.now(),
+            title: values.title || "",
+            description: "",
+            price: values.price || 0,
+            status: "available",
+            featured: false,
+            provider: currentUser,
+            providerId: currentUser.id,
+            category: undefined,
+            assets: [],
+            views: 0,
+            createdAt: new Date().toISOString(),
+          },
+          serviceId: Date.now(),
+          client: currentUser,
+          clientId: currentUser.id,
+          description: "",
+          budget: values.price,
+          status: {} as any,
+          createdAt: new Date().toISOString(),
+        },
+        serviceOrderId: Date.now(),
+        escrowAmount: values.price || 0,
+        status: ContractStatus.ACTIVE,
+        payments: [],
+        createdAt: new Date().toISOString(),
       };
       addContract(newContract);
       message.success("Contract added");
@@ -86,64 +112,79 @@ const ClientContractsPage: React.FC = () => {
   };
 
   let myContracts = contracts.filter(
-    (contract) => contract.clientId === currentUser?.id
+    (contract) => contract.serviceOrder.clientId === currentUser?.id
   );
 
   // Seed mock contracts for testing if none exist
   if ((!myContracts || myContracts.length === 0) && currentUser) {
     myContracts = [
       {
-        id: "mock_001",
-        clientId: currentUser.id,
-        provider: {
-          id: "prov_1",
-          name: "Jane Doe",
-          phone: "+237 650 123 456",
-        } as any,
-        title: "Plumbing Service",
-        price: 15000,
-        status: "active",
-        startDate: new Date(),
-        completionDate: undefined,
+        id: 1,
+        serviceOrder: {
+          id: 1,
+          service: { id: 1, title: "Plumbing Service", description: "", price: 15000, status: "available", featured: false, provider: { id: 101, name: "Jane Doe", email: "", phoneNumber: "+237 650 123 456", role: {} as any, createdAt: "" }, providerId: 101, category: { id: 1, name: "Plumbing" }, categoryId: 1, assets: [], views: 0, createdAt: new Date().toISOString() },
+          serviceId: 1,
+          client: currentUser,
+          clientId: currentUser.id,
+          description: "",
+          budget: 15000,
+          status: {} as any,
+          createdAt: new Date().toISOString(),
+        },
+        serviceOrderId: 1,
+        escrowAmount: 15000,
+        status: ContractStatus.ACTIVE,
+        payments: [],
+        createdAt: new Date().toISOString(),
       },
       {
-        id: "mock_002",
-        clientId: currentUser.id,
-        provider: {
-          id: "prov_2",
-          name: "Alice Smith",
-          phone: "+237 651 234 567",
-        } as any,
-        title: "Electrical Installation",
-        price: 22000,
-        status: "completed",
-        startDate: new Date(Date.now() - 86400000 * 10),
-        completionDate: new Date(Date.now() - 86400000 * 2),
+        id: 2,
+        serviceOrder: {
+          id: 2,
+          service: { id: 2, title: "Electrical Installation", description: "", price: 22000, status: "available", featured: false, provider: { id: 102, name: "Alice Smith", email: "", phoneNumber: "+237 651 234 567", role: {} as any, createdAt: "" }, providerId: 102, category: { id: 2, name: "Electrical" }, categoryId: 2, assets: [], views: 0, createdAt: new Date().toISOString() },
+          serviceId: 2,
+          client: currentUser,
+          clientId: currentUser.id,
+          description: "",
+          budget: 22000,
+          status: {} as any,
+          createdAt: new Date(Date.now() - 86400000 * 10).toISOString(),
+        },
+        serviceOrderId: 2,
+        escrowAmount: 22000,
+        status: ContractStatus.COMPLETED,
+        payments: [],
+        createdAt: new Date(Date.now() - 86400000 * 10).toISOString(),
       },
       {
-        id: "mock_003",
-        clientId: currentUser.id,
-        provider: {
-          id: "prov_3",
-          name: "Bob Johnson",
-          phone: "+237 652 345 678",
-        } as any,
-        title: "Painting Job",
-        price: 8000,
-        status: "cancelled",
-        startDate: new Date(Date.now() - 86400000 * 20),
-        completionDate: undefined,
+        id: 3,
+        serviceOrder: {
+          id: 3,
+          service: { id: 3, title: "Painting Job", description: "", price: 8000, status: "available", featured: false, provider: { id: 103, name: "Bob Johnson", email: "", phoneNumber: "+237 652 345 678", role: {} as any, createdAt: "" }, providerId: 103, category: { id: 3, name: "Painting" }, categoryId: 3, assets: [], views: 0, createdAt: new Date().toISOString() },
+          serviceId: 3,
+          client: currentUser,
+          clientId: currentUser.id,
+          description: "",
+          budget: 8000,
+          status: {} as any,
+          createdAt: new Date(Date.now() - 86400000 * 20).toISOString(),
+        },
+        serviceOrderId: 3,
+        escrowAmount: 8000,
+        status: ContractStatus.COMPLETED,
+        payments: [],
+        createdAt: new Date(Date.now() - 86400000 * 20).toISOString(),
       },
     ];
   }
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: ContractStatus) => {
     switch (status) {
-      case "active":
+      case ContractStatus.ACTIVE:
         return "blue";
-      case "completed":
+      case ContractStatus.COMPLETED:
         return "green";
-      case "cancelled":
+      case ContractStatus.DISPUTED:
         return "red";
       default:
         return "default";
@@ -168,46 +209,33 @@ const ClientContractsPage: React.FC = () => {
   const columns = [
     {
       title: "Service",
-      dataIndex: "title",
-      key: "title",
+      dataIndex: ["serviceOrder", "service", "title"],
+      key: "service",
     },
     {
       title: "Provider",
-      dataIndex: ["provider", "name"],
+      dataIndex: ["serviceOrder", "service", "provider", "name"],
       key: "provider",
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (price: number) => formatCurrency(price),
+      title: "Escrow Amount",
+      dataIndex: "escrowAmount",
+      key: "escrowAmount",
+      render: (amount: number) => formatCurrency(amount),
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: string) => (
+      render: (status: ContractStatus) => (
         <Tag color={getStatusColor(status)}>{status.toUpperCase()}</Tag>
       ),
     },
     {
-      title: "Start Date",
-      dataIndex: "startDate",
-      key: "startDate",
-      render: (date: Date | string) => {
-        const dateObj = typeof date === 'string' ? new Date(date) : date;
-        return dateObj.toLocaleDateString();
-      },
-    },
-    {
-      title: "Completion Date",
-      dataIndex: "completionDate",
-      key: "completionDate",
-      render: (date: Date | string | undefined) => {
-        if (!date) return "-";
-        const dateObj = typeof date === 'string' ? new Date(date) : date;
-        return dateObj.toLocaleDateString();
-      },
+      title: "Created",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
       title: "Actions",
@@ -233,9 +261,9 @@ const ClientContractsPage: React.FC = () => {
             onClick={() => {
               setEditingContract(record);
               setEditForm({
-                title: record.title,
-                price: record.price,
-                providerPhone: record.provider?.phone || ''
+                title: record.serviceOrder.service.title,
+                price: record.escrowAmount,
+                providerPhone: record.serviceOrder.service.provider.phoneNumber || ''
               });
               setEditModalOpen(true);
             }}
@@ -302,8 +330,8 @@ const ClientContractsPage: React.FC = () => {
       
       // TODO: Replace with actual Fabshi payment API call
       console.log("Processing payment:", {
-        amount: payingContract?.price,
-        contractTitle: payingContract?.title,
+        amount: payingContract?.escrowAmount,
+        contractTitle: payingContract?.serviceOrder.service.title,
         paymentInfo
       });
       
@@ -334,12 +362,14 @@ const ClientContractsPage: React.FC = () => {
     if (editingContract) {
       const updatedContract: Contract = {
         ...editingContract,
-        title: editForm.title,
-        price: editForm.price,
-        provider: {
-          ...editingContract.provider,
-          phone: editForm.providerPhone
-        }
+        escrowAmount: editForm.price,
+        serviceOrder: {
+          ...editingContract.serviceOrder,
+          service: {
+            ...editingContract.serviceOrder.service,
+            title: editForm.title,
+          },
+        },
       };
       editContract(updatedContract);
       message.success("Contract updated successfully");
@@ -380,10 +410,10 @@ const ClientContractsPage: React.FC = () => {
       </Card>
       <FabshiPaymentModal
         open={paymentModalOpen}
-        amount={payingContract?.price || 0}
-        contractTitle={payingContract?.title || ""}
+        amount={payingContract?.escrowAmount || 0}
+        contractTitle={payingContract?.serviceOrder.service.title || ""}
         receiverNumber={
-          payingContract?.provider?.phone || "+237 6XX XXX XXX"
+          payingContract?.serviceOrder.service.provider.phoneNumber || "+237 6XX XXX XXX"
         }
         onCancel={handleClosePayment}
         onPay={handlePayment}
@@ -402,32 +432,24 @@ const ClientContractsPage: React.FC = () => {
         {viewedContract && (
           <div style={{ lineHeight: 2 }}>
             <div>
-              <b>Service:</b> {viewedContract.title}
+              <b>Service:</b> {viewedContract.serviceOrder.service.title}
             </div>
             <div>
-              <b>Provider:</b> {viewedContract.provider?.name}
+              <b>Provider:</b> {viewedContract.serviceOrder.service.provider.name}
             </div>
             <div>
               <b>Provider Phone:</b>{" "}
-              {(viewedContract.provider as any)?.phone || "-"}
+              {viewedContract.serviceOrder.service.provider.phoneNumber || "-"}
             </div>
             <div>
-              <b>Price:</b> {formatCurrency(viewedContract.price)}
+              <b>Escrow Amount:</b> {formatCurrency(viewedContract.escrowAmount)}
             </div>
             <div>
               <b>Status:</b> {viewedContract.status}
             </div>
             <div>
-              <b>Start Date:</b>{" "}
-              {viewedContract.startDate
-                ? (typeof viewedContract.startDate === 'string' ? new Date(viewedContract.startDate) : viewedContract.startDate).toLocaleDateString()
-                : "-"}
-            </div>
-            <div>
-              <b>Completion Date:</b>{" "}
-              {viewedContract.completionDate
-                ? (typeof viewedContract.completionDate === 'string' ? new Date(viewedContract.completionDate) : viewedContract.completionDate).toLocaleDateString()
-                : "-"}
+              <b>Created:</b>{" "}
+              {new Date(viewedContract.createdAt).toLocaleDateString()}
             </div>
           </div>
         )}
@@ -461,7 +483,7 @@ const ClientContractsPage: React.FC = () => {
               />
             </label>
             <label>
-              Price:
+              Escrow Amount:
               <input
                 type="number"
                 value={editForm.price}

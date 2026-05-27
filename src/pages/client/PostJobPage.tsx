@@ -6,7 +6,7 @@ import Select from '../../components/Select';
 import Card from '../../components/Card';
 import { DUMMY_CATEGORIES, DUMMY_SERVICE_ORDERS } from '../../utils/dummyData';
 import { useAuth } from '../../contexts/AuthContext';
-import { Category, ServiceOrder, ServiceOrderStatus } from '../../types';
+import { ServiceOrder, ServiceOrderStatus } from '../../types';
 
 
 const PostJobPage: React.FC = () => {
@@ -16,14 +16,14 @@ const PostJobPage: React.FC = () => {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [categoryId, setCategoryId] = useState<string>(DUMMY_CATEGORIES[0]?.id || '');
+  const [categoryId, setCategoryId] = useState<string>(String(DUMMY_CATEGORIES[0]?.id ?? ''));
   const [budget, setBudget] = useState<string>('');
   const [deadline, setDeadline] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const categoryOptions = DUMMY_CATEGORIES.map(cat => ({ value: cat.id, label: cat.name }));
+  const categoryOptions = DUMMY_CATEGORIES.map(cat => ({ value: String(cat.id), label: cat.name }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,18 +37,31 @@ const PostJobPage: React.FC = () => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
 
+    const selectedCategory = DUMMY_CATEGORIES.find(c => c.id === Number(categoryId));
     const newJob: ServiceOrder = {
-      id: `order-${Date.now()}`,
-      clientId: currentUser?.id || 'unknown-client',
-      clientName: currentUser?.name || 'Unknown Client',
-      title,
+      id: Date.now(),
+      service: {
+        id: Date.now(),
+        title,
+        description,
+        price: 0,
+        status: 'available',
+        featured: false,
+        provider: currentUser!,
+        providerId: currentUser!.id,
+        category: selectedCategory,
+        categoryId: selectedCategory?.id,
+        assets: [],
+        views: 0,
+        createdAt: new Date().toISOString(),
+      },
+      serviceId: Date.now(),
+      client: currentUser!,
+      clientId: currentUser!.id,
       description,
-      category: DUMMY_CATEGORIES.find(c => c.id === categoryId) as Category,
       budget: budget ? parseFloat(budget) : undefined,
-      deadline,
-      postedDate: new Date().toISOString(),
-      status: ServiceOrderStatus.OPEN,
-      proposalsCount: 0,
+      status: ServiceOrderStatus.PENDING,
+      createdAt: new Date().toISOString(),
     };
 
     // In a real app, you'd send this to the backend.

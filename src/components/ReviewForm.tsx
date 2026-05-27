@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Review } from '../types';
+import { Review, UserRole } from '../types';
 import Button from './Button';
 import { StarIcon } from './icons/Icons';
 
@@ -20,16 +20,21 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ serviceId, onReviewSubmitted })
       return;
     }
 
-    // In a real app, the user ID would come from the auth context
     const newReview: Review = {
-      id: `rev-${Date.now()}`,
-      serviceId,
-      reviewerId: 'user-1',
-      reviewerName: 'Current User',
-      reviewedId: serviceId,
+      id: Date.now(),
+      contractId: parseInt(serviceId) || 0,
+      reviewer: {
+        id: 0,
+        name: 'Current User',
+        email: '',
+        phoneNumber: '',
+        role: UserRole.CLIENT,
+        createdAt: new Date().toISOString(),
+      },
+      reviewerId: 0,
       rating: rating as 1 | 2 | 3 | 4 | 5,
       comment,
-      date: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
     };
 
     onReviewSubmitted(newReview);

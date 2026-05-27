@@ -14,17 +14,11 @@ const ProviderSettingsPage: React.FC = () => {
 
   useEffect(() => {
     if (currentUser) {
-      form.setFieldsValue(currentUser);
-      if (currentUser.portfolioImages) {
-        setFileList(
-          currentUser.portfolioImages.map((url, index) => ({
-            uid: `-${index + 1}`,
-            name: `image-${index + 1}.png`,
-            status: 'done',
-            url: url,
-          }))
-        );
-      }
+      form.setFieldsValue({
+        name: currentUser.name,
+        email: currentUser.email,
+        phoneNumber: currentUser.phoneNumber,
+      });
     }
   }, [currentUser, form]);
 
@@ -32,13 +26,11 @@ const ProviderSettingsPage: React.FC = () => {
     const { currentPassword, newPassword, confirmNewPassword, portfolio, ...profileData } = values;
 
     try {
-      // Only send allowed user fields to updateUser
-      const allowedFields = ['name', 'email', 'phone', 'location'];
+      const allowedFields = ['name', 'email', 'phoneNumber'];
       const filteredData: any = {};
       for (const key of allowedFields) {
         if (profileData[key] !== undefined) filteredData[key] = profileData[key];
       }
-      // Do NOT send portfolioImages if not supported by backend user PATCH
       updateUser(filteredData);
       message.success('Profile information saved!');
 
@@ -66,7 +58,9 @@ const ProviderSettingsPage: React.FC = () => {
       <Title level={2} className="mb-6">Account & Profile Settings</Title>
 
       <Form form={form} layout="vertical" onFinish={onFinish} initialValues={{
-          ...currentUser,
+          name: currentUser?.name,
+          email: currentUser?.email,
+          phoneNumber: currentUser?.phoneNumber,
           profileHeadline: 'Experienced Web Developer & Designer',
           profileBio: 'Specializing in React, Node.js, and creating beautiful user experiences.',
         }}>
@@ -75,6 +69,9 @@ const ProviderSettingsPage: React.FC = () => {
             <Input />
           </Form.Item>
           <Form.Item name="email" label="Email Address">
+            <Input />
+          </Form.Item>
+          <Form.Item name="phoneNumber" label="Phone Number">
             <Input />
           </Form.Item>
         </Card>

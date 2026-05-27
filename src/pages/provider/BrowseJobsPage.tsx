@@ -4,6 +4,7 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import { DUMMY_SERVICE_ORDERS, DUMMY_CATEGORIES } from '../../utils/dummyData';
 import { ServiceOrder, ServiceOrderStatus } from '../../types';
+import { formatCurrency } from '../../utils/currency';
 import Input from '../../components/Input';
 import Select from '../../components/Select';
 import { BriefcaseIcon, SearchIcon } from '../../components/icons/Icons';
@@ -24,21 +25,21 @@ const BrowseJobsPage: React.FC = () => {
   }, [location.state]);
 
 
-  const categoryOptions = [{ value: 'all', label: 'All Categories' }, ...DUMMY_CATEGORIES.map(cat => ({ value: cat.id, label: cat.name }))];
+  const categoryOptions = [{ value: 'all', label: 'All Categories' }, ...DUMMY_CATEGORIES.map(cat => ({ value: String(cat.id), label: cat.name }))];
 
   const openJobs = useMemo(() => {
-    let jobs = DUMMY_SERVICE_ORDERS.filter(order => order.status === ServiceOrderStatus.OPEN);
+    let jobs = DUMMY_SERVICE_ORDERS.filter(order => order.status === ServiceOrderStatus.PENDING);
 
     if (searchTerm) {
       jobs = jobs.filter(job =>
-        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     if (selectedCategory !== 'all') {
-      jobs = jobs.filter(job => job.category.id === selectedCategory);
+      jobs = jobs.filter(job => job.service.category?.id === Number(selectedCategory));
     }
-    return jobs.sort((a,b) => new Date(b.postedDate).getTime() - new Date(a.postedDate).getTime()); // Newest first
+    return jobs.sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [searchTerm, selectedCategory]);
 
   return (
@@ -86,19 +87,18 @@ const BrowseJobsPage: React.FC = () => {
           {openJobs.map((job: ServiceOrder) => (
             <Card key={job.id} className="p-6 hover:shadow-xl transition-shadow duration-300 ease-in-out">
               <div className="flex flex-col sm:flex-row justify-between">
-                <div>
-                  <h2 className="text-xl font-poppins font-semibold text-primary mb-1 group">
-                    <Link to={`${job.id}/apply`} className="hover:underline group-hover:text-accent">
-                      {job.title}
-                    </Link>
-                  </h2>
-                  <p className="text-sm text-gray-600">Client: {job.clientName}</p>
-                  <p className="text-sm text-gray-500">Category: {job.category.name}</p>
-                  <p className="text-xs text-gray-400">Posted: {new Date(job.postedDate).toLocaleDateString()}</p>
-                </div>
-                <div className="mt-4 sm:mt-0 text-left sm:text-right">
-                  {job.budget && <p className="text-lg font-semibold text-gray-800">{job.budget.toLocaleString()} FCFA</p>}
-                   <p className="text-sm text-gray-500 mb-2">{job.deadline ? `Deadline: ${new Date(job.deadline).toLocaleDateString()}` : 'No deadline'}</p>
+                  <div>
+                    <h2 className="text-xl font-poppins font-semibold text-primary mb-1 group">
+                      <Link to={`${job.id}/apply`} className="hover:underline group-hover:text-accent">
+                        {job.service.title}
+                      </Link>
+                    </h2>
+                    <p className="text-sm text-gray-600">Client: {job.client.name}</p>
+                    <p className="text-sm text-gray-500">Category: {job.service.category?.name}</p>
+                    <p className="text-xs text-gray-400">Posted: {new Date(job.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  <div className="mt-4 sm:mt-0 text-left sm:text-right">
+                    {job.budget && <p className="text-lg font-semibold text-gray-800">{formatCurrency(job.budget)}</p>}
                   <Link to={`/provider/submit-proposal/${job.id}`}>
 
                     <Button variant="primary" size="md">View & Apply</Button>

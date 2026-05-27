@@ -29,7 +29,7 @@ const ClientChatPage: React.FC = () => {
 
     const message: ChatMessage = {
       id: `msg-${Date.now()}`,
-      senderId: currentUser.id,
+      senderId: String(currentUser.id),
       text: newMessage,
       timestamp: new Date(),
     };
@@ -43,7 +43,7 @@ const ClientChatPage: React.FC = () => {
 
     const message: ChatMessage = {
       id: `msg-${Date.now()}`,
-      senderId: currentUser.id,
+      senderId: String(currentUser.id),
       text: '',
       timestamp: new Date(),
       imageUrl: imageUrl,
@@ -102,7 +102,7 @@ const ClientChatPage: React.FC = () => {
                                         className={`p-4 cursor-pointer hover:bg-gray-100 ${selectedConversation?.id === item.id ? 'bg-blue-50' : ''}`}
                                     >
                                         <List.Item.Meta
-                                            avatar={<Avatar src={participant?.avatar} />}
+                                            avatar={<Avatar>{participant?.name?.[0]}</Avatar>}
                                             title={<Text strong>{participant?.name}</Text>}
                                             description={<Text ellipsis>{item.lastMessage.text}</Text>}
                                         />
@@ -117,16 +117,16 @@ const ClientChatPage: React.FC = () => {
                     {selectedConversation ? (
                         <Layout className="h-full">
                             <Header className="p-4 border-b border-gray-200 bg-white flex items-center h-auto">
-                                <Avatar src={getParticipant(selectedConversation)?.avatar} className="mr-4" />
+                                <Avatar className="mr-4">{getParticipant(selectedConversation)?.name?.[0]}</Avatar>
                                 <Title level={5} className="mb-0">{getParticipant(selectedConversation)?.name}</Title>
                             </Header>
                             <Content className="p-6 overflow-y-auto flex-grow bg-gray-50">
                                 {messages.map(msg => (
-                                    <div key={msg.id} className={`flex my-2 ${msg.senderId === currentUser?.id ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`p-3 rounded-lg max-w-lg ${msg.senderId === currentUser?.id ? 'bg-blue-500 text-white' : 'bg-white shadow'}`}>
-                                            <Text className={msg.senderId === currentUser?.id ? 'text-white' : ''}>{msg.text}</Text>
+                                    <div key={msg.id} className={`flex my-2 ${msg.senderId === String(currentUser?.id) ? 'justify-end' : 'justify-start'}`}>
+                                        <div className={`p-3 rounded-lg max-w-lg ${msg.senderId === String(currentUser?.id) ? 'bg-blue-500 text-white' : 'bg-white shadow'}`}>
+                                            <Text className={msg.senderId === String(currentUser?.id) ? 'text-white' : ''}>{msg.text}</Text>
                                             {msg.imageUrl && <Image src={msg.imageUrl} alt="attachment" width={200} className="rounded-lg mt-2"/>}
-                                            <div className={`text-xs mt-1 ${msg.senderId === currentUser?.id ? 'text-blue-200' : 'text-gray-400'}`}>
+                                            <div className={`text-xs mt-1 ${msg.senderId === String(currentUser?.id) ? 'text-blue-200' : 'text-gray-400'}`}>
                                                 {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </div>
                                         </div>

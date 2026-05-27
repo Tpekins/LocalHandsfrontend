@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Layout, Input, Button, Avatar, List, Typography, Card, Image, Space, Upload, message } from 'antd';
+import { Layout, Input, Button, List, Typography, Card, Image, Space, Upload, message } from 'antd';
 import type { UploadProps } from 'antd';
 import { SendOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/AuthContext';
@@ -29,7 +29,7 @@ const ProviderChatPage: React.FC = () => {
 
     const message: ChatMessage = {
       id: `msg-${Date.now()}`,
-      senderId: currentUser.id,
+      senderId: String(currentUser.id),
       text: newMessage,
       timestamp: new Date(),
     };
@@ -43,7 +43,7 @@ const ProviderChatPage: React.FC = () => {
 
     const message: ChatMessage = {
       id: `msg-${Date.now()}`,
-      senderId: currentUser.id,
+      senderId: String(currentUser.id),
       text: '',
       timestamp: new Date(),
       imageUrl: imageUrl,
@@ -55,6 +55,10 @@ const ProviderChatPage: React.FC = () => {
   const getParticipant = (convo: ChatConversation) => {
       return convo.participants.find(p => p.id !== currentUser?.id);
   }
+
+  const getInitials = (name: string) => {
+    return name.charAt(0).toUpperCase();
+  };
 
   const uploadProps: UploadProps = {
     name: 'file',
@@ -71,7 +75,6 @@ const ProviderChatPage: React.FC = () => {
         return isJpgOrPng && isLt2M;
     },
     customRequest: ({ file, onSuccess }) => {
-        // Simulate upload
         setTimeout(() => {
             const imageUrl = URL.createObjectURL(file as Blob);
             handleSendImage(imageUrl);
@@ -84,7 +87,7 @@ const ProviderChatPage: React.FC = () => {
 
   return (
     <div className="h-[calc(100vh-120px)]">
-        <Card className="h-full shadow-lg rounded-lg" bodyStyle={{ padding: 0, height: '100%' }}>
+        <Card className="h-full shadow-lg rounded-lg" styles={{ body: { padding: 0, height: '100%' } }}>
             <Layout className="h-full bg-white rounded-lg">
                 <Sider width={300} className="bg-white border-r border-gray-200 flex flex-col" style={{ height: '100%' }}>
                     <div className="p-4 border-b border-gray-200">
@@ -102,7 +105,11 @@ const ProviderChatPage: React.FC = () => {
                                         className={`p-4 cursor-pointer hover:bg-gray-100 ${selectedConversation?.id === item.id ? 'bg-blue-50' : ''}`}
                                     >
                                         <List.Item.Meta
-                                            avatar={<Avatar src={participant?.avatar} />}
+                                            avatar={
+                                              <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
+                                                {participant ? getInitials(participant.name) : '?'}
+                                              </div>
+                                            }
                                             title={<Text strong>{participant?.name}</Text>}
                                             description={<Text ellipsis>{item.lastMessage.text}</Text>}
                                         />
@@ -117,17 +124,19 @@ const ProviderChatPage: React.FC = () => {
                     {selectedConversation ? (
                         <Layout className="h-full">
                             <Header className="p-4 border-b border-gray-200 bg-white flex items-center h-auto">
-                                <Avatar src={getParticipant(selectedConversation)?.avatar} className="mr-4" />
+                                <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold mr-4">
+                                  {getInitials(getParticipant(selectedConversation)?.name || '?')}
+                                </div>
                                 <Title level={5} className="mb-0">{getParticipant(selectedConversation)?.name}</Title>
                             </Header>
                             <Content className="p-6 overflow-y-auto flex-grow bg-gray-50">
                                 {messages.map(msg => (
-                                    <div key={msg.id} className={`flex my-2 ${msg.senderId === currentUser?.id ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`p-3 rounded-lg max-w-lg ${msg.senderId === currentUser?.id ? 'bg-blue-500 text-white' : 'bg-white shadow'}`}>
-                                            <Text className={msg.senderId === currentUser?.id ? 'text-white' : ''}>{msg.text}</Text>
+                                    <div key={msg.id} className={`flex my-2 ${msg.senderId === String(currentUser?.id) ? 'justify-end' : 'justify-start'}`}>
+                                        <div className={`p-3 rounded-lg max-w-lg ${msg.senderId === String(currentUser?.id) ? 'bg-blue-500 text-white' : 'bg-white shadow'}`}>
+                                            <Text className={msg.senderId === String(currentUser?.id) ? 'text-white' : ''}>{msg.text}</Text>
                                             {msg.imageUrl && <Image src={msg.imageUrl} alt="attachment" width={200} className="rounded-lg mt-2"/>}
-                                            <div className={`text-xs mt-1 ${msg.senderId === currentUser?.id ? 'text-blue-200' : 'text-gray-400'}`}>
-                                                {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            <div className={`text-xs mt-1 ${msg.senderId === String(currentUser?.id) ? 'text-blue-200' : 'text-gray-400'}`}>
+                                                {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </div>
                                         </div>
                                     </div>

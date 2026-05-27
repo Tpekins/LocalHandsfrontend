@@ -1,38 +1,31 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import { DUMMY_SERVICE_ORDERS, DUMMY_PROPOSALS, DUMMY_SERVICES } from '../../utils/dummyData';
-import { ServiceOrder, ServiceOrderStatus } from '../../types';
-import { PresentationChartLineIcon, BriefcaseIcon, BuildingStorefrontIcon, CurrencyDollarIcon, StarIcon } from '../../components/icons/Icons';
+import { ServiceOrder, ServiceOrderStatus, ProposalStatus } from '../../types';
+import { PresentationChartLineIcon, BriefcaseIcon, BuildingStorefrontIcon, CurrencyDollarIcon } from '../../components/icons/Icons';
 
 const ProviderDashboardPage: React.FC = () => {
   const { currentUser } = useAuth();
 
-  // Filter data for the current provider
   const providerServices = DUMMY_SERVICES.filter(s => s.providerId === currentUser?.id);
   const providerProposals = DUMMY_PROPOSALS.filter(p => p.providerId === currentUser?.id);
   
   const totalEarnings = providerProposals
-    .filter(p => p.status === 'Accepted') // Simplified: assumes accepted proposals are paid
-    .reduce((sum, p) => sum + (p.proposedPrice || 0), 0);
+    .filter(p => p.status === ProposalStatus.ACCEPTED)
+    .reduce((sum, p) => sum + p.bidAmount, 0);
 
   const activeContracts = providerProposals.filter(p => {
-    const job = DUMMY_SERVICE_ORDERS.find(o => o.id === p.serviceOrderId);
-    return p.status === 'Accepted' && job?.status === ServiceOrderStatus.IN_PROGRESS;
+    const job = DUMMY_SERVICE_ORDERS.find(o => o.serviceId === p.serviceId);
+    return p.status === ProposalStatus.ACCEPTED && job?.status === ServiceOrderStatus.ACCEPTED;
   }).length;
-  
-  const averageRating = providerServices.length > 0 
-    ? providerServices.reduce((sum, s) => sum + s.rating, 0) / providerServices.length
-    : 0;
 
   const recentJobOpportunities = DUMMY_SERVICE_ORDERS.filter(
-    order => order.status === ServiceOrderStatus.OPEN && 
-             !providerProposals.some(p => p.serviceOrderId === order.id) // Show jobs provider hasn't applied to
+    order => order.status === ServiceOrderStatus.PENDING && 
+             !providerProposals.some(p => p.serviceId === order.serviceId)
   ).slice(0, 5);
-
 
   if (!currentUser) return <p>Loading provider data...</p>;
 
@@ -63,10 +56,10 @@ const ProviderDashboardPage: React.FC = () => {
         <Card className="p-6 bg-gradient-to-r from-gray-700 to-gray-800 text-white">
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="text-4xl font-bold">{averageRating.toFixed(1)} <StarIcon className="w-7 h-7 inline-block mb-1 text-yellow-300"/></p>
-                    <p>Average Rating</p>
+                    <p className="text-4xl font-bold">{providerServices.length}</p>
+                    <p>Total Services</p>
                 </div>
-                <StarIcon className="w-12 h-12 opacity-70 text-yellow-300" />
+                <BriefcaseIcon className="w-12 h-12 opacity-70" />
             </div>
         </Card>
       </div>
@@ -88,10 +81,10 @@ const ProviderDashboardPage: React.FC = () => {
                 <div className="flex flex-col sm:flex-row justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-primary hover:underline">
-                      <Link to={`/provider/submit-proposal/${job.id}`}>{job.title}</Link>
+                      <Link to={`/provider/submit-proposal/${job.id}`}>{job.service.title}</Link>
                     </h3>
-                    <p className="text-sm text-gray-600">{job.category.name} - By: {job.clientName}</p>
-                    <p className="text-xs text-gray-500 mt-1">Posted: {new Date(job.postedDate).toLocaleDateString()}</p>
+                    <p className="text-sm text-gray-600">{job.service.category?.name} - By: {job.client.name}</p>
+                    <p className="text-xs text-gray-500 mt-1">Posted: {new Date(job.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className="mt-3 sm:mt-0 text-left sm:text-right">
                     {job.budget && <p className="text-lg font-semibold text-gray-700">${job.budget.toFixed(2)}</p>}

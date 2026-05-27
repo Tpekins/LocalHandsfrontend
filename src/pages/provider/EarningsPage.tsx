@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -9,7 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import Modal from '../../components/Modal';
 import Button from '../../components/Button';
 import { DUMMY_PROPOSALS, DUMMY_SERVICE_ORDERS } from '../../utils/dummyData';
-import { ServiceOrderStatus, Proposal } from '../../types';
+import { ServiceOrderStatus, Proposal, ProposalStatus } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 
 const EarningsPage: React.FC = () => {
@@ -18,7 +17,6 @@ const EarningsPage: React.FC = () => {
 
         const { currentUser } = useAuth();
 
-    // Dummy data for the earnings chart
     const monthlyEarningsData = [
         { name: 'Jan', earnings: 4000 },
         { name: 'Feb', earnings: 3000 },
@@ -29,12 +27,12 @@ const EarningsPage: React.FC = () => {
     ];
 
     const acceptedProposals = DUMMY_PROPOSALS.filter((p: Proposal) => {
-        if (p.providerId !== currentUser?.id || p.status !== 'Accepted') return false;
-        const job = DUMMY_SERVICE_ORDERS.find(o => o.id === p.serviceOrderId);
-        return job?.status === ServiceOrderStatus.COMPLETED; // Simplified: assume completed jobs are paid
+        if (p.providerId !== currentUser?.id || p.status !== ProposalStatus.ACCEPTED) return false;
+        const job = DUMMY_SERVICE_ORDERS.find(o => o.serviceId === p.serviceId);
+        return job?.status === ServiceOrderStatus.COMPLETED;
     });
 
-    const totalEarnings = acceptedProposals.reduce((acc, proposal) => acc + (proposal.proposedPrice || 0), 0);
+    const totalEarnings = acceptedProposals.reduce((acc, proposal) => acc + proposal.bidAmount, 0);
 
     const handleRequestWithdrawal = () => {
         if (parseFloat(withdrawalAmount) > totalEarnings) {
@@ -50,8 +48,8 @@ const EarningsPage: React.FC = () => {
         setWithdrawalAmount('');
     };
 
-    const pendingClearance = 0; // Placeholder for more complex logic
-    const availableForWithdrawal = totalEarnings - pendingClearance; // Simplified
+    const pendingClearance = 0;
+    const availableForWithdrawal = totalEarnings - pendingClearance;
 
   return (
     <div className="space-y-8">
@@ -120,12 +118,12 @@ const EarningsPage: React.FC = () => {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {acceptedProposals.map((p: Proposal) => {
-                             const job = DUMMY_SERVICE_ORDERS.find(o => o.id === p.serviceOrderId);
+                             const job = DUMMY_SERVICE_ORDERS.find(o => o.serviceId === p.serviceId);
                              return (
                                 <tr key={p.id} className="hover:bg-lightGray">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(p.submittedDate).toLocaleDateString()}</td> {/* Use actual completion date if available */}
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{job?.title || 'N/A'}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">+{formatCurrency(p.proposedPrice || 0)}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(p.createdAt).toLocaleDateString()}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{job?.service.title || 'N/A'}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">+{formatCurrency(p.bidAmount)}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             Cleared

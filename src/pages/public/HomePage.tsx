@@ -67,9 +67,9 @@ const FeaturedCategoriesSection: React.FC<{ categories: Category[] }> = ({ categ
         {categories.slice(0,5).map((category) => (
           <Link key={category.id} to={`/services?category=${category.id}`}>
             <Card className="p-6 text-center group hover:bg-primary transition-colors duration-300">
-              {category.icon ? <category.icon className="w-16 h-16 text-primary mx-auto mb-4 group-hover:text-white transition-colors" /> : 
-              <img src={category.imageUrl || `https://picsum.photos/seed/${category.id}/100/100`} alt={category.name} className="w-16 h-16 rounded-full mx-auto mb-4" />
-              }
+              <div className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold mx-auto mb-4 group-hover:bg-white group-hover:text-primary transition-colors">
+                {category.name.charAt(0)}
+              </div>
               <h3 className="text-md font-poppins font-semibold text-gray-700 group-hover:text-white transition-colors">{category.name}</h3>
             </Card>
           </Link>

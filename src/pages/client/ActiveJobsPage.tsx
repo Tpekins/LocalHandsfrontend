@@ -12,7 +12,7 @@ const ActiveJobsPage: React.FC = () => {
 
   const activeJobs = DUMMY_SERVICE_ORDERS.filter(
     order => order.clientId === currentUser?.id && 
-             (order.status === ServiceOrderStatus.OPEN || order.status === ServiceOrderStatus.IN_PROGRESS)
+             (order.status === ServiceOrderStatus.PENDING || order.status === ServiceOrderStatus.ACCEPTED)
   );
 
   return (
@@ -34,21 +34,20 @@ const ActiveJobsPage: React.FC = () => {
             <Card key={job.id} className="p-6 hover:shadow-lg transition-shadow">
               <div className="flex flex-col sm:flex-row justify-between">
                 <div>
-                  <h2 className="text-xl font-poppins font-semibold text-primary mb-1">{job.title}</h2>
-                  <p className="text-sm text-gray-500">Category: {job.category.name}</p>
-                  <p className="text-sm text-gray-500">Posted: {new Date(job.postedDate).toLocaleDateString()}</p>
+                  <h2 className="text-xl font-poppins font-semibold text-primary mb-1">{job.service.title}</h2>
+                  <p className="text-sm text-gray-500">Category: {job.service.category?.name}</p>
+                  <p className="text-sm text-gray-500">Posted: {new Date(job.createdAt).toLocaleDateString()}</p>
                   {job.budget && <p className="text-sm text-gray-500">Budget: ${job.budget.toFixed(2)}</p>}
                 </div>
                 <div className="mt-4 sm:mt-0 text-left sm:text-right">
                   <span className={`px-3 py-1 inline-block rounded-full text-sm font-semibold
-                    ${job.status === ServiceOrderStatus.OPEN ? 'bg-green-100 text-green-700' : ''}
-                    ${job.status === ServiceOrderStatus.IN_PROGRESS ? 'bg-yellow-100 text-yellow-700' : ''}
+                    ${job.status === ServiceOrderStatus.PENDING ? 'bg-green-100 text-green-700' : ''}
+                    ${job.status === ServiceOrderStatus.ACCEPTED ? 'bg-yellow-100 text-yellow-700' : ''}
                     ${job.status === ServiceOrderStatus.COMPLETED ? 'bg-blue-100 text-blue-700' : ''}
-                    ${job.status === ServiceOrderStatus.CANCELLED ? 'bg-red-100 text-red-700' : ''}
+                    ${job.status === ServiceOrderStatus.REJECTED ? 'bg-red-100 text-red-700' : ''}
                   `}>
                     {job.status}
                   </span>
-                  <p className="text-sm text-gray-500 mt-1">{job.proposalsCount} Proposal(s)</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-gray-200">

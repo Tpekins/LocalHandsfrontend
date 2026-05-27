@@ -51,14 +51,6 @@ export enum AssetType {
   AREA = 'AREA',
 }
 
-export enum NotificationType {
-  PROPOSAL_ACCEPTED = 'proposal_accepted',
-  NEW_MESSAGE = 'new_message',
-  JOB_INVITE = 'job_invite',
-  PROPOSAL_REJECTED = 'proposal_rejected',
-  PAYMENT_RECEIVED = 'payment_received',
-}
-
 export interface NavItem {
   label: string;
   path: string;
@@ -137,6 +129,7 @@ export interface ServiceOrder {
   description: string;
   budget?: number;
   status: ServiceOrderStatus;
+  contract?: Contract;
   createdAt: string;
 }
 
@@ -149,6 +142,8 @@ export interface Proposal {
   coverLetter: string;
   bidAmount: number;
   status: ProposalStatus;
+  contract?: Contract;
+  contractId?: number;
   createdAt: string;
 }
 
@@ -159,6 +154,8 @@ export interface Contract {
   escrowAmount: number;
   status: ContractStatus;
   payments: Payment[];
+  users?: User[];
+  proposals?: Proposal[];
   createdAt: string;
 }
 
@@ -217,14 +214,33 @@ export interface ServicePackage {
 export interface Notification {
   id: number;
   userId: number;
-  type: NotificationType;
-  titleKey: string;
-  descriptionKey: string;
-  titleParams?: { [key: string]: unknown };
-  descriptionParams?: { [key: string]: unknown };
-  entityId: string;
-  isRead: boolean;
-  timestamp: string;
+  type: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface Availability {
+  id: number;
+  providerId: number;
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+}
+
+export interface SystemSettings {
+  id: number;
+  maintenanceMode: boolean;
+  allowRegistration: boolean;
+  reviewAutoApprove: boolean;
+  paymentGateway: string;
+  emailNotifications: boolean;
+  maxFileSize: number;
+  currency: string;
+  currencySymbol: string;
+  supportEmail?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // UI-only types (no backend counterpart)

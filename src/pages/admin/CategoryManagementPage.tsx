@@ -35,7 +35,7 @@ const CategoryManagementPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleDeleteCategory = (categoryId: string) => {
+  const handleDeleteCategory = (categoryId: number) => {
     if (window.confirm('Are you sure you want to delete this category? This might affect existing services.')) {
       setCategories(prev => prev.filter(c => c.id !== categoryId));
       // Update DUMMY_CATEGORIES
@@ -55,8 +55,6 @@ const CategoryManagementPage: React.FC = () => {
     const categoryData = {
       name,
       description,
-      // icon: findIconComponent(icon), // Complex logic needed here
-      imageUrl: currentCategory?.imageUrl || `https://picsum.photos/seed/newcat${Date.now()}/100/100`,
     };
 
     if (isEditMode && currentCategory?.id) {
@@ -67,7 +65,7 @@ const CategoryManagementPage: React.FC = () => {
       if (catIdx > -1) DUMMY_CATEGORIES[catIdx] = updatedCategory;
       alert('Category updated.');
     } else {
-      const newCategory = { ...categoryData, id: `cat-${Date.now()}` } as Category;
+      const newCategory = { ...categoryData, id: Date.now() } as Category;
       setCategories(prev => [newCategory, ...prev]);
       DUMMY_CATEGORIES.unshift(newCategory);
       alert('Category created.');
@@ -88,7 +86,6 @@ const CategoryManagementPage: React.FC = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Icon</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -97,9 +94,6 @@ const CategoryManagementPage: React.FC = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {categories.map(category => (
               <tr key={category.id} className="hover:bg-lightGray transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {category.icon ? <category.icon className="w-8 h-8 text-primary" /> : <img src={category.imageUrl} alt={category.name} className="w-8 h-8 rounded-sm"/>}
-                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{category.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 max-w-sm truncate">{category.description}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">

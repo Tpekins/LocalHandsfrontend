@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { UserRole } from '../types';
 import Button from './Button';
-import { APP_NAME, PUBLIC_NAV_ITEMS, DEFAULT_AVATAR } from '../constants';
-import { MenuIcon, XIcon, LogoutIcon, UserCircleIcon, CogIcon, BellIcon } from '../components/icons/Icons';
+import { APP_NAME, PUBLIC_NAV_ITEMS } from '../constants';
+import { MenuIcon, XIcon, LogoutIcon, CogIcon, BellIcon } from '../components/icons/Icons';
 import NotificationPanel, { Notification } from './notifications/NotificationPanel';
 
 const mockNotifications: Notification[] = [
@@ -38,6 +37,8 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
+
+  const getInitials = (name: string) => name.charAt(0).toUpperCase();
 
   const handleLogout = () => {
     logout();
@@ -90,17 +91,10 @@ const Header: React.FC = () => {
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
-                  {currentUser.avatar ? (
-                    <img
-                        className="h-10 w-10 rounded-full object-cover"
-                        src={currentUser.avatar || DEFAULT_AVATAR}
-                        alt={currentUser.name}
-                    />
-                    ) : (
-                        <UserCircleIcon className="h-10 w-10 text-gray-400" />
-                    )}
-                   <span className="text-sm font-medium text-gray-700 hidden lg:inline">{currentUser.name || currentUser.email}</span>
-                  {/* ChevronDownIcon can be added here */}
+                  <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
+                    {getInitials(currentUser.name)}
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 hidden lg:inline">{currentUser.name || currentUser.email}</span>
                 </button>
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
@@ -112,7 +106,7 @@ const Header: React.FC = () => {
                       My Dashboard
                     </Link>
                     <Link
-                      to={`/${(currentRole ? currentRole.toLowerCase() : 'client')}/settings`} // Example path
+                      to={`/${(currentRole ? currentRole.toLowerCase() : 'client')}/settings`}
                       onClick={() => setIsUserMenuOpen(false)}
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary"
                     >
@@ -180,15 +174,13 @@ const Header: React.FC = () => {
              {currentUser ? (
               <>
                 <div className="px-5 flex items-center">
-                    {currentUser.avatar ? (
-                        <img className="h-10 w-10 rounded-full object-cover" src={currentUser.avatar || DEFAULT_AVATAR} alt={currentUser.name} />
-                    ) : (
-                        <UserCircleIcon className="h-10 w-10 text-gray-400" />
-                    )}
-                    <div className="ml-3">
-                        <p className="text-base font-medium text-gray-800">{currentUser.name || currentUser.email}</p>
-                        <p className="text-sm font-medium text-gray-500">{currentUser.email}</p>
-                    </div>
+                  <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
+                    {getInitials(currentUser.name)}
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-base font-medium text-gray-800">{currentUser.name || currentUser.email}</p>
+                    <p className="text-sm font-medium text-gray-500">{currentUser.email}</p>
+                  </div>
                 </div>
                 <div className="mt-3 px-2 space-y-1">
                      <Link
@@ -199,7 +191,7 @@ const Header: React.FC = () => {
                       My Dashboard
                     </Link>
                      <Link
-                      to={`/${currentRole.toLowerCase()}/settings`}
+                      to={`/${(currentRole ? currentRole.toLowerCase() : 'client')}/settings`}
                       onClick={() => { setIsMobileMenuOpen(false); }}
                       className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
                     >

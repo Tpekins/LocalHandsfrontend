@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Review } from '../types';
 import Card from './Card';
@@ -18,14 +17,12 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
   return (
     <Card className="p-6">
       <div className="flex items-start mb-3">
-        <img 
-          src={`https://picsum.photos/seed/${review.reviewerId}/50/50`} // Placeholder avatar
-          alt={review.reviewerName} 
-          className="w-12 h-12 rounded-full mr-4 object-cover"
-        />
+        <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold mr-4">
+          {review.reviewer.name.charAt(0).toUpperCase()}
+        </div>
         <div>
-          <h4 className="text-md font-semibold text-gray-800">{review.reviewerName}</h4>
-          <p className="text-xs text-gray-500">{new Date(review.date).toLocaleDateString()}</p>
+          <h4 className="text-md font-semibold text-gray-800">{review.reviewer.name}</h4>
+          <p className="text-xs text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</p>
         </div>
       </div>
       <div className="flex mb-2">
@@ -37,4 +34,3 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
 };
 
 export default ReviewCard;
-    

@@ -1,17 +1,18 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { DUMMY_USERS, DUMMY_SERVICES, DUMMY_REVIEWS } from '../../utils/dummyData';
-import { UserCircleIcon, StarIcon } from '../../components/icons/Icons';
+import { DUMMY_USERS, DUMMY_SERVICES, DUMMY_REVIEWS, DUMMY_CONTRACTS } from '../../utils/dummyData';
+import { StarIcon } from '../../components/icons/Icons';
 import Button from '../../components/Button';
 import ReviewCard from '../../components/ReviewCard';
 
 const ProviderProfilePage: React.FC = () => {
   const { providerId } = useParams<{ providerId: string }>();
 
-  const provider = DUMMY_USERS.find(u => u.id === providerId);
-  const providerServices = DUMMY_SERVICES.filter(s => s.providerId === providerId);
+  const provider = DUMMY_USERS.find(u => u.id === Number(providerId));
+  const providerServices = DUMMY_SERVICES.filter(s => s.providerId === Number(providerId));
   const providerServiceIds = providerServices.map(s => s.id);
-  const providerReviews = DUMMY_REVIEWS.filter(r => providerServiceIds.includes(r.serviceId));
+  const providerContractIds = DUMMY_CONTRACTS.filter(c => providerServiceIds.includes(c.serviceOrder.serviceId)).map(c => c.id);
+  const providerReviews = DUMMY_REVIEWS.filter(r => providerContractIds.includes(r.contractId));
 
   if (!provider) {
     return (
@@ -24,11 +25,11 @@ const ProviderProfilePage: React.FC = () => {
     );
   }
 
-  const averageRating = providerServices.length > 0
-    ? providerServices.reduce((acc, service) => acc + service.rating, 0) / providerServices.length
+  const averageRating = providerReviews.length > 0
+    ? providerReviews.reduce((acc, review) => acc + review.rating, 0) / providerReviews.length
     : 0;
 
-  const totalReviews = providerServices.reduce((acc, service) => acc + service.reviewsCount, 0);
+  const totalReviews = providerReviews.length;
 
   const renderStars = (rating: number) => {
     return Array(5).fill(0).map((_, index) => (
@@ -40,15 +41,13 @@ const ProviderProfilePage: React.FC = () => {
     <div className="container mx-auto py-8 px-4">
       <div className="bg-white shadow-lg rounded-lg p-8 mb-8">
         <div className="flex flex-col md:flex-row items-center">
-          {provider.avatar ? (
-            <img src={provider.avatar} alt={provider.name} className="w-32 h-32 rounded-full object-cover mb-4 md:mb-0 md:mr-8" />
-          ) : (
-            <UserCircleIcon className="w-32 h-32 text-gray-400 mb-4 md:mb-0 md:mr-8" />
-          )}
+          <div className="w-32 h-32 rounded-full bg-primary text-white flex items-center justify-center text-4xl font-bold mb-4 md:mb-0 md:mr-8">
+            {provider.name.charAt(0).toUpperCase()}
+          </div>
           <div>
             <h1 className="text-4xl font-bold font-poppins text-gray-800">{provider.name}</h1>
             <p className="text-lg text-primary font-semibold">{provider.role}</p>
-            <p className="text-md text-gray-600 mt-2">Member since {new Date(provider.registeredAt).toLocaleDateString()}</p>
+            <p className="text-md text-gray-600 mt-2">Member since {new Date(provider.createdAt).toLocaleDateString()}</p>
             <div className="flex items-center mt-2">
               {renderStars(averageRating)}
               <span className="ml-2 text-gray-600">
@@ -65,9 +64,9 @@ const ProviderProfilePage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {providerServices.map(service => (
               <Link to={`/services/${service.id}`} key={service.id} className="block bg-white p-4 rounded-lg shadow hover:shadow-xl transition-shadow">
-                <img src={service.images[0]} alt={service.title} className="w-full h-40 object-cover rounded-md mb-4" />
+                <img src={service.assets[0]?.imageUrl} alt={service.title} className="w-full h-40 object-cover rounded-md mb-4" />
                 <h3 className="text-lg font-bold">{service.title}</h3>
-                <p className="text-primary">{service.category.name}</p>
+                <p className="text-primary">{service.category?.name}</p>
               </Link>
             ))}
           </div>

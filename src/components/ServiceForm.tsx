@@ -11,19 +11,17 @@ interface ServiceFormProps {
 
 const ServiceForm: React.FC<ServiceFormProps> = ({ service, onSave, onCancel, readOnly }) => {
   const [title, setTitle] = useState(service?.title || '');
-  const [providerName, setProviderName] = useState(service?.providerName || '');
+  const [providerName, setProviderName] = useState(service?.provider?.name || '');
   const [category, setCategory] = useState(service?.category?.name || '');
   const [price, setPrice] = useState(service?.price || 0);
-  const [rating, setRating] = useState(service?.rating || 0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave({
       title,
-      providerName,
+      provider: { ...service?.provider, name: providerName } as any,
       category: { ...service?.category, name: category } as any,
       price,
-      rating,
     });
   };
 
@@ -70,18 +68,6 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ service, onSave, onCancel, re
             value={price}
             onChange={e => setPrice(Number(e.target.value))}
             placeholder="Price"
-            type="number"
-            disabled={readOnly}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
-          <input
-            name="rating"
-            value={rating}
-            onChange={e => setRating(Number(e.target.value))}
-            placeholder="Rating"
             type="number"
             disabled={readOnly}
             className="w-full px-3 py-2 border border-gray-300 rounded-md"

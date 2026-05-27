@@ -19,7 +19,7 @@ const UserManagementPage: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   
   // For actions dropdown per row
-  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 
   // Filtered users
   const filteredUsers = users.filter(user => 
@@ -42,13 +42,12 @@ const UserManagementPage: React.FC = () => {
     setOpenDropdownId(null);
   };
 
-  const handleSuspendUser = (userId: string) => {
-    if (window.confirm('Are you sure you want to suspend this user?')) {
-        setUsers(prevUsers => prevUsers.map(u => u.id === userId ? {...u, status: 'Suspended'} : u));
-        // Update DUMMY_USERS as well for demo persistence
+  const handleDeleteUser = (userId: number) => {
+    if (window.confirm('Are you sure you want to delete this user?')) {
+        setUsers(prevUsers => prevUsers.filter(u => u.id !== userId));
         const userIdx = DUMMY_USERS.findIndex(u => u.id === userId);
-        if (userIdx > -1) DUMMY_USERS[userIdx].status = 'Suspended';
-        alert('User suspended.');
+        if (userIdx > -1) DUMMY_USERS.splice(userIdx, 1);
+        alert('User deleted.');
     }
     setOpenDropdownId(null);
   };
@@ -63,7 +62,7 @@ const UserManagementPage: React.FC = () => {
     setSelectedUser(null);
   };
   
-  const toggleDropdown = (userId: string) => {
+  const toggleDropdown = (userId: number) => {
     setOpenDropdownId(openDropdownId === userId ? null : userId);
   };
 
@@ -88,7 +87,6 @@ const UserManagementPage: React.FC = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -96,23 +94,14 @@ const UserManagementPage: React.FC = () => {
             {filteredUsers.map(user => (
               <tr key={user.id} className="hover:bg-lightGray transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <img className="h-10 w-10 rounded-full object-cover mr-3" src={user.avatar || `https://picsum.photos/seed/${user.id}/40/40`} alt={user.name} />
+                    <div className="flex items-center">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm mr-3">{user.name.charAt(0).toUpperCase()}</div>
                     <div className="text-sm font-medium text-gray-900">{user.name}</div>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.role}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(user.registeredAt).toLocaleDateString()}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    ${user.status === 'Active' ? 'bg-green-100 text-green-800' : ''}
-                    ${user.status === 'Suspended' ? 'bg-red-100 text-red-800' : ''}
-                    ${user.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : ''}
-                  `}>
-                    {user.status || 'N/A'}
-                  </span>
-                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(user.createdAt).toLocaleDateString()}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative">
                     <button onClick={() => toggleDropdown(user.id)} className="text-gray-500 hover:text-gray-700 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
                         <ChevronDownIcon className="w-5 h-5"/>
@@ -125,11 +114,9 @@ const UserManagementPage: React.FC = () => {
                             <button onClick={() => handleEditUser(user)} className="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary">
                                 <EditIcon className="w-4 h-4 mr-2"/> Edit
                             </button>
-                            {user.status !== 'Suspended' && (
-                               <button onClick={() => handleSuspendUser(user.id)} className="w-full text-left flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700">
-                                <DeleteIcon className="w-4 h-4 mr-2"/> Suspend
+                            <button onClick={() => handleDeleteUser(user.id)} className="w-full text-left flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700">
+                                <DeleteIcon className="w-4 h-4 mr-2"/> Delete
                             </button>
-                            )}
                         </div>
                     )}
                 </td>
@@ -166,18 +153,12 @@ const UserModal: React.FC<UserModalProps> = ({ user, isEditMode, onClose, onSave
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
     const [role, setRole] = useState<UserRole>(user.role);
-    const [status, setStatus] = useState<string>(user.status);
 
     const roleOptions = USER_ROLES.map(r => ({ value: r, label: r }));
-    const statusOptions = [
-        {value: 'Active', label: 'Active'},
-        {value: 'Suspended', label: 'Suspended'},
-        {value: 'Pending', label: 'Pending'},
-    ];
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSave({ ...user, name, email, role, status });
+        onSave({ ...user, name, email, role });
     };
 
     return (
@@ -186,11 +167,10 @@ const UserModal: React.FC<UserModalProps> = ({ user, isEditMode, onClose, onSave
                 <Input label="Name" value={name} onChange={e => setName(e.target.value)} disabled={!isEditMode} required />
                 <Input label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} disabled={!isEditMode} required />
                 <Select label="Role" options={roleOptions} value={role} onChange={e => setRole(e.target.value as UserRole)} disabled={!isEditMode} />
-                <Select label="Status" options={statusOptions} value={status || ''} onChange={e => setStatus(e.target.value as 'Active' | 'Suspended' | 'Pending')} disabled={!isEditMode} />
                 
                 <div className="text-xs text-gray-500">
                     <p>User ID: {user.id}</p>
-                    <p>Registered: {new Date(user.registeredAt).toLocaleString()}</p>
+                    <p>Registered: {new Date(user.createdAt).toLocaleString()}</p>
                 </div>
 
                 {isEditMode && (

@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import { DUMMY_SERVICE_ORDERS, DUMMY_PROPOSALS } from '../../utils/dummyData';
-import { ServiceOrder, Proposal, ServiceOrderStatus } from '../../types';
+import { ServiceOrder, Proposal, ServiceOrderStatus, ProposalStatus } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 import { PlusCircleIcon, BriefcaseIcon, InboxIcon } from '../../components/icons/Icons'; // CheckCircleIcon removed as it's not directly used here
 
@@ -15,13 +15,13 @@ const ClientDashboardPage: React.FC = () => {
   // Filter data for the current client
   const activeJobs = DUMMY_SERVICE_ORDERS.filter(
     order => order.clientId === currentUser?.id && 
-             (order.status === ServiceOrderStatus.OPEN || order.status === ServiceOrderStatus.IN_PROGRESS)
+             (order.status === ServiceOrderStatus.PENDING || order.status === ServiceOrderStatus.ACCEPTED)
   ).slice(0, 3); // Show a few recent ones
 
   const recentProposals = DUMMY_PROPOSALS.filter(
     proposal => {
-        const job = DUMMY_SERVICE_ORDERS.find(o => o.id === proposal.serviceOrderId);
-        return job?.clientId === currentUser?.id && proposal.status === 'Pending';
+        const job = DUMMY_SERVICE_ORDERS.find(o => o.id === proposal.serviceId);
+        return job?.clientId === currentUser?.id && proposal.status === ProposalStatus.PENDING;
     }
   ).slice(0,3);
 
@@ -94,19 +94,19 @@ const ClientDashboardPage: React.FC = () => {
                   <div>
                     <h3 className="text-lg font-semibold text-primary hover:underline">
                       {/* Assuming a job detail page might be /client/jobs/:jobId or similar for clients */}
-                      <Link to={`/client/my-proposals`}>{job.title}</Link> 
+                      <Link to={`/client/my-proposals`}>{job.service.title}</Link> 
                     </h3>
-                    <p className="text-sm text-gray-600">{job.category.name}</p>
-                    <p className="text-xs text-gray-500 mt-1">Posted: {new Date(job.postedDate).toLocaleDateString()}</p>
+                    <p className="text-sm text-gray-600">{job.service.category?.name}</p>
+                    <p className="text-xs text-gray-500 mt-1">Posted: {new Date(job.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className="mt-3 sm:mt-0 text-left sm:text-right">
                     <span className={`px-2 py-0.5 inline-block rounded-full text-xs font-semibold
-                      ${job.status === ServiceOrderStatus.OPEN ? 'bg-green-100 text-green-700' : ''}
-                      ${job.status === ServiceOrderStatus.IN_PROGRESS ? 'bg-yellow-100 text-yellow-700' : ''}
+                      ${job.status === ServiceOrderStatus.PENDING ? 'bg-green-100 text-green-700' : ''}
+                      ${job.status === ServiceOrderStatus.ACCEPTED ? 'bg-yellow-100 text-yellow-700' : ''}
                     `}>
                       {job.status}
                     </span>
-                    <p className="text-sm text-gray-500 mt-1">{job.proposalsCount} Proposal(s)</p>
+                    <p className="text-sm text-gray-500 mt-1">Proposals available</p>
                     <Link to={`/client/my-proposals`}> {/* Direct link to proposals for this job or general proposals page */}
                         <Button variant="ghost" size="sm" className="mt-1 text-primary hover:text-accent">View Proposals</Button>
                     </Link>
@@ -131,17 +131,17 @@ const ClientDashboardPage: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {recentProposals.map((proposal: Proposal) => {
-                const jobForProposal = DUMMY_SERVICE_ORDERS.find(o => o.id === proposal.serviceOrderId);
+                const jobForProposal = DUMMY_SERVICE_ORDERS.find(o => o.id === proposal.serviceId);
                 return (
                     <Card key={proposal.id} className="p-4 border border-gray-200 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">Proposal for: <span className="font-medium text-gray-700">{jobForProposal?.title}</span></p>
-                                <h3 className="text-md font-semibold text-gray-800">From: {proposal.providerName}</h3>
-                                <p className="text-xs text-gray-500">Received: {new Date(proposal.submittedDate).toLocaleDateString()}</p>
+                                <p className="text-sm text-gray-500">Proposal for: <span className="font-medium text-gray-700">{jobForProposal?.service.title}</span></p>
+                                <h3 className="text-md font-semibold text-gray-800">From: {proposal.provider.name}</h3>
+                                <p className="text-xs text-gray-500">Received: {new Date(proposal.createdAt).toLocaleDateString()}</p>
                             </div>
                             <div className="text-right">
-                                {proposal.proposedPrice && <p className="text-lg font-semibold text-primary">{formatCurrency(proposal.proposedPrice)}</p>}
+                                <p className="text-lg font-semibold text-primary">{formatCurrency(proposal.bidAmount)}</p>
                                  <Link to={`/client/my-proposals`}> {/* Link to page where proposal can be viewed */}
                                     <Button variant="ghost" size="sm" className="mt-1 text-primary hover:text-accent">View Details</Button>
                                 </Link>
