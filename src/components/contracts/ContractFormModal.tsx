@@ -1,0 +1,50 @@
+import React, { useEffect } from 'react';
+import { Modal, Form, InputNumber, Button } from 'antd';
+import { Contract } from '../../types';
+
+interface ContractFormModalProps {
+  open: boolean;
+  onCancel: () => void;
+  onSubmit: (contract: Partial<Contract>) => void;
+  initialValues?: Partial<Contract>;
+  isEdit?: boolean;
+}
+
+const ContractFormModal: React.FC<ContractFormModalProps> = ({ open, onCancel, onSubmit, initialValues, isEdit }) => {
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (open) {
+      form.resetFields();
+      if (initialValues) {
+        form.setFieldsValue(initialValues);
+      }
+    }
+  }, [open, initialValues, form]);
+
+  const handleFinish = (values: any) => {
+    onSubmit({ escrowAmount: values.escrowAmount });
+  };
+
+  return (
+    <Modal
+      open={open}
+      title={isEdit ? 'Edit Contract' : 'Add Contract'}
+      onCancel={onCancel}
+      footer={null}
+      destroyOnClose
+    >
+      <Form form={form} layout="vertical" onFinish={handleFinish} initialValues={initialValues}>
+        <Form.Item name="escrowAmount" label="Escrow Amount (XAF)" rules={[{ required: true, message: 'Please enter the amount' }]}>
+          <InputNumber min={1} style={{ width: '100%' }} />
+        </Form.Item>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+          <Button onClick={onCancel}>Cancel</Button>
+          <Button type="primary" htmlType="submit">{isEdit ? 'Save' : 'Add'}</Button>
+        </div>
+      </Form>
+    </Modal>
+  );
+};
+
+export default ContractFormModal;
