@@ -50,7 +50,7 @@ const LoginPage: React.FC = () => {
       }
     } else {
       toast.error(
-        "Invalid credentials. Please check your email/phone and password."
+        "Invalid credentials. Please check your email/phone and password.",
       );
     }
   };
