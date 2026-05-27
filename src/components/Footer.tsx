@@ -38,8 +38,12 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               <li><Link to="/services" className="hover:text-white transition-colors">Browse Services</Link></li>
               <li>
-                {currentUser ? (
-                  <Link to="/dashboard" className="hover:text-white transition-colors">My Account</Link>
+                {currentUser?.role === UserRole.CLIENT ? (
+                  <Link to="/client/dashboard" className="hover:text-white transition-colors">My Account</Link>
+                ) : currentUser?.role === UserRole.PROVIDER ? (
+                  <Link to="/provider/dashboard" className="hover:text-white transition-colors">My Account</Link>
+                ) : currentUser?.role === UserRole.ADMIN ? (
+                  <Link to="/admin/dashboard" className="hover:text-white transition-colors">My Account</Link>
                 ) : (
                   <Link to="/login" className="hover:text-white transition-colors">Log In</Link>
                 )}
