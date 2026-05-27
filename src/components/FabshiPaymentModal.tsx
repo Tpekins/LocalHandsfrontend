@@ -11,7 +11,7 @@ interface FabshiPaymentModalProps {
   loading: boolean;
   error?: string;
   success?: boolean;
-} 
+}
 
 const FabshiPaymentModal: React.FC<FabshiPaymentModalProps> = ({
   open,
@@ -26,12 +26,10 @@ const FabshiPaymentModal: React.FC<FabshiPaymentModalProps> = ({
 }) => {
   const [form] = Form.useForm();
 
-  const [paymentOption, setPaymentOption] = React.useState<'mobile_money' | 'card'>('mobile_money');
-
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      await onPay({ ...values, paymentOption });
+      await onPay(values);
     } catch (e) {
       // Validation error
     }
@@ -65,47 +63,9 @@ const FabshiPaymentModal: React.FC<FabshiPaymentModalProps> = ({
         >
           <Input placeholder="+237XXXXXXXX" maxLength={13} />
         </Form.Item>
-        <Form.Item name="paymentOption" label="Payment Option" initialValue="mobile_money" rules={[{ required: true, message: 'Select a payment option' }]}
-          >
-          <Input.Group compact>
-            <select
-              value={paymentOption}
-              onChange={e => setPaymentOption(e.target.value as 'mobile_money' | 'card')}
-              style={{ width: '100%', padding: '8px', borderRadius: 4, border: '1px solid #d9d9d9' }}
-            >
-              <option value="mobile_money">Mobile Money</option>
-              <option value="card">Card Payment</option>
-            </select>
-          </Input.Group>
-        </Form.Item>
-        {paymentOption === 'card' && (
-          <>
-            <Form.Item
-              name="cardNumber"
-              label="Card Number"
-              rules={[{ required: true, message: 'Card number is required' }]}
-            >
-              <Input placeholder="1234 5678 9012 3456" maxLength={19} />
-            </Form.Item>
-            <Form.Item
-              name="expiry"
-              label="Expiry Date"
-              rules={[{ required: true, message: 'Expiry date is required' }]}
-            >
-              <Input placeholder="MM/YY" maxLength={5} />
-            </Form.Item>
-            <Form.Item
-              name="cvv"
-              label="CVV"
-              rules={[{ required: true, message: 'CVV is required' }]}
-            >
-              <Input placeholder="123" maxLength={4} />
-            </Form.Item>
-          </>
-        )}
         <Form.Item>
           <Button type="primary" loading={loading} onClick={handleOk} block>
-            Pay Now
+            Pay Now via Mobile Money
           </Button>
         </Form.Item>
       </Form>

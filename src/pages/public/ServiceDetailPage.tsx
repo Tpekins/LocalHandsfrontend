@@ -132,7 +132,7 @@ const ServiceDetailPage: React.FC = () => {
           )}
           <div className="mt-8">
             <h3 className="text-xl font-poppins font-semibold text-gray-800 mb-4">Leave a Review</h3>
-            <ReviewForm serviceId={String(service.id)} onReviewSubmitted={handleReviewSubmitted} />
+            <ReviewForm contractId={service.id} onReviewSubmitted={handleReviewSubmitted} />
           </div>
         </div>
       </div>

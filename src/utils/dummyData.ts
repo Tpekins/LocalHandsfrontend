@@ -314,11 +314,11 @@ export const generateChatMessages = (count: number, senderId: number, receiverId
       id: `msg-${senderId}-${receiverId}-${i}`,
       senderId: sender,
       text,
-      timestamp: new Date(Date.now() - (count - i) * 5 * 60 * 1000),
+      timestamp: new Date(Date.now() - (count - i) * 5 * 60 * 1000).toISOString(),
       imageUrl: hasImage ? `https://picsum.photos/seed/chatimg${i}${sender}/400/300` : undefined,
     });
   }
-  return messages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+  return messages.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 };
 
 export const generateConversations = (currentUser: User, allUsers: User[]): ChatConversation[] => {

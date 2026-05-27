@@ -31,7 +31,7 @@ const ClientChatPage: React.FC = () => {
       id: `msg-${Date.now()}`,
       senderId: String(currentUser.id),
       text: newMessage,
-      timestamp: new Date(),
+      timestamp: new Date().toISOString(),
     };
 
     sendMessage(selectedConversation.id, message);
@@ -45,7 +45,7 @@ const ClientChatPage: React.FC = () => {
       id: `msg-${Date.now()}`,
       senderId: String(currentUser.id),
       text: '',
-      timestamp: new Date(),
+      timestamp: new Date().toISOString(),
       imageUrl: imageUrl,
     };
 

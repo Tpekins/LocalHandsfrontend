@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, currentUser } = useAuth();
 
   useEffect(() => {
     // Display the success message from registration, if it exists.
@@ -29,37 +29,17 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate a network delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Use the new login function that checks credentials
     const success = await login(identifier, password);
-
-    setIsLoading(false);
 
     if (success) {
       toast.success("Login successful! Redirecting...");
-      // The role is now set in the AuthContext, so we can get it from there if needed,
-      // but ProtectedRoute will handle the redirection logic based on the current user's role.
-      // We can simply navigate to a generic dashboard or let the app redirect.
-      // For clarity, we'll redirect based on the role found during login.
-      const loggedInUser = JSON.parse(
-        sessionStorage.getItem("currentUser") || "{}"
-      );
-      switch (loggedInUser.role) {
-        case UserRole.CLIENT:
-          navigate("/client/dashboard");
-          break;
-        case UserRole.PROVIDER:
-          navigate("/provider/dashboard");
-          break;
-        case UserRole.ADMIN:
-          navigate("/admin/dashboard");
-          break;
-        default:
-          navigate("/");
-      }
+      const role = currentUser?.role;
+      if (role === UserRole.CLIENT) navigate("/client/dashboard");
+      else if (role === UserRole.PROVIDER) navigate("/provider/dashboard");
+      else if (role === UserRole.ADMIN) navigate("/admin/dashboard");
+      else navigate("/");
     } else {
+      setIsLoading(false);
       toast.error(
         "Invalid credentials. Please check your email/phone and password."
       );

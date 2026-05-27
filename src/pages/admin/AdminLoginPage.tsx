@@ -19,11 +19,6 @@ const AdminLoginPage: React.FC = () => {
     setError('');
     setIsLoading(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // In a real app, you would have a dedicated admin authentication endpoint.
-    // For now, we'll check if the credentials match a mock admin user.
     const success = await login(email, password);
 
     setIsLoading(false);

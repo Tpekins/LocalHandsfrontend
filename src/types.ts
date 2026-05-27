@@ -261,7 +261,7 @@ export interface ChatMessage {
   id: string;
   senderId: string;
   text: string;
-  timestamp: Date;
+  timestamp: string;
   imageUrl?: string;
 }
 

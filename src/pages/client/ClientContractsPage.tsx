@@ -298,47 +298,29 @@ const ClientContractsPage: React.FC = () => {
   };
 
   const handlePayment = async (paymentInfo: {
-    cardNumber: string;
-    expiry: string;
-    cvv: string;
-    phoneNumber?: string;
-    paymentOption?: string;
+    phoneNumber: string;
   }) => {
     setPaymentLoading(true);
     setPaymentError(undefined);
     setPaymentSuccess(false);
-    
+
     try {
-      // Validate payment information
-      if (paymentInfo.paymentOption === 'card') {
-        if (!paymentInfo.cardNumber || !paymentInfo.expiry || !paymentInfo.cvv) {
-          throw new Error("Please fill in all card details");
-        }
-        // Basic card validation (mock)
-        if (paymentInfo.cardNumber.length < 13) {
-          throw new Error("Invalid card number");
-        }
-      } else if (paymentInfo.paymentOption === 'mobile_money') {
-        if (!paymentInfo.phoneNumber) {
-          throw new Error("Phone number is required for mobile money");
-        }
-        // Basic phone validation (mock)
-        if (!paymentInfo.phoneNumber.match(/^\+237\d{8,9}$/)) {
-          throw new Error("Invalid Cameroonian phone number");
-        }
+      if (!paymentInfo.phoneNumber?.match(/^\+237\d{8,9}$/)) {
+        throw new Error("Invalid Cameroonian phone number");
       }
-      
+
       // TODO: Replace with actual Fabshi payment API call
+      // Card payments should use Fabshi's hosted/iframe integration
+      // to avoid handling raw card data client-side (PCI-DSS compliance).
       console.log("Processing payment:", {
         amount: payingContract?.escrowAmount,
         contractTitle: payingContract?.serviceOrder.service.title,
         paymentInfo
       });
-      
-      await new Promise((res) => setTimeout(res, 1500)); // Simulate API call
+
+      await new Promise((res) => setTimeout(res, 1500));
       setPaymentSuccess(true);
-      
-      // Close modal after success delay
+
       setTimeout(() => {
         setPaymentModalOpen(false);
         setPayingContract(null);

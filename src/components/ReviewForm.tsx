@@ -4,11 +4,11 @@ import Button from './Button';
 import { StarIcon } from './icons/Icons';
 
 interface ReviewFormProps {
-  serviceId: string;
+  contractId: number;
   onReviewSubmitted: (review: Review) => void;
 }
 
-const ReviewForm: React.FC<ReviewFormProps> = ({ serviceId, onReviewSubmitted }) => {
+const ReviewForm: React.FC<ReviewFormProps> = ({ contractId, onReviewSubmitted }) => {
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState('');
   const [hoverRating, setHoverRating] = useState(0);
@@ -22,7 +22,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ serviceId, onReviewSubmitted })
 
     const newReview: Review = {
       id: Date.now(),
-      contractId: parseInt(serviceId) || 0,
+      contractId,
       reviewer: {
         id: 0,
         name: 'Current User',

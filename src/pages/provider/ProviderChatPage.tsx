@@ -31,7 +31,7 @@ const ProviderChatPage: React.FC = () => {
       id: `msg-${Date.now()}`,
       senderId: String(currentUser.id),
       text: newMessage,
-      timestamp: new Date(),
+      timestamp: new Date().toISOString(),
     };
 
     sendMessage(selectedConversation.id, message);
@@ -45,7 +45,7 @@ const ProviderChatPage: React.FC = () => {
       id: `msg-${Date.now()}`,
       senderId: String(currentUser.id),
       text: '',
-      timestamp: new Date(),
+      timestamp: new Date().toISOString(),
       imageUrl: imageUrl,
     };
 
@@ -136,7 +136,7 @@ const ProviderChatPage: React.FC = () => {
                                             <Text className={msg.senderId === String(currentUser?.id) ? 'text-white' : ''}>{msg.text}</Text>
                                             {msg.imageUrl && <Image src={msg.imageUrl} alt="attachment" width={200} className="rounded-lg mt-2"/>}
                                             <div className={`text-xs mt-1 ${msg.senderId === String(currentUser?.id) ? 'text-blue-200' : 'text-gray-400'}`}>
-                                                {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </div>
                                         </div>
                                     </div>

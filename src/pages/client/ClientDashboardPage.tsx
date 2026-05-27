@@ -7,7 +7,7 @@ import Button from '../../components/Button';
 import { DUMMY_SERVICE_ORDERS, DUMMY_PROPOSALS } from '../../utils/dummyData';
 import { ServiceOrder, Proposal, ServiceOrderStatus, ProposalStatus } from '../../types';
 import { formatCurrency } from '../../utils/currency';
-import { PlusCircleIcon, BriefcaseIcon, InboxIcon } from '../../components/icons/Icons'; // CheckCircleIcon removed as it's not directly used here
+import { PlusCircleIcon, BriefcaseIcon, InboxIcon } from '../../components/icons/Icons';
 
 const ClientDashboardPage: React.FC = () => {
   const { currentUser } = useAuth();
