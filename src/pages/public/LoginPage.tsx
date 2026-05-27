@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, currentUser } = useAuth();
+  const { login } = useAuth();
 
   useEffect(() => {
     // Display the success message from registration, if it exists.
@@ -29,11 +29,11 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const success = await login(identifier, password);
+    const result = await login(identifier, password);
 
-    if (success) {
+    if (result.success) {
       toast.success("Login successful! Redirecting...");
-      const role = currentUser?.role;
+      const role = result.role;
       if (role === UserRole.CLIENT) navigate("/client/dashboard");
       else if (role === UserRole.PROVIDER) navigate("/provider/dashboard");
       else if (role === UserRole.ADMIN) navigate("/admin/dashboard");
