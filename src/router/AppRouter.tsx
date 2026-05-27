@@ -30,19 +30,16 @@ import ClientBookingsPage from '../pages/client/ClientBookingsPage';
 // --- Provider Pages ---
 import ProviderDashboardPage from '../pages/provider/ProviderDashboardPage';
 import BrowseJobsPage from '../pages/provider/BrowseJobsPage';
-import NewBrowseJobsPage from '../pages/provider/NewBrowseJobsPage';
 import JobDetailsPage from '../pages/provider/JobDetailsPage';
 import SubmitProposalPage from '../pages/provider/SubmitProposalPage';
 import EarningsPage from '../pages/provider/EarningsPage';
 import SettingsPage from '../pages/provider/SettingsPage';
 import ServiceManagementPage from '../pages/provider/ServiceManagementPage';
-import NewServiceManagementPage from '../pages/provider/NewServiceManagementPage';
 import ProposalsPage from '../pages/provider/ProposalsPage';
+import ProviderContractsPage from '../pages/provider/ProviderContractsPage';
 import PaymentMethodsPage from '../pages/provider/PaymentMethodsPage';
-
-// import MyProfilePage from '../pages/provider/MyProfilePage';
-import NewMyProfilePage from '../pages/provider/NewMyProfilePage';
-import NewMessagesPage from '../pages/provider/NewMessagesPage';
+import MyProfilePage from '../pages/provider/NewMyProfilePage';
+import MessagesPage from '../pages/provider/NewMessagesPage';
 import ProviderChatPage from '../pages/provider/ProviderChatPage';
 import ProviderOnboardingPage from '../pages/provider/ProviderOnboardingPage';
 // Admin Pages
@@ -111,21 +108,19 @@ const AppRouter: React.FC = () => {
       {/* Provider Routes */}
       <Route element={<ProtectedRoute allowedRoles={[UserRole.PROVIDER]} />}>
         <Route path="/provider" element={<ProviderLayout />}>
-        <Route path="dashboard" element={<ProviderDashboardPage />} />
+          <Route path="dashboard" element={<ProviderDashboardPage />} />
           <Route path="onboarding" element={<ProviderOnboardingPage />} />
           <Route path="browse-jobs" element={<BrowseJobsPage />} />
-              <Route path="browse-jobs-new" element={<NewBrowseJobsPage />} />
           <Route path="job-details/:jobId" element={<JobDetailsPage />} />
           <Route path="submit-proposal/:jobId" element={<SubmitProposalPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="service-management" element={<ServiceManagementPage />} />
-              <Route path="service-management-new" element={<NewServiceManagementPage />} />
           <Route path="proposals" element={<ProposalsPage />} />
-                    <Route path="earnings" element={<EarningsPage />} />
+          <Route path="contracts" element={<ProviderContractsPage />} />
+          <Route path="earnings" element={<EarningsPage />} />
           <Route path="payment-methods" element={<PaymentMethodsPage />} />
-          {/* <Route path="my-profile" element={<MyProfilePage />} /> */}
-          <Route path="my-profile-new" element={<NewMyProfilePage />} />
-          <Route path="messages-new" element={<NewMessagesPage />} />
+          <Route path="my-profile" element={<MyProfilePage />} />
+          <Route path="messages" element={<MessagesPage />} />
           <Route path="chat" element={<ProviderChatPage />} />
         </Route>
       </Route>
@@ -144,19 +139,22 @@ const AppRouter: React.FC = () => {
         </Route>
       </Route>
 
-      <Route path="/about" element={<AboutUsPage />} />
+      {/* Public Info Pages - with Header/Footer */}
+      <Route element={<MainLayout />}>
+        <Route path="/about" element={<AboutUsPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:slug" element={<BlogPostPage />} />
-<Route path="/careers" element={<CareersPage />} />
-<Route path="/contact" element={<ContactUsPage />} />
-<Route path="/cookie-policy" element={<CookiePolicyPage />} />
-<Route path="/faq" element={<FAQPage />} />
-<Route path="/help" element={<HelpCenterPage />} />
-<Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-<Route path="/terms-of-service" element={<TermsOfServicePage />} />
-<Route path="/trust-and-safety" element={<TrustAndSafetyPage />} />
-<Route path="/providers/safety" element={<ProviderSafetyPage />} />
-<Route path="/providers/why-local-hands" element={<WhyProvidePage />} />
+        <Route path="/careers" element={<CareersPage />} />
+        <Route path="/contact" element={<ContactUsPage />} />
+        <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+        <Route path="/faq" element={<FAQPage />} />
+        <Route path="/help" element={<HelpCenterPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+        <Route path="/trust-and-safety" element={<TrustAndSafetyPage />} />
+        <Route path="/providers/safety" element={<ProviderSafetyPage />} />
+        <Route path="/providers/why-local-hands" element={<WhyProvidePage />} />
+      </Route>
 
       {/* Not Found Route */}
       <Route path="*" element={<NotFoundPage />} />

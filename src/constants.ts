@@ -25,12 +25,14 @@ export const CLIENT_NAV_ITEMS: NavItem[] = [
 ];
 
 export const PROVIDER_NAV_ITEMS: NavItem[] = [
-  { label: 'My Services', path: '/provider/service-management', icon: BuildingStorefrontIcon },
   { label: 'Dashboard', path: '/provider/dashboard', icon: PresentationChartLineIcon },
+  { label: 'My Services', path: '/provider/service-management', icon: BuildingStorefrontIcon },
   { label: 'Browse Jobs', path: '/provider/browse-jobs', icon: BriefcaseIcon },
   { label: 'Proposals', path: '/provider/proposals', icon: DocumentTextIcon },
-  { label: 'Earnings', path: '/provider/earnings', icon: ChartBarIcon }, 
-  { label: 'Messages', path: '/provider/chat', icon: ChatBubbleLeftRightIcon },
+  { label: 'Contracts', path: '/provider/contracts', icon: DocumentTextIcon },
+  { label: 'Earnings', path: '/provider/earnings', icon: ChartBarIcon },
+  { label: 'Messages', path: '/provider/messages', icon: ChatBubbleLeftRightIcon },
+  { label: 'My Profile', path: '/provider/my-profile', icon: UsersIcon },
   { label: 'Settings', path: '/provider/settings', icon: CogIcon }
 ];
 
