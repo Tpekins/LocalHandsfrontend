@@ -2,8 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
-import { DUMMY_SERVICE_ORDERS, DUMMY_CATEGORIES } from '../../utils/dummyData';
-import { ServiceOrder, ServiceOrderStatus } from '../../types';
+import { ServiceOrder } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 import Input from '../../components/Input';
 import Select from '../../components/Select';
@@ -25,10 +24,10 @@ const BrowseJobsPage: React.FC = () => {
   }, [location.state]);
 
 
-  const categoryOptions = [{ value: 'all', label: 'All Categories' }, ...DUMMY_CATEGORIES.map(cat => ({ value: String(cat.id), label: cat.name }))];
+  const categoryOptions = [{ value: 'all', label: 'All Categories' }];
 
   const openJobs = useMemo(() => {
-    let jobs = DUMMY_SERVICE_ORDERS.filter(order => order.status === ServiceOrderStatus.PENDING);
+    let jobs: ServiceOrder[] = [];
 
     if (searchTerm) {
       jobs = jobs.filter(job =>

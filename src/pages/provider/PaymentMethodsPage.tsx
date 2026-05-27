@@ -4,14 +4,8 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import { PlusIcon, TrashIcon } from '../../components/icons/Icons';
 
-// Dummy data for payment methods
-const DUMMY_PAYMENT_METHODS = [
-    { id: '1', type: 'MTN Mobile Money', detail: '**** **** 6789', isDefault: true },
-    { id: '2', type: 'Orange Money', detail: '**** **** 1234', isDefault: false },
-];
-
 const PaymentMethodsPage: React.FC = () => {
-    const [paymentMethods, setPaymentMethods] = useState(DUMMY_PAYMENT_METHODS);
+    const [paymentMethods, setPaymentMethods] = useState<{ id: string; type: string; detail: string; isDefault: boolean }[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newMethodType, setNewMethodType] = useState('MTN Mobile Money');
             const [newMethodDetail, setNewMethodDetail] = useState('');

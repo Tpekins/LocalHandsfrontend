@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { DUMMY_CONVERSATIONS } from '../utils/dummyData';
 import { ChatConversation, ChatMessage } from '../types';
 
 interface ChatContextType {
@@ -11,7 +10,7 @@ interface ChatContextType {
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [conversations, setConversations] = useState<ChatConversation[]>(DUMMY_CONVERSATIONS);
+  const [conversations, setConversations] = useState<ChatConversation[]>([]);
 
   const sendMessage = (conversationId: string, message: ChatMessage) => {
     setConversations(prev =>

@@ -3,7 +3,6 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Card from '../../components/Card';
-import { DUMMY_SERVICE_ORDERS, DUMMY_PROPOSALS } from '../../utils/dummyData';
 import { useAuth } from '../../contexts/AuthContext';
 import { ServiceOrder, Proposal, ProposalStatus } from '../../types';
 import { formatCurrency } from '../../utils/currency';
@@ -13,19 +12,14 @@ const SubmitProposalPage: React.FC = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   
-  const [job, setJob] = useState<ServiceOrder | null>(null);
+  const [job] = useState<ServiceOrder | null>(null);
   const [coverLetter, setCoverLetter] = useState('');
   const [proposedPrice, setProposedPrice] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const foundJob = DUMMY_SERVICE_ORDERS.find(o => o.id === Number(jobId));
-    if (foundJob) {
-      setJob(foundJob);
-    } else {
-      setError('Job not found.');
-    }
+    setError('Job not found.');
   }, [jobId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -51,8 +45,6 @@ const SubmitProposalPage: React.FC = () => {
       status: ProposalStatus.PENDING,
       createdAt: new Date().toISOString(),
     };
-
-    DUMMY_PROPOSALS.unshift(newProposal);
 
     console.log('New Proposal Submitted:', newProposal);
     setIsLoading(false);

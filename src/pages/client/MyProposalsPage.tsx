@@ -5,7 +5,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
-import { DUMMY_SERVICE_ORDERS, DUMMY_PROPOSALS } from '../../utils/dummyData';
 import { ServiceOrder, Proposal, ServiceOrderStatus, ProposalStatus } from '../../types';
 import { InboxIcon, ChatBubbleLeftRightIcon, CheckCircleIcon, EyeIcon } from '../../components/icons/Icons';
 
@@ -15,14 +14,12 @@ const MyProposalsPage: React.FC = () => {
   const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
 
   const clientJobs = useMemo(() => 
-    DUMMY_SERVICE_ORDERS.filter(order => order.clientId === currentUser?.id),
+    [] as ServiceOrder[],
     [currentUser?.id]
   );
 
   const proposalsForClientJobs = useMemo(() =>
-    DUMMY_PROPOSALS.filter(proposal => 
-      clientJobs.some(job => job.id === proposal.serviceId)
-    ),
+    [] as Proposal[],
     [clientJobs]
   );
   
@@ -47,13 +44,6 @@ const MyProposalsPage: React.FC = () => {
     if (selectedProposal) {
       // Simulate API call to accept proposal
       console.log('Accepted proposal:', selectedProposal);
-      // Update proposal status (in dummy data for now)
-      const proposalIndex = DUMMY_PROPOSALS.findIndex(p => p.id === selectedProposal.id);
-      if (proposalIndex > -1) DUMMY_PROPOSALS[proposalIndex].status = ProposalStatus.ACCEPTED;
-      
-      // Update job status
-      const jobIndex = DUMMY_SERVICE_ORDERS.findIndex(j => j.id === selectedProposal.serviceId);
-      if (jobIndex > -1) DUMMY_SERVICE_ORDERS[jobIndex].status = ServiceOrderStatus.ACCEPTED;
 
       alert(`Proposal from ${selectedProposal.provider.name} accepted! The job is now In Progress.`);
       setIsModalOpen(false);

@@ -61,8 +61,6 @@ const ProviderSettingsPage: React.FC = () => {
           name: currentUser?.name,
           email: currentUser?.email,
           phoneNumber: currentUser?.phoneNumber,
-          profileHeadline: 'Experienced Web Developer & Designer',
-          profileBio: 'Specializing in React, Node.js, and creating beautiful user experiences.',
         }}>
         <Card title="Personal Information" className="mb-6 shadow-sm">
           <Form.Item name="name" label="Full Name">

@@ -1,9 +1,9 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { DUMMY_SERVICE_ORDERS, DUMMY_USERS } from '../../utils/dummyData';
+import { Link } from 'react-router-dom';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import { CalendarIcon, TagIcon } from '../../components/icons/Icons';
+import { ServiceOrder, User } from '../../types';
 
 const ArrowLeftIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
@@ -12,9 +12,8 @@ const ArrowLeftIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const JobDetailsPage: React.FC = () => {
-  const { jobId } = useParams<{ jobId: string }>();
-  const job = DUMMY_SERVICE_ORDERS.find(j => j.id === Number(jobId));
-  const client = DUMMY_USERS.find(u => u.id === job?.clientId);
+  const job = undefined as ServiceOrder | undefined;
+  const client = undefined as User | undefined;
 
   if (!job || !client) {
     return (

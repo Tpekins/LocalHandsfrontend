@@ -4,18 +4,14 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { Link } from 'react-router-dom';
 import Card from '../../components/Card';
 import { ChartBarIcon, CurrencyDollarIcon } from '../../components/icons/Icons'; 
-import { useAuth } from '../../contexts/AuthContext';
 import Modal from '../../components/Modal';
 import Button from '../../components/Button';
-import { DUMMY_PROPOSALS, DUMMY_SERVICE_ORDERS } from '../../utils/dummyData';
-import { ServiceOrderStatus, Proposal, ProposalStatus } from '../../types';
+import { Proposal, ServiceOrder } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 
 const EarningsPage: React.FC = () => {
   const [isWithdrawalModalOpen, setIsWithdrawalModalOpen] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
-
-        const { currentUser } = useAuth();
 
     const monthlyEarningsData = [
         { name: 'Jan', earnings: 4000 },
@@ -26,15 +22,11 @@ const EarningsPage: React.FC = () => {
         { name: 'Jun', earnings: 5500 },
     ];
 
-    const acceptedProposals = DUMMY_PROPOSALS.filter((p: Proposal) => {
-        if (p.providerId !== currentUser?.id || p.status !== ProposalStatus.ACCEPTED) return false;
-        const job = DUMMY_SERVICE_ORDERS.find(o => o.serviceId === p.serviceId);
-        return job?.status === ServiceOrderStatus.COMPLETED;
-    });
+  const acceptedProposals: Proposal[] = [];
 
     const totalEarnings = acceptedProposals.reduce((acc, proposal) => acc + proposal.bidAmount, 0);
 
-    const handleRequestWithdrawal = () => {
+  const handleRequestWithdrawal = () => {
         if (parseFloat(withdrawalAmount) > totalEarnings) {
             alert("Withdrawal amount cannot exceed available balance.");
             return;
@@ -48,8 +40,8 @@ const EarningsPage: React.FC = () => {
         setWithdrawalAmount('');
     };
 
-    const pendingClearance = 0;
-    const availableForWithdrawal = totalEarnings - pendingClearance;
+  const pendingClearance = 0;
+  const availableForWithdrawal = totalEarnings - pendingClearance;
 
   return (
     <div className="space-y-8">
@@ -118,11 +110,11 @@ const EarningsPage: React.FC = () => {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {acceptedProposals.map((p: Proposal) => {
-                             const job = DUMMY_SERVICE_ORDERS.find(o => o.serviceId === p.serviceId);
+                             const job = undefined as ServiceOrder | undefined;
                              return (
                                 <tr key={p.id} className="hover:bg-lightGray">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(p.createdAt).toLocaleDateString()}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{job?.service.title || 'N/A'}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{job?.service?.title || 'N/A'}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">+{formatCurrency(p.bidAmount)}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">

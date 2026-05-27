@@ -3,12 +3,11 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import Input from '../../components/Input';
-import { DUMMY_CATEGORIES } from '../../utils/dummyData';
 import { Category } from '../../types';
 import { PlusCircleIcon, EditIcon, DeleteIcon } from '../../components/icons/Icons';
 
 const CategoryManagementPage: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>(DUMMY_CATEGORIES);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<Partial<Category> | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -38,9 +37,6 @@ const CategoryManagementPage: React.FC = () => {
   const handleDeleteCategory = (categoryId: number) => {
     if (window.confirm('Are you sure you want to delete this category? This might affect existing services.')) {
       setCategories(prev => prev.filter(c => c.id !== categoryId));
-      // Update DUMMY_CATEGORIES
-      const catIdx = DUMMY_CATEGORIES.findIndex(c => c.id === categoryId);
-      if (catIdx > -1) DUMMY_CATEGORIES.splice(catIdx, 1);
       alert('Category deleted.');
     }
   };
@@ -60,14 +56,10 @@ const CategoryManagementPage: React.FC = () => {
     if (isEditMode && currentCategory?.id) {
       const updatedCategory = { ...currentCategory, ...categoryData, id: currentCategory.id } as Category;
       setCategories(prev => prev.map(c => c.id === updatedCategory.id ? updatedCategory : c));
-      // Update DUMMY_CATEGORIES
-      const catIdx = DUMMY_CATEGORIES.findIndex(c => c.id === updatedCategory.id);
-      if (catIdx > -1) DUMMY_CATEGORIES[catIdx] = updatedCategory;
       alert('Category updated.');
     } else {
       const newCategory = { ...categoryData, id: Date.now() } as Category;
       setCategories(prev => [newCategory, ...prev]);
-      DUMMY_CATEGORIES.unshift(newCategory);
       alert('Category created.');
     }
     setIsModalOpen(false);
