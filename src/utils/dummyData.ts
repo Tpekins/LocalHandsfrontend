@@ -306,7 +306,7 @@ export const generateChatMessages = (count: number, senderId: number, receiverId
 
   const messages: ChatMessage[] = [];
   for (let i = 0; i < count; i++) {
-    const sender = getRandomElement([senderId, receiverId]).toString();
+    const sender = getRandomElement([senderId, receiverId]);
     const text = getRandomElement(messageTemplates);
     const hasImage = Math.random() > 0.85;
 

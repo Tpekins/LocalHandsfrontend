@@ -259,7 +259,7 @@ export interface ChartDataPoint {
 
 export interface ChatMessage {
   id: string;
-  senderId: string;
+  senderId: number;
   text: string;
   timestamp: string;
   imageUrl?: string;

@@ -29,7 +29,7 @@ const ClientChatPage: React.FC = () => {
 
     const message: ChatMessage = {
       id: `msg-${Date.now()}`,
-      senderId: String(currentUser.id),
+      senderId: currentUser.id,
       text: newMessage,
       timestamp: new Date().toISOString(),
     };
@@ -43,7 +43,7 @@ const ClientChatPage: React.FC = () => {
 
     const message: ChatMessage = {
       id: `msg-${Date.now()}`,
-      senderId: String(currentUser.id),
+      senderId: currentUser.id,
       text: '',
       timestamp: new Date().toISOString(),
       imageUrl: imageUrl,
@@ -122,11 +122,11 @@ const ClientChatPage: React.FC = () => {
                             </Header>
                             <Content className="p-6 overflow-y-auto flex-grow bg-gray-50">
                                 {messages.map(msg => (
-                                    <div key={msg.id} className={`flex my-2 ${msg.senderId === String(currentUser?.id) ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`p-3 rounded-lg max-w-lg ${msg.senderId === String(currentUser?.id) ? 'bg-blue-500 text-white' : 'bg-white shadow'}`}>
-                                            <Text className={msg.senderId === String(currentUser?.id) ? 'text-white' : ''}>{msg.text}</Text>
+                                    <div key={msg.id} className={`flex my-2 ${msg.senderId === currentUser?.id ? 'justify-end' : 'justify-start'}`}>
+                                        <div className={`p-3 rounded-lg max-w-lg ${msg.senderId === currentUser?.id ? 'bg-blue-500 text-white' : 'bg-white shadow'}`}>
+                                            <Text className={msg.senderId === currentUser?.id ? 'text-white' : ''}>{msg.text}</Text>
                                             {msg.imageUrl && <Image src={msg.imageUrl} alt="attachment" width={200} className="rounded-lg mt-2"/>}
-                                            <div className={`text-xs mt-1 ${msg.senderId === String(currentUser?.id) ? 'text-blue-200' : 'text-gray-400'}`}>
+                                            <div className={`text-xs mt-1 ${msg.senderId === currentUser?.id ? 'text-blue-200' : 'text-gray-400'}`}>
                                                 {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </div>
                                         </div>
