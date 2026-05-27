@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Role } from '../../types';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Card from '../../components/Card';
@@ -25,7 +24,7 @@ const AdminLoginPage: React.FC = () => {
 
     // In a real app, you would have a dedicated admin authentication endpoint.
     // For now, we'll check if the credentials match a mock admin user.
-    const success = login(email, Role.ADMIN);
+    const success = await login(email, password);
 
     setIsLoading(false);
     if (success) {

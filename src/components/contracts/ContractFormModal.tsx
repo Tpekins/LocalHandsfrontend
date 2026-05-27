@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Form, Input, DatePicker, InputNumber, Button } from 'antd';
 import { Contract } from '../../types';
 

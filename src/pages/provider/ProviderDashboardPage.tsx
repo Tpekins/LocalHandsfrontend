@@ -6,7 +6,7 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import { DUMMY_SERVICE_ORDERS, DUMMY_PROPOSALS, DUMMY_SERVICES } from '../../utils/dummyData';
 import { ServiceOrder, ServiceOrderStatus } from '../../types';
-import { PresentationChartLineIcon, BriefcaseIcon, BuildingStorefrontIcon, CurrencyDollarIcon, StarIcon, ChatBubbleLeftRightIcon } from '../../components/icons/Icons';
+import { PresentationChartLineIcon, BriefcaseIcon, BuildingStorefrontIcon, CurrencyDollarIcon, StarIcon } from '../../components/icons/Icons';
 
 const ProviderDashboardPage: React.FC = () => {
   const { currentUser } = useAuth();

@@ -166,7 +166,7 @@ const UserModal: React.FC<UserModalProps> = ({ user, isEditMode, onClose, onSave
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
     const [role, setRole] = useState<Role>(user.role);
-    const [status, setStatus] = useState<'Active' | 'Suspended' | 'Pending' | undefined>(user.status);
+    const [status, setStatus] = useState<string>(user.status);
 
     const roleOptions = USER_ROLES.map(r => ({ value: r, label: r }));
     const statusOptions = [
@@ -185,7 +185,7 @@ const UserModal: React.FC<UserModalProps> = ({ user, isEditMode, onClose, onSave
             <form onSubmit={handleSubmit} className="space-y-4">
                 <Input label="Name" value={name} onChange={e => setName(e.target.value)} disabled={!isEditMode} required />
                 <Input label="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} disabled={!isEditMode} required />
-                <Select label="Role" options={roleOptions} value={role} onChange={e => setRole(e.target.value as Role)} disabled={!isEditMode} required />
+                <Select label="Role" options={roleOptions} value={role} onChange={e => setRole(e.target.value as Role)} disabled={!isEditMode} />
                 <Select label="Status" options={statusOptions} value={status || ''} onChange={e => setStatus(e.target.value as 'Active' | 'Suspended' | 'Pending')} disabled={!isEditMode} />
                 
                 <div className="text-xs text-gray-500">

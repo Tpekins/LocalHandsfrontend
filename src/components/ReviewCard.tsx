@@ -3,7 +3,6 @@ import React from 'react';
 import { Review } from '../types';
 import Card from './Card';
 import { StarIcon } from './icons/Icons';
-import { DEFAULT_AVATAR } from '../constants';
 
 interface ReviewCardProps {
   review: Review;

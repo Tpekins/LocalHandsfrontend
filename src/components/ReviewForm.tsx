@@ -9,7 +9,7 @@ interface ReviewFormProps {
 }
 
 const ReviewForm: React.FC<ReviewFormProps> = ({ serviceId, onReviewSubmitted }) => {
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState('');
   const [hoverRating, setHoverRating] = useState(0);
 
@@ -24,12 +24,12 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ serviceId, onReviewSubmitted })
     const newReview: Review = {
       id: `rev-${Date.now()}`,
       serviceId,
-      userId: 'user-1', // Placeholder user ID
-      userName: 'Current User', // Placeholder user name
-      userAvatar: 'https://picsum.photos/seed/user1/100/100',
-      rating,
+      reviewerId: 'user-1',
+      reviewerName: 'Current User',
+      reviewedId: serviceId,
+      rating: rating as 1 | 2 | 3 | 4 | 5,
       comment,
-      createdAt: new Date().toISOString(),
+      date: new Date().toISOString(),
     };
 
     onReviewSubmitted(newReview);

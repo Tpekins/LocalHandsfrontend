@@ -33,7 +33,7 @@ const LoginPage: React.FC = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Use the new login function that checks credentials
-    const success = login(identifier, password);
+    const success = await login(identifier, password);
 
     setIsLoading(false);
 

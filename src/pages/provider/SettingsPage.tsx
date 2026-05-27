@@ -7,15 +7,6 @@ import { useAuth } from '../../contexts/AuthContext';
 const { Title } = Typography;
 const { TextArea } = Input;
 
-// Helper function to convert file to Base64
-const getBase64 = (file: File): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
-
 const ProviderSettingsPage: React.FC = () => {
   const { currentUser, updateUser, changePassword } = useAuth();
   const [form] = Form.useForm();
@@ -41,18 +32,6 @@ const ProviderSettingsPage: React.FC = () => {
     const { currentPassword, newPassword, confirmNewPassword, portfolio, ...profileData } = values;
 
     try {
-      const newPortfolioImages = await Promise.all(
-        fileList
-          .filter((file) => file.originFileObj)
-          .map((file) => getBase64(file.originFileObj as File))
-      );
-
-      const existingPortfolioImages = fileList
-        .filter((file) => !file.originFileObj && file.url)
-        .map((file) => file.url);
-
-      const allPortfolioImages = [...(existingPortfolioImages as string[]), ...newPortfolioImages];
-
       // Only send allowed user fields to updateUser
       const allowedFields = ['name', 'email', 'phone', 'location'];
       const filteredData: any = {};

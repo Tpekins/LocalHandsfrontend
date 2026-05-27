@@ -89,7 +89,7 @@ const AdminDashboardPage: React.FC = () => {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {DUMMY_ADMIN_CONTRACT_STATUS_CHART.map((entry, index) => (
+                {DUMMY_ADMIN_CONTRACT_STATUS_CHART.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]} />
                 ))}
               </Pie>

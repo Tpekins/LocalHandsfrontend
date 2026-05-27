@@ -19,7 +19,7 @@ const { Title } = Typography;
 const ClientContractsPage: React.FC = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const { contracts, deleteContract, addContract } = useContracts();
+  const { contracts, deleteContract, addContract, editContract } = useContracts();
 
   const [formOpen, setFormOpen] = React.useState(false);
 
