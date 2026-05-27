@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../../contexts/AuthContext";
-import { UserRole } from "../../types";
+import { Role } from "../../types";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Card from "../../components/Card";
@@ -31,15 +31,24 @@ const LoginPage: React.FC = () => {
 
     const result = await login(identifier, password);
 
+    setIsLoading(false);
+
     if (result.success) {
       toast.success("Login successful! Redirecting...");
-      const role = result.role;
-      if (role === UserRole.CLIENT) navigate("/client/dashboard");
-      else if (role === UserRole.PROVIDER) navigate("/provider/dashboard");
-      else if (role === UserRole.ADMIN) navigate("/admin/dashboard");
-      else navigate("/");
+      switch (result.role) {
+        case Role.CLIENT:
+          navigate("/client/dashboard");
+          break;
+        case Role.PROVIDER:
+          navigate("/provider/dashboard");
+          break;
+        case Role.ADMIN:
+          navigate("/admin/dashboard");
+          break;
+        default:
+          navigate("/");
+      }
     } else {
-      setIsLoading(false);
       toast.error(
         "Invalid credentials. Please check your email/phone and password."
       );
