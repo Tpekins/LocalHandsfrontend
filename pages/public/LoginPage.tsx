@@ -29,24 +29,13 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate a network delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Use the new login function that checks credentials
-    const success = login(identifier, password);
+    const result = await login(identifier, password);
 
     setIsLoading(false);
 
-    if (success) {
+    if (result.success) {
       toast.success("Login successful! Redirecting...");
-      // The role is now set in the AuthContext, so we can get it from there if needed,
-      // but ProtectedRoute will handle the redirection logic based on the current user's role.
-      // We can simply navigate to a generic dashboard or let the app redirect.
-      // For clarity, we'll redirect based on the role found during login.
-      const loggedInUser = JSON.parse(
-        sessionStorage.getItem("currentUser") || "{}"
-      );
-      switch (loggedInUser.role) {
+      switch (result.role) {
         case Role.CLIENT:
           navigate("/client/dashboard");
           break;

@@ -8,7 +8,7 @@ interface AuthContextType {
   currentUser: User | null;
   currentRole: Role;
   isLoading: boolean;
-  login: (identifier: string, password: string) => Promise<boolean>;
+  login: (identifier: string, password: string) => Promise<{ success: boolean; role?: Role }>;
   register: (
     name: string,
     phoneNumber: string,
@@ -72,7 +72,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   /* ---------------------------------------------------------------- */
   /* Auth actions                                                     */
   /* ---------------------------------------------------------------- */
-  const login = async (identifier: string, password: string): Promise<boolean> => {
+  const login = async (identifier: string, password: string): Promise<{ success: boolean; role?: Role }> => {
     try {
       const { data } = await api.post<{ access_token: string; user: User }>(
         "/auth/login",
@@ -81,11 +81,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       saveToken(data.access_token);
       setCurrentUser(data.user);
       setCurrentRole(data.user.role);
-      return true;
+      return { success: true, role: data.user.role };
     } catch (error: any) {
       const msg = error.response?.data?.message || "Login failed.";
       toast.error(Array.isArray(msg) ? msg[0] : msg);
-      return false;
+      return { success: false };
     }
   };
 
@@ -134,8 +134,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return false;
     }
     try {
-      // PATCH /user/:id (or /user/me if available)
-      const { data: updated } = await api.patch<User>(`/user/${currentUser.id}`, data);
+      const allowedFields: Partial<Pick<User, 'name' | 'email' | 'phoneNumber' | 'role'>> = {};
+      if (data.name !== undefined) allowedFields.name = data.name;
+      if (data.email !== undefined) allowedFields.email = data.email;
+      if (data.phoneNumber !== undefined) allowedFields.phoneNumber = data.phoneNumber;
+      if (data.role !== undefined) allowedFields.role = data.role;
+
+      const { data: updated } = await api.patch<User>(`/user/${currentUser.id}`, allowedFields);
       setCurrentUser(updated);
       toast.success("Profile updated successfully.");
       return true;
