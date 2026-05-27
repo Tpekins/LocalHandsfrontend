@@ -69,11 +69,10 @@ import TransactionsPage from '../pages/admin/TransactionsPage';
 // --- Other ---
 import NotFoundPage from '../pages/NotFoundPage';
 import { Toaster } from 'sonner';
-import { ContractsProvider } from '../contexts/ContractsContext';
 
 const AppRouter: React.FC = () => {
   return (
-    <ContractsProvider>
+    <>
       <Toaster richColors position="top-right" />
       <Routes>
       {/* Admin Login Route - No Layout */}
@@ -159,7 +158,7 @@ const AppRouter: React.FC = () => {
       {/* Not Found Route */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
-    </ContractsProvider>
+    </>
   );
 };
 

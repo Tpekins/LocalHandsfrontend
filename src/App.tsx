@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { ChatProvider } from './contexts/ChatContext';
+import { ContractsProvider } from './contexts/ContractsContext';
 import AppRouter from './router/AppRouter';
 
 const App: React.FC = () => {
@@ -13,9 +14,11 @@ const App: React.FC = () => {
       <ThemeProvider>
         <SettingsProvider>
           <ChatProvider>
-            <HashRouter>
-              <AppRouter />
-            </HashRouter>
+            <ContractsProvider>
+              <HashRouter>
+                <AppRouter />
+              </HashRouter>
+            </ContractsProvider>
           </ChatProvider>
         </SettingsProvider>
       </ThemeProvider>

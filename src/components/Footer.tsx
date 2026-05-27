@@ -62,9 +62,9 @@ const Footer: React.FC = () => {
                 {currentUser?.role === UserRole.PROVIDER ? (
                   <Link to="/provider/dashboard" className="hover:text-white transition-colors">Provider Dashboard</Link>
                 ) : currentUser?.role === UserRole.CLIENT ? (
-                  <Link to="/provider/apply" className="hover:text-white transition-colors">Become a Provider</Link>
+                  <Link to="/register" className="hover:text-white transition-colors">Become a Provider</Link>
                 ) : (
-                  <Link to="/register-provider" className="hover:text-white transition-colors">Become a Provider</Link>
+                  <Link to="/register" className="hover:text-white transition-colors">Become a Provider</Link>
                 )}
               </li>
               <li><Link to="/providers/safety" className="hover:text-white transition-colors">Provider Safety</Link></li>
