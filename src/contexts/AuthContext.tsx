@@ -1,20 +1,20 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { Role, User } from "../types";
+import { UserRole, User } from "../types";
 import api from "../utils/api";
 import { toast } from "sonner";
 
 interface AuthContextType {
   currentUser: User | null;
-  currentRole: Role;
+  currentRole: UserRole | null;
   isLoading: boolean;
-  login: (identifier: string, password: string) => Promise<{ success: boolean; role?: Role }>;
+  login: (identifier: string, password: string) => Promise<{ success: boolean; role?: UserRole }>;
   register: (
     name: string,
     phoneNumber: string,
     email: string,
     password: string,
-    role?: Role
+    role?: UserRole
   ) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
   refreshProfile: () => Promise<void>;
@@ -26,7 +26,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentRole, setCurrentRole] = useState<Role>(Role.GUEST);
+  const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   /* ---------------------------------------------------------------- */
@@ -47,7 +47,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } catch (err) {
       clearToken();
       setCurrentUser(null);
-      setCurrentRole(Role.GUEST);
+      setCurrentRole(null);
       console.error('refreshProfile failed, logging out', err);
       // Optionally force reload to clear any stale state
       window.location.reload();
@@ -72,7 +72,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   /* ---------------------------------------------------------------- */
   /* Auth actions                                                     */
   /* ---------------------------------------------------------------- */
-  const login = async (identifier: string, password: string): Promise<{ success: boolean; role?: Role }> => {
+  const login = async (identifier: string, password: string): Promise<{ success: boolean; role?: UserRole }> => {
     try {
       const { data } = await api.post<{ access_token: string; user: User }>(
         "/auth/login",
@@ -94,7 +94,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     phoneNumber: string,
     email: string,
     password: string,
-    role?: Role
+    role?: UserRole
   ): Promise<{ success: boolean; message: string }> => {
     // Positive adjustment: basic client-side validation
     if (!name || !phoneNumber || !email || !password) {
@@ -122,7 +122,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = () => {
     clearToken();
     setCurrentUser(null);
-    setCurrentRole(Role.GUEST);
+    setCurrentRole(null);
   };
 
   /* ---------------------------------------------------------------- */
