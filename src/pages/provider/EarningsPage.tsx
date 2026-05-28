@@ -8,6 +8,7 @@ import Button from '../../components/Button';
 import { Payment } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 import api from '../../utils/api';
+import { toast } from 'sonner';
 
 // GET /api/payments — fetches payment history for the provider
 const EarningsPage: React.FC = () => {
@@ -36,14 +37,14 @@ const EarningsPage: React.FC = () => {
 
   const handleRequestWithdrawal = () => {
     if (parseFloat(withdrawalAmount) > totalEarnings) {
-      alert('Withdrawal amount cannot exceed available balance.');
+      toast.error('Withdrawal amount cannot exceed available balance.');
       return;
     }
     if (parseFloat(withdrawalAmount) <= 0 || !withdrawalAmount) {
-      alert('Please enter a valid withdrawal amount.');
+      toast.error('Please enter a valid withdrawal amount.');
       return;
     }
-    alert(`Withdrawal of ${formatCurrency(parseFloat(withdrawalAmount))} requested!`);
+    toast.success(`Withdrawal of ${formatCurrency(parseFloat(withdrawalAmount))} requested!`);
     setIsWithdrawalModalOpen(false);
     setWithdrawalAmount('');
   };

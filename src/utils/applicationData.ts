@@ -16,6 +16,4 @@ export const addApplication = (application: Omit<JobApplication, 'id' | 'submitt
     submittedAt: new Date(),
   };
   submittedApplications.push(newApplication);
-  console.log('Application submitted:', newApplication);
-  console.log('All applications:', submittedApplications);
 };

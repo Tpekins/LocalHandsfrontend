@@ -3,6 +3,7 @@ import Modal from '../../components/Modal';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import { PlusIcon, TrashIcon } from '../../components/icons/Icons';
+import { toast } from 'sonner';
 
 const PaymentMethodsPage: React.FC = () => {
     const [paymentMethods, setPaymentMethods] = useState<{ id: string; type: string; detail: string; isDefault: boolean }[]>([]);
@@ -20,10 +21,10 @@ const PaymentMethodsPage: React.FC = () => {
     };
 
     const handleAddMethod = () => {
-        if (!newMethodDetail.trim()) {
-            alert('Please enter the account details.');
-            return;
-        }
+    if (!newMethodDetail.trim()) {
+      toast.error('Please enter the account details.');
+      return;
+    }
 
         const newMethod = {
             id: `new-${Date.now()}`,

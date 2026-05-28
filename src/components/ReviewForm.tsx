@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Review, UserRole } from '../types';
 import Button from './Button';
 import { StarIcon } from './icons/Icons';
+import { toast } from 'sonner';
 
 interface ReviewFormProps {
   contractId: number;
@@ -16,7 +17,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ contractId, onReviewSubmitted }
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!rating || !comment) {
-      alert('Please provide a rating and a comment.');
+      toast.error('Please provide a rating and a comment.');
       return;
     }
 

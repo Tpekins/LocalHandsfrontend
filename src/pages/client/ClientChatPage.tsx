@@ -111,10 +111,9 @@ const ClientChatPage: React.FC = () => {
     }
   };
 
-  const handleSendImage = (imageUrl: string) => {
+  const handleSendImage = (_imageUrl: string) => {
     if (!currentUser || !selectedConversation) return;
-    /* Image upload not yet supported by backend — falls back to text */
-    console.log('Image sent:', imageUrl);
+    /* Image upload handled client-side (Object URL); no backend file endpoint yet */
   };
 
   const getParticipant = (convo: ChatConversation) => {

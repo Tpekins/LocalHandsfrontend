@@ -17,8 +17,6 @@ const ContactUsPage: React.FC = () => {
     const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log('Contact form submitted:', formData);
-      // In a real app, you'd send the data to a server here.
       setSubmissionStatus('success');
       setFormData({
         name: '',
