@@ -125,24 +125,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     password: string,
     role?: UserRole
   ): Promise<{ success: boolean; message: string }> => {
-    // Positive adjustment: basic client-side validation
     if (!name || !phoneNumber || !email || !password) {
       return { success: false, message: "Name, phone number, email, and password are required." };
     }
     try {
+      const cleanPhone = phoneNumber.replace(/\s+/g, '');
       await api.post("/auth/register", {
         name: name.trim(),
-        phoneNumber: phoneNumber.trim(),
+        phoneNumber: cleanPhone,
         email: email.trim(),
         password: password.trim(),
         ...(role ? { role } : {})
-        
+
       });
       return { success: true, message: "Registration successful! Please log in." };
     } catch (error: any) {
-      // Positive adjustment: clearer error handling
-      let msg = error.response?.data?.message || "Registration failed.";
+      const data = error.response?.data;
+      let msg = data?.message || "Registration failed.";
       if (Array.isArray(msg)) msg = msg.join(" ");
+      if (data?.errors) {
+        const fields = data.errors.map((e: any) => `${e.field}: ${Object.values(e.constraints || {}).join(', ')}`).join('; ');
+        msg = msg + ' — ' + fields;
+      }
       toast.error(msg);
       return { success: false, message: msg };
     }
