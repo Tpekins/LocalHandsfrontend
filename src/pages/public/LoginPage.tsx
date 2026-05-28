@@ -8,6 +8,20 @@ import Input from "../../components/Input";
 import Card from "../../components/Card";
 import { APP_NAME } from "../../constants";
 
+/*
+ * LoginPage – POST /api/auth/login
+ *
+ * Data flow:
+ *   User submits email/phone + password
+ *     → AuthContext.login() calls api.post("/auth/login")
+ *     → Backend validates credentials against the database (bcrypt compare)
+ *     → Returns JWT access_token + user object
+ *     → AuthContext saves token to localStorage, sets currentUser/currentRole
+ *     → Frontend redirects based on role (CLIENT → /client/dashboard, etc.)
+ *
+ * Auth guard: ProtectedRoute wraps dashboard routes and checks currentUser
+ * from AuthContext before allowing access (src/router/ProtectedRoute.tsx).
+ */
 const LoginPage: React.FC = () => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -29,12 +43,14 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    // → AuthContext.login() → api.post("/auth/login") → Backend DB lookup
     const result = await login(identifier, password);
 
     setIsLoading(false);
 
     if (result.success) {
       toast.success("Login successful! Redirecting...");
+      // Role-based redirect: maps UserRole enum to dashboard paths
       switch (result.role) {
         case UserRole.CLIENT:
           navigate("/client/dashboard");
