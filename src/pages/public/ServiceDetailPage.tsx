@@ -27,6 +27,7 @@ const ServiceDetailPage: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [service, setService] = useState<Service | null>(null);
+  const [reviews, setReviews] = useState<ReviewType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,11 +37,15 @@ const ServiceDetailPage: React.FC = () => {
         setIsLoading(true);
         setError(null);
 
-        // → GET /api/services/:id → Backend includes provider, category, assets
-        const { data } = await api.get<Service>(`/services/${serviceId}`);
-        setService(data);
+        // GET /api/services/:id + GET /api/review?serviceId=
+        const [serviceRes, reviewsRes] = await Promise.all([
+          api.get<Service>(`/services/${serviceId}`),
+          api.get<ReviewType[]>('/review', { params: { serviceId } }),
+        ]);
 
-        // Increment view count (fire-and-forget, non-blocking)
+        setService(serviceRes.data);
+        setReviews(reviewsRes.data);
+
         api.patch(`/services/${serviceId}/increment-views`).catch(() => {});
       } catch (err: any) {
         setError(err.response?.data?.message || 'Service not found.');
@@ -55,7 +60,6 @@ const ServiceDetailPage: React.FC = () => {
   }, [serviceId]);
 
   const provider = service?.provider;
-  const reviews: ReviewType[] = []; // Reviews not yet linked per-service via API
 
   const handleRequestService = () => {
     if (!currentUser) {

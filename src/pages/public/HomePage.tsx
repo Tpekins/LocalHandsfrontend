@@ -106,7 +106,7 @@ const FeaturedServicesSection: React.FC<{ services: Service[]; isLoading: boolea
       <p className="text-gray-600 mb-12 max-w-xl mx-auto">Top-rated services from our trusted providers.</p>
       {isLoading ? (
         <p className="text-gray-500">Loading featured services...</p>
-      ) : services.length > 0 ? (
+      ) : Array.isArray(services) && services.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service) => (
             <ServiceCard key={service.id} service={service} />
@@ -132,7 +132,7 @@ const FeaturedCategoriesSection: React.FC<{ categories: Category[]; isLoading: b
       <p className="text-gray-600 mb-12 max-w-xl mx-auto">Explore popular services offered by our talented providers.</p>
       {isLoading ? (
         <p className="text-gray-500">Loading categories...</p>
-      ) : categories.length > 0 ? (
+      ) : Array.isArray(categories) && categories.length > 0 ? (
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {categories.slice(0, 10).map((category) => (
           <Link key={category.id} to={`/services?category=${category.id}`}>
@@ -206,8 +206,8 @@ const HomePage: React.FC = () => {
           api.get<Category[]>('/category'),
         ]);
 
-        setFeaturedServices(featuredRes.data);
-        setCategories(categoriesRes.data);
+        setFeaturedServices(Array.isArray(featuredRes.data) ? featuredRes.data : []);
+        setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
       } catch (err) {
         // Silently degrade — sections will show empty state
       } finally {

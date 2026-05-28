@@ -44,13 +44,14 @@ const ServicesPage: React.FC = () => {
           api.get<Category[]>('/category'),
         ]);
 
-        setServices(servicesRes.data);
-        setCategories(categoriesRes.data);
+        setServices(Array.isArray(servicesRes.data) ? servicesRes.data : []);
+        setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
 
         // Build category filter options
+        const cats = Array.isArray(categoriesRes.data) ? categoriesRes.data : [];
         categoryOptions.length = 0;
         categoryOptions.push({ value: 'all', label: 'All Categories' });
-        categoriesRes.data.forEach((cat) => {
+        cats.forEach((cat) => {
           categoryOptions.push({ value: String(cat.id), label: cat.name });
         });
       } catch (err: any) {
