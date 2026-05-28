@@ -78,7 +78,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setCurrentUser(null);
       setCurrentRole(null);
       console.error('refreshProfile failed, logging out', err);
-      // Optionally force reload to clear any stale state
       window.location.reload();
     }
   };
@@ -92,8 +91,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsLoading(false);
       return;
     }
-    // Set token in API (if needed)
-    // api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     refreshProfile().finally(() => setIsLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
