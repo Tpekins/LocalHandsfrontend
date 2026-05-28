@@ -35,21 +35,23 @@ const ProviderProfilePage: React.FC = () => {
         setIsLoading(true);
         setError(null);
 
-        // → GET /api/provider/:id → Backend includes user + services + availability
-        const providerRes = await api.get<ProviderType>(`/provider/${providerId}`);
-        const providerData = providerRes.data;
+        // → Fetch provider + services + reviews in parallel
+        const [providerRes, servicesRes] = await Promise.all([
+          api.get<ProviderType>(`/provider/${providerId}`),
+          api.get<Service[]>(`/services/provider/${providerId}`),
+        ]);
 
-        // Extract user from the provider record (backend includes: user, services, availability)
+        const providerData = providerRes.data;
         const providerUser = (providerData as any).user as User || null;
         setProvider(providerUser);
+        setProviderServices(servicesRes.data);
 
-        // Try fetching richer service data from the dedicated endpoint
-        try {
-          const servicesRes = await api.get<Service[]>(`/services/provider/${providerId}`);
-          setProviderServices(servicesRes.data);
-        } catch {
-          // Fallback: use services already included in the provider response
-          setProviderServices(providerData.services || []);
+        // → GET /api/review?reviewerId= for provider's reviews
+        if (providerUser) {
+          const reviewsRes = await api.get<Review[]>('/review', {
+            params: { reviewerId: providerUser.id },
+          });
+          setProviderReviews(reviewsRes.data);
         }
       } catch (err: any) {
         setError(err.response?.data?.message || 'Provider not found.');
@@ -63,8 +65,7 @@ const ProviderProfilePage: React.FC = () => {
     }
   }, [providerId]);
 
-  // Reviews not yet available per-provider via API
-  const providerReviews: Review[] = [];
+  const [providerReviews, setProviderReviews] = useState<Review[]>([]);
 
   // Loading state
   if (isLoading) {
