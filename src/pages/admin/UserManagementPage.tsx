@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal'; // For view/edit modals
-import { DUMMY_USERS } from '../../utils/dummyData';
 import { User, UserRole } from '../../types';
 import { EditIcon, DeleteIcon, EyeIcon, ChevronDownIcon } from '../../components/icons/Icons'; 
 import Input from '../../components/Input';
@@ -12,7 +11,7 @@ import { USER_ROLES } from '../../constants';
 
 
 const UserManagementPage: React.FC = () => {
-  const [users, setUsers] = useState<User[]>(DUMMY_USERS);
+  const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -45,8 +44,6 @@ const UserManagementPage: React.FC = () => {
   const handleDeleteUser = (userId: number) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
         setUsers(prevUsers => prevUsers.filter(u => u.id !== userId));
-        const userIdx = DUMMY_USERS.findIndex(u => u.id === userId);
-        if (userIdx > -1) DUMMY_USERS.splice(userIdx, 1);
         alert('User deleted.');
     }
     setOpenDropdownId(null);
@@ -55,8 +52,6 @@ const UserManagementPage: React.FC = () => {
   const handleModalSave = (updatedUser: User) => {
     // Simulate API call
     setUsers(prevUsers => prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u));
-    const userIdx = DUMMY_USERS.findIndex(u => u.id === updatedUser.id);
-    if (userIdx > -1) DUMMY_USERS[userIdx] = updatedUser;
     alert('User updated successfully.');
     setIsModalOpen(false);
     setSelectedUser(null);

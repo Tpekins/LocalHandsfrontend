@@ -3,29 +3,19 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
-import { DUMMY_SERVICE_ORDERS, DUMMY_PROPOSALS, DUMMY_SERVICES } from '../../utils/dummyData';
-import { ServiceOrder, ServiceOrderStatus, ProposalStatus } from '../../types';
+import { ServiceOrder } from '../../types';
 import { PresentationChartLineIcon, BriefcaseIcon, BuildingStorefrontIcon, CurrencyDollarIcon } from '../../components/icons/Icons';
 
 const ProviderDashboardPage: React.FC = () => {
   const { currentUser } = useAuth();
 
-  const providerServices = DUMMY_SERVICES.filter(s => s.providerId === currentUser?.id);
-  const providerProposals = DUMMY_PROPOSALS.filter(p => p.providerId === currentUser?.id);
+  const providerServices: ServiceOrder[] = [];
   
-  const totalEarnings = providerProposals
-    .filter(p => p.status === ProposalStatus.ACCEPTED)
-    .reduce((sum, p) => sum + p.bidAmount, 0);
+  const totalEarnings = 0;
 
-  const activeContracts = providerProposals.filter(p => {
-    const job = DUMMY_SERVICE_ORDERS.find(o => o.serviceId === p.serviceId);
-    return p.status === ProposalStatus.ACCEPTED && job?.status === ServiceOrderStatus.ACCEPTED;
-  }).length;
+  const activeContracts = 0;
 
-  const recentJobOpportunities = DUMMY_SERVICE_ORDERS.filter(
-    order => order.status === ServiceOrderStatus.PENDING && 
-             !providerProposals.some(p => p.serviceId === order.serviceId)
-  ).slice(0, 5);
+  const recentJobOpportunities: ServiceOrder[] = [];
 
   if (!currentUser) return <p>Loading provider data...</p>;
 

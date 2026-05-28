@@ -1,18 +1,16 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { DUMMY_USERS, DUMMY_SERVICES, DUMMY_REVIEWS, DUMMY_CONTRACTS } from '../../utils/dummyData';
 import { StarIcon } from '../../components/icons/Icons';
 import Button from '../../components/Button';
 import ReviewCard from '../../components/ReviewCard';
+import { User, Service, Review } from '../../types';
 
 const ProviderProfilePage: React.FC = () => {
-  const { providerId } = useParams<{ providerId: string }>();
+  useParams<{ providerId: string }>();
 
-  const provider = DUMMY_USERS.find(u => u.id === Number(providerId));
-  const providerServices = DUMMY_SERVICES.filter(s => s.providerId === Number(providerId));
-  const providerServiceIds = providerServices.map(s => s.id);
-  const providerContractIds = DUMMY_CONTRACTS.filter(c => providerServiceIds.includes(c.serviceOrder.serviceId)).map(c => c.id);
-  const providerReviews = DUMMY_REVIEWS.filter(r => providerContractIds.includes(r.contractId));
+  const provider = undefined as User | undefined;
+  const providerServices = [] as Service[];
+  const providerReviews = [] as Review[];
 
   if (!provider) {
     return (

@@ -2,7 +2,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../../components/Button';
-import { DUMMY_CATEGORIES, DUMMY_TESTIMONIALS } from '../../utils/dummyData';
 import { Category, Testimonial } from '../../types';
 import Card from '../../components/Card';
 import { HOW_IT_WORKS_STEPS }  from '../../constants';
@@ -122,8 +121,8 @@ const HomePage: React.FC = () => {
     <div className="space-y-16 md:space-y-24">
       <HeroSection />
       <HowItWorksSection />
-      <FeaturedCategoriesSection categories={DUMMY_CATEGORIES} />
-      <TestimonialsSection testimonials={DUMMY_TESTIMONIALS} />
+      <FeaturedCategoriesSection categories={[]} />
+      <TestimonialsSection testimonials={[]} />
       <CTASection />
     </div>
   );

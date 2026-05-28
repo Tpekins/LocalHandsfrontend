@@ -5,36 +5,29 @@ import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import Input from '../../components/Input';
 import Select from '../../components/Select';
-import { DUMMY_SERVICES, DUMMY_CATEGORIES } from '../../utils/dummyData';
 import { Service, Category, AssetType } from '../../types';
 import { PlusCircleIcon, EditIcon, DeleteIcon, BuildingStorefrontIcon } from '../../components/icons/Icons';
 
 const ServiceManagementPage: React.FC = () => {
   const { currentUser } = useAuth();
-  const [services, setServices] = useState<Service[]>(
-    DUMMY_SERVICES.filter(s => s.providerId === currentUser?.id)
-  );
-
-  React.useEffect(() => {
-    setServices(DUMMY_SERVICES.filter(s => s.providerId === currentUser?.id));
-  }, [currentUser, DUMMY_SERVICES.length]);
+  const [services, setServices] = useState<Service[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentService, setCurrentService] = useState<Partial<Service> | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [categoryId, setCategoryId] = useState<string>(String(DUMMY_CATEGORIES[0]?.id) || '');
+  const [categoryId, setCategoryId] = useState<string>('');
   const [price, setPrice] = useState<string>('');
 
-  const categoryOptions = DUMMY_CATEGORIES.map(cat => ({ value: String(cat.id), label: cat.name }));
+  const categoryOptions: { value: string; label: string }[] = [];
 
   const openCreateModal = () => {
     setIsEditMode(false);
     setCurrentService({});
     setTitle('');
     setDescription('');
-    setCategoryId(String(DUMMY_CATEGORIES[0]?.id) || '');
+    setCategoryId('');
     setPrice('');
     setIsModalOpen(true);
   };
@@ -52,8 +45,6 @@ const ServiceManagementPage: React.FC = () => {
   const handleDeleteService = (serviceId: number) => {
     if (window.confirm('Are you sure you want to delete this service?')) {
       setServices(prev => prev.filter(s => s.id !== serviceId));
-      const serviceIdx = DUMMY_SERVICES.findIndex(s => s.id === serviceId);
-      if (serviceIdx > -1) DUMMY_SERVICES.splice(serviceIdx, 1);
       alert('Service deleted successfully.');
     }
   };
@@ -70,7 +61,7 @@ const ServiceManagementPage: React.FC = () => {
       providerId: currentUser!.id,
       title,
       description,
-      category: DUMMY_CATEGORIES.find(c => c.id === Number(categoryId)) as Category,
+      category: undefined as unknown as Category,
       categoryId: parseInt(categoryId),
       price: parseFloat(price),
       status: 'available',
@@ -85,13 +76,10 @@ const ServiceManagementPage: React.FC = () => {
     if (isEditMode && currentService) {
       const updatedService = { ...currentService, ...serviceData, id: currentService.id } as Service;
       setServices(prev => prev.map(s => s.id === updatedService.id ? updatedService : s));
-      const serviceIdx = DUMMY_SERVICES.findIndex(s => s.id === updatedService.id);
-      if (serviceIdx > -1) DUMMY_SERVICES[serviceIdx] = updatedService;
       alert('Service updated successfully!');
     } else {
       const newService = { ...serviceData, id: Date.now() } as Service;
       setServices(prev => [newService, ...prev]);
-      DUMMY_SERVICES.unshift(newService);
       alert('Service created successfully!');
     }
     setIsModalOpen(false);

@@ -2,8 +2,7 @@ import React from 'react';
 import { ResponsiveContainer, LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import Card from '../../components/Card';
 import { useAuth } from '../../contexts/AuthContext';
-import { DUMMY_ADMIN_USER_DATA_CHART, DUMMY_ADMIN_SERVICES_PER_CATEGORY_CHART, DUMMY_ADMIN_CONTRACT_STATUS_CHART } from '../../utils/dummyData';
-import { UsersIcon, BriefcaseIcon, ChartBarIcon } from '../../components/icons/Icons'; // Example icons
+import { UsersIcon, BriefcaseIcon, ChartBarIcon } from '../../components/icons/Icons';
 
 const AdminDashboardPage: React.FC = () => {
   const { currentUser } = useAuth();
@@ -13,9 +12,9 @@ const AdminDashboardPage: React.FC = () => {
   if (!currentUser) return <p>Loading admin data...</p>;
 
   const quickStats = [
-    { title: 'Total Users', value: DUMMY_ADMIN_USER_DATA_CHART.reduce((acc, item) => acc + item.value, 0), icon: UsersIcon, color: 'bg-blue-500' },
-    { title: 'Total Services', value: DUMMY_ADMIN_SERVICES_PER_CATEGORY_CHART.reduce((acc, item) => acc + item.value, 0), icon: BriefcaseIcon, color: 'bg-green-500' },
-    { title: 'Active Contracts', value: DUMMY_ADMIN_CONTRACT_STATUS_CHART.find(c => c.name === 'In Progress')?.value || 0, icon: ChartBarIcon, color: 'bg-yellow-500' },
+    { title: 'Total Users', value: 0, icon: UsersIcon, color: 'bg-blue-500' },
+    { title: 'Total Services', value: 0, icon: BriefcaseIcon, color: 'bg-green-500' },
+    { title: 'Active Contracts', value: 0, icon: ChartBarIcon, color: 'bg-yellow-500' },
   ];
 
   return (
@@ -43,7 +42,7 @@ const AdminDashboardPage: React.FC = () => {
         <Card className="p-6 shadow-xl">
           <h2 className="text-xl font-poppins font-semibold text-gray-700 mb-4">New Users Over Time</h2>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={DUMMY_ADMIN_USER_DATA_CHART} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+            <LineChart data={[]} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
               <XAxis dataKey="name" stroke="#666" />
               <YAxis stroke="#666" />
@@ -60,7 +59,7 @@ const AdminDashboardPage: React.FC = () => {
         <Card className="p-6 shadow-xl">
           <h2 className="text-xl font-poppins font-semibold text-gray-700 mb-4">Services per Category</h2>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={DUMMY_ADMIN_SERVICES_PER_CATEGORY_CHART} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+            <BarChart data={[]} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
               <XAxis dataKey="name" stroke="#666" angle={-30} textAnchor="end" height={50} />
               <YAxis stroke="#666" />
@@ -80,7 +79,7 @@ const AdminDashboardPage: React.FC = () => {
           <ResponsiveContainer width="100%" height={350}>
             <PieChart>
               <Pie
-                data={DUMMY_ADMIN_CONTRACT_STATUS_CHART}
+                data={[]}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
@@ -89,7 +88,7 @@ const AdminDashboardPage: React.FC = () => {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {DUMMY_ADMIN_CONTRACT_STATUS_CHART.map((_, index) => (
+                {[].map((_, index) => (
                   <Cell key={`cell-${index}`} fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]} />
                 ))}
               </Pie>

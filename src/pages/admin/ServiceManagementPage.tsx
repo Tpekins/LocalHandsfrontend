@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import Card from '../../components/Card';
-import { DUMMY_SERVICES } from '../../utils/dummyData';
 import { Service } from '../../types';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -11,7 +10,7 @@ import Modal from '../../components/Modal';
 import ServiceForm from '../../components/ServiceForm';
 
 const AdminServiceManagementPage: React.FC = () => {
-  const [services, setServices] = useState<Service[]>(DUMMY_SERVICES);
+  const [services, setServices] = useState<Service[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [modalMode, setModalMode] = useState<'view' | 'edit' | null>(null);
@@ -33,9 +32,6 @@ const AdminServiceManagementPage: React.FC = () => {
   const handleDeleteService = (serviceId: number) => {
     if (window.confirm('Are you sure you want to delete this service from the platform? This action might be irreversible.')) {
         setServices(prev => prev.filter(s => s.id !== serviceId));
-        // Update DUMMY_SERVICES as well for demo persistence
-        const serviceIdx = DUMMY_SERVICES.findIndex(s => s.id === serviceId);
-        if (serviceIdx > -1) DUMMY_SERVICES.splice(serviceIdx, 1);
         alert('Service deleted by admin.');
     }
   };

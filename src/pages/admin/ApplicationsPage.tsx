@@ -1,8 +1,17 @@
 import React from 'react';
-import { submittedApplications } from '../../utils/applicationData';
 import Card from '../../components/Card';
 
+interface Application {
+  id: number;
+  jobTitle: string;
+  name: string;
+  email: string;
+  submittedAt: Date;
+}
+
 const ApplicationsPage: React.FC = () => {
+  const applications: Application[] = [];
+
   return (
     <div>
       <h1 className="text-3xl font-poppins font-semibold mb-6">Job Applications</h1>
@@ -18,8 +27,8 @@ const ApplicationsPage: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {submittedApplications.length > 0 ? (
-                        submittedApplications.map((app) => (
+                    {applications.length > 0 ? (
+                        applications.map((app) => (
                             <tr key={app.id} className="hover:bg-gray-50">
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{app.jobTitle}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{app.name}</td>

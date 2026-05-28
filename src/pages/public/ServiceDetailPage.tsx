@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { DUMMY_SERVICES, DUMMY_REVIEWS, DUMMY_USERS, DUMMY_CONTRACTS } from '../../utils/dummyData';
 import { useAuth } from '../../contexts/AuthContext';
-import { Service, Review as ReviewType, UserRole } from '../../types';
+import { Service, Review as ReviewType, UserRole, User } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
@@ -16,13 +15,9 @@ const ServiceDetailPage: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const servicesFromStorage = localStorage.getItem('DUMMY_SERVICES_TEMP');
-  const allServices = servicesFromStorage ? JSON.parse(servicesFromStorage) : DUMMY_SERVICES;
-  const service = allServices.find((s: Service) => s.id === Number(serviceId));
-  const provider = DUMMY_USERS.find(u => u.id === service?.providerId);
-  const contracts = DUMMY_CONTRACTS.filter(c => c.serviceOrder.serviceId === Number(serviceId));
-  const contractIds = contracts.map(c => c.id);
-  const reviews = DUMMY_REVIEWS.filter(r => contractIds.includes(r.contractId));
+  const service = ([] as Service[]).find((s) => s.id === Number(serviceId));
+  const provider = undefined as User | undefined;
+  const reviews = [] as ReviewType[];
 
   const handleRequestService = () => {
     if (!currentUser) {

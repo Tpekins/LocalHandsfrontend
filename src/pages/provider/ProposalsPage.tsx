@@ -1,7 +1,5 @@
 import React from 'react';
 import Card from '../../components/Card';
-import { useAuth } from '../../contexts/AuthContext';
-import { DUMMY_PROPOSALS } from '../../utils/dummyData';
 import { Proposal, ProposalStatus } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 import { DocumentTextIcon } from '../../components/icons/Icons';
@@ -9,9 +7,7 @@ import { Link } from 'react-router-dom';
 import Button from '../../components/Button';
 
 const ProposalsPage: React.FC = () => {
-  const { currentUser } = useAuth();
-  const sentProposals = DUMMY_PROPOSALS.filter(p => p.providerId === currentUser?.id)
-    .sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const sentProposals: Proposal[] = [];
 
   return (
     <div className="space-y-8">

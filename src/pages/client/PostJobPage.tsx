@@ -4,7 +4,6 @@ import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Select from '../../components/Select';
 import Card from '../../components/Card';
-import { DUMMY_CATEGORIES, DUMMY_SERVICE_ORDERS } from '../../utils/dummyData';
 import { useAuth } from '../../contexts/AuthContext';
 import { ServiceOrder, ServiceOrderStatus } from '../../types';
 
@@ -16,14 +15,14 @@ const PostJobPage: React.FC = () => {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [categoryId, setCategoryId] = useState<string>(String(DUMMY_CATEGORIES[0]?.id ?? ''));
+  const [categoryId, setCategoryId] = useState<string>('');
   const [budget, setBudget] = useState<string>('');
   const [deadline, setDeadline] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const categoryOptions = DUMMY_CATEGORIES.map(cat => ({ value: String(cat.id), label: cat.name }));
+  const categoryOptions: { value: string; label: string }[] = [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +36,6 @@ const PostJobPage: React.FC = () => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    const selectedCategory = DUMMY_CATEGORIES.find(c => c.id === Number(categoryId));
     const newJob: ServiceOrder = {
       id: Date.now(),
       service: {
@@ -49,8 +47,8 @@ const PostJobPage: React.FC = () => {
         featured: false,
         provider: currentUser!,
         providerId: currentUser!.id,
-        category: selectedCategory,
-        categoryId: selectedCategory?.id,
+        category: undefined,
+        categoryId: undefined,
         assets: [],
         views: 0,
         createdAt: new Date().toISOString(),
@@ -64,14 +62,11 @@ const PostJobPage: React.FC = () => {
       createdAt: new Date().toISOString(),
     };
 
-    // In a real app, you'd send this to the backend.
-    // We can add it to a local state or just simulate success.
     console.log('New Job Posted:', newJob);
-    DUMMY_SERVICE_ORDERS.unshift(newJob); // Add to global dummy data for visibility
 
     setIsLoading(false);
     alert('Job posted successfully!');
-    navigate('/client/dashboard'); // Or to a "My Jobs" page
+    navigate('/client/dashboard');
   };
   
   const nextStep = () => setCurrentStep(prev => prev + 1);

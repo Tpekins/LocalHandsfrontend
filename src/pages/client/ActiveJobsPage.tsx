@@ -1,19 +1,13 @@
 import React from 'react';
-import { useAuth } from '../../contexts/AuthContext';
 import Card from '../../components/Card';
-import { DUMMY_SERVICE_ORDERS } from '../../utils/dummyData';
 import { ServiceOrder, ServiceOrderStatus } from '../../types';
 import { Link } from 'react-router-dom';
 import Button from '../../components/Button';
 import { BriefcaseIcon } from '../../components/icons/Icons';
 
 const ActiveJobsPage: React.FC = () => {
-  const { currentUser } = useAuth();
 
-  const activeJobs = DUMMY_SERVICE_ORDERS.filter(
-    order => order.clientId === currentUser?.id && 
-             (order.status === ServiceOrderStatus.PENDING || order.status === ServiceOrderStatus.ACCEPTED)
-  );
+  const activeJobs = [] as ServiceOrder[];
 
   return (
     <div className="space-y-8">

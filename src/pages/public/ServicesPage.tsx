@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ServiceCard from '../../components/ServiceCard';
-import { DUMMY_SERVICES, DUMMY_CATEGORIES } from '../../utils/dummyData';
 import Input from '../../components/Input';
 import Select from '../../components/Select';
 import { SearchIcon } from '../../components/icons/Icons';
@@ -15,7 +14,7 @@ const ServicesPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'all');
   const [sortBy, setSortBy] = useState<string>('price_asc');
 
-  const categoryOptions = [{ value: 'all', label: 'All Categories' }, ...DUMMY_CATEGORIES.map(cat => ({ value: String(cat.id), label: cat.name }))];
+  const categoryOptions = [{ value: 'all', label: 'All Categories' }];
   const sortOptions = [
     { value: 'price_asc', label: 'Price (FCFA Low to High)' },
     { value: 'price_desc', label: 'Price (FCFA High to Low)' },
@@ -24,10 +23,10 @@ const ServicesPage: React.FC = () => {
 
   useEffect(() => {
     setServicesVersion(v => v + 1);
-  }, [DUMMY_SERVICES.length]);
+  }, []);
 
   const filteredAndSortedServices = useMemo(() => {
-    let services = DUMMY_SERVICES;
+    let services: any[] = [];
 
     if (searchTerm) {
       services = services.filter(service =>

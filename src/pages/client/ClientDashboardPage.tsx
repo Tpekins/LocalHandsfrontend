@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
-import { DUMMY_SERVICE_ORDERS, DUMMY_PROPOSALS } from '../../utils/dummyData';
-import { ServiceOrder, Proposal, ServiceOrderStatus, ProposalStatus } from '../../types';
+import { ServiceOrder, Proposal, ServiceOrderStatus } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 import { PlusCircleIcon, BriefcaseIcon, InboxIcon } from '../../components/icons/Icons';
 
@@ -13,17 +12,9 @@ const ClientDashboardPage: React.FC = () => {
   const { currentUser } = useAuth();
   
   // Filter data for the current client
-  const activeJobs = DUMMY_SERVICE_ORDERS.filter(
-    order => order.clientId === currentUser?.id && 
-             (order.status === ServiceOrderStatus.PENDING || order.status === ServiceOrderStatus.ACCEPTED)
-  ).slice(0, 3); // Show a few recent ones
+  const activeJobs = [] as ServiceOrder[];
 
-  const recentProposals = DUMMY_PROPOSALS.filter(
-    proposal => {
-        const job = DUMMY_SERVICE_ORDERS.find(o => o.id === proposal.serviceId);
-        return job?.clientId === currentUser?.id && proposal.status === ProposalStatus.PENDING;
-    }
-  ).slice(0,3);
+  const recentProposals = [] as Proposal[];
 
   if (!currentUser) {
     return <p>Loading client data...</p>;
@@ -65,9 +56,7 @@ const ClientDashboardPage: React.FC = () => {
         <Card className="p-6 bg-gradient-to-r from-gray-700 to-gray-800 text-white">
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="text-4xl font-bold">
-                        {DUMMY_SERVICE_ORDERS.filter(order => order.clientId === currentUser?.id && order.status === ServiceOrderStatus.COMPLETED).length}
-                    </p>
+                    <p className="text-4xl font-bold">0</p>
                     <p>Completed Jobs</p>
                 </div>
                  {/* Using BriefcaseIcon as a placeholder, replace with CheckCircleIcon if it's visually preferred and added */}
@@ -131,7 +120,7 @@ const ClientDashboardPage: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {recentProposals.map((proposal: Proposal) => {
-                const jobForProposal = DUMMY_SERVICE_ORDERS.find(o => o.id === proposal.serviceId);
+                const jobForProposal = undefined as ServiceOrder | undefined;
                 return (
                     <Card key={proposal.id} className="p-4 border border-gray-200 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">

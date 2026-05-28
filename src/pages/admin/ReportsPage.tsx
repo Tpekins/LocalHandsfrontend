@@ -77,56 +77,7 @@ const ReportsPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {[
-                  {
-                    id: 'txn_001',
-                    createdAt: new Date().toISOString(),
-                    amount: 10000,
-                    status: 'COMPLETED',
-                    paymentMethod: 'Mobile Money',
-                    contract: {
-                      contractId: 1,
-                      provider: { name: 'Jane Doe', email: 'jane@example.com', id: 'prov_1' },
-                      serviceOrder: {
-                        client: { name: 'John Smith', email: 'john@example.com', id: 'cli_1' },
-                        description: 'Plumbing repair',
-                        title: 'Plumbing Service'
-                      }
-                    }
-                  },
-                  {
-                    id: 'txn_002',
-                    createdAt: new Date(Date.now() - 86400000).toISOString(),
-                    amount: 25000,
-                    status: 'PENDING',
-                    paymentMethod: 'Mobile Money',
-                    contract: {
-                      contractId: 2,
-                      provider: { name: 'Alice Smith', email: 'alice@example.com', id: 'prov_2' },
-                      serviceOrder: {
-                        client: { name: 'Bob Johnson', email: 'bob@example.com', id: 'cli_2' },
-                        description: 'Electrical installation',
-                        title: 'Electrical Service'
-                      }
-                    }
-                  },
-                  {
-                    id: 'txn_003',
-                    createdAt: new Date(Date.now() - 172800000).toISOString(),
-                    amount: 5000,
-                    status: 'FAILED',
-                    paymentMethod: 'Mobile Money',
-                    contract: {
-                      contractId: 3,
-                      provider: { name: 'Grace Miller', email: 'grace@example.com', id: 'prov_3' },
-                      serviceOrder: {
-                        client: { name: 'Eve Jones', email: 'eve@example.com', id: 'cli_3' },
-                        description: 'Painting job',
-                        title: 'Painting Service'
-                      }
-                    }
-                  }
-                ].map((txn: any) => {
+                {[].map((txn: any) => {
                   const client = txn.contract?.serviceOrder?.client;
                   const provider = txn.contract?.provider;
                   const contractTitle = txn.contract?.serviceOrder?.description || txn.contract?.serviceOrder?.title || `Contract #${txn.contractId}`;
@@ -176,72 +127,7 @@ const ReportsPage: React.FC = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              ${[
-                                {
-                                  id: 'txn_001',
-                                  createdAt: new Date().toLocaleString(),
-                                  amount: 10000,
-                                  status: 'COMPLETED',
-                                  paymentMethod: 'Mobile Money',
-                                  contract: {
-                                    contractId: 1,
-                                    provider: { name: 'Jane Doe', email: 'jane@example.com', id: 'prov_1' },
-                                    serviceOrder: {
-                                      client: { name: 'John Smith', email: 'john@example.com', id: 'cli_1' },
-                                      description: 'Plumbing repair',
-                                      title: 'Plumbing Service'
-                                    }
-                                  }
-                                },
-                                {
-                                  id: 'txn_002',
-                                  createdAt: new Date(Date.now() - 86400000).toLocaleString(),
-                                  amount: 25000,
-                                  status: 'PENDING',
-                                  paymentMethod: 'Mobile Money',
-                                  contract: {
-                                    contractId: 2,
-                                    provider: { name: 'Alice Smith', email: 'alice@example.com', id: 'prov_2' },
-                                    serviceOrder: {
-                                      client: { name: 'Bob Johnson', email: 'bob@example.com', id: 'cli_2' },
-                                      description: 'Electrical installation',
-                                      title: 'Electrical Service'
-                                    }
-                                  }
-                                },
-                                {
-                                  id: 'txn_003',
-                                  createdAt: new Date(Date.now() - 172800000).toLocaleString(),
-                                  amount: 5000,
-                                  status: 'FAILED',
-                                  paymentMethod: 'Mobile Money',
-                                  contract: {
-                                    contractId: 3,
-                                    provider: { name: 'Grace Miller', email: 'grace@example.com', id: 'prov_3' },
-                                    serviceOrder: {
-                                      client: { name: 'Eve Jones', email: 'eve@example.com', id: 'cli_3' },
-                                      description: 'Painting job',
-                                      title: 'Painting Service'
-                                    }
-                                  }
-                                }
-                              ].map((txn) => {
-                                const client = txn.contract?.serviceOrder?.client;
-                                const provider = txn.contract?.provider;
-                                const contractTitle = txn.contract?.serviceOrder?.description || txn.contract?.serviceOrder?.title || `Contract #${txn.contract?.contractId}`;
-                                return `
-                                  <tr class='border-b'>
-                                    <td class='py-2 px-4 font-mono'>${txn.id}</td>
-                                    <td class='py-2 px-4'>${txn.createdAt}</td>
-                                    <td class='py-2 px-4'>${client ? (client.name || client.email || client.id) : '-'}</td>
-                                    <td class='py-2 px-4'>${provider ? (provider.name || provider.email || provider.id) : '-'}</td>
-                                    <td class='py-2 px-4'>${contractTitle}</td>
-                                    <td class='py-2 px-4'>${txn.paymentMethod}</td>
-                                    <td class='py-2 px-4'>${txn.amount.toLocaleString(undefined, { style: 'currency', currency: 'XAF' })}</td>
-                                    <td class='py-2 px-4'>${txn.status}</td>
-                                  </tr>
-                                `;
-                              }).join('')}
+                              ''
                             </tbody>
                           </table>
                         </body>

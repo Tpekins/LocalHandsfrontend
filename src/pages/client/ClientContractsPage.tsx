@@ -111,72 +111,9 @@ const ClientContractsPage: React.FC = () => {
     setEditingContract(null);
   };
 
-  let myContracts = contracts.filter(
+  const myContracts = contracts.filter(
     (contract) => contract.serviceOrder.clientId === currentUser?.id
   );
-
-  // Seed mock contracts for testing if none exist
-  if ((!myContracts || myContracts.length === 0) && currentUser) {
-    myContracts = [
-      {
-        id: 1,
-        serviceOrder: {
-          id: 1,
-          service: { id: 1, title: "Plumbing Service", description: "", price: 15000, status: "available", featured: false, provider: { id: 101, name: "Jane Doe", email: "", phoneNumber: "+237 650 123 456", role: {} as any, createdAt: "" }, providerId: 101, category: { id: 1, name: "Plumbing" }, categoryId: 1, assets: [], views: 0, createdAt: new Date().toISOString() },
-          serviceId: 1,
-          client: currentUser,
-          clientId: currentUser.id,
-          description: "",
-          budget: 15000,
-          status: {} as any,
-          createdAt: new Date().toISOString(),
-        },
-        serviceOrderId: 1,
-        escrowAmount: 15000,
-        status: ContractStatus.ACTIVE,
-        payments: [],
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: 2,
-        serviceOrder: {
-          id: 2,
-          service: { id: 2, title: "Electrical Installation", description: "", price: 22000, status: "available", featured: false, provider: { id: 102, name: "Alice Smith", email: "", phoneNumber: "+237 651 234 567", role: {} as any, createdAt: "" }, providerId: 102, category: { id: 2, name: "Electrical" }, categoryId: 2, assets: [], views: 0, createdAt: new Date().toISOString() },
-          serviceId: 2,
-          client: currentUser,
-          clientId: currentUser.id,
-          description: "",
-          budget: 22000,
-          status: {} as any,
-          createdAt: new Date(Date.now() - 86400000 * 10).toISOString(),
-        },
-        serviceOrderId: 2,
-        escrowAmount: 22000,
-        status: ContractStatus.COMPLETED,
-        payments: [],
-        createdAt: new Date(Date.now() - 86400000 * 10).toISOString(),
-      },
-      {
-        id: 3,
-        serviceOrder: {
-          id: 3,
-          service: { id: 3, title: "Painting Job", description: "", price: 8000, status: "available", featured: false, provider: { id: 103, name: "Bob Johnson", email: "", phoneNumber: "+237 652 345 678", role: {} as any, createdAt: "" }, providerId: 103, category: { id: 3, name: "Painting" }, categoryId: 3, assets: [], views: 0, createdAt: new Date().toISOString() },
-          serviceId: 3,
-          client: currentUser,
-          clientId: currentUser.id,
-          description: "",
-          budget: 8000,
-          status: {} as any,
-          createdAt: new Date(Date.now() - 86400000 * 20).toISOString(),
-        },
-        serviceOrderId: 3,
-        escrowAmount: 8000,
-        status: ContractStatus.COMPLETED,
-        payments: [],
-        createdAt: new Date(Date.now() - 86400000 * 20).toISOString(),
-      },
-    ];
-  }
 
   const getStatusColor = (status: ContractStatus) => {
     switch (status) {

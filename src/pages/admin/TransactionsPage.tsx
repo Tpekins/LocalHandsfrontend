@@ -11,56 +11,7 @@ const TransactionsPage: React.FC = () => {
     // Always use mock (dominator) data regardless of backend status
     setLoading(true);
     setError(null);
-    setTransactions([
-      {
-        id: 'txn_001',
-        createdAt: new Date().toISOString(),
-        amount: 10000,
-        status: 'COMPLETED',
-        paymentMethod: 'Mobile Money',
-        contract: {
-          contractId: 1,
-          provider: { name: 'Jane Doe', email: 'jane@example.com', id: 'prov_1' },
-          serviceOrder: {
-            client: { name: 'John Smith', email: 'john@example.com', id: 'cli_1' },
-            description: 'Plumbing repair',
-            title: 'Plumbing Service'
-          }
-        }
-      },
-      {
-        id: 'txn_002',
-        createdAt: new Date(Date.now() - 86400000).toISOString(),
-        amount: 25000,
-        status: 'PENDING',
-        paymentMethod: 'Mobile Money',
-        contract: {
-          contractId: 2,
-          provider: { name: 'Alice Smith', email: 'alice@example.com', id: 'prov_2' },
-          serviceOrder: {
-            client: { name: 'Bob Johnson', email: 'bob@example.com', id: 'cli_2' },
-            description: 'Electrical installation',
-            title: 'Electrical Service'
-          }
-        }
-      },
-      {
-        id: 'txn_003',
-        createdAt: new Date(Date.now() - 172800000).toISOString(),
-        amount: 5000,
-        status: 'FAILED',
-        paymentMethod: 'Mobile Money',
-        contract: {
-          contractId: 3,
-          provider: { name: 'Grace Miller', email: 'grace@example.com', id: 'prov_3' },
-          serviceOrder: {
-            client: { name: 'Eve Jones', email: 'eve@example.com', id: 'cli_3' },
-            description: 'Painting job',
-            title: 'Painting Service'
-          }
-        }
-      }
-    ]);
+    setTransactions([]);
     setLoading(false);
   }, []);
 
