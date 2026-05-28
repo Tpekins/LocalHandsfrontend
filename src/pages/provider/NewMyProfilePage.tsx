@@ -4,17 +4,17 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 
+// Uses AuthContext.updateUser() → PATCH /api/user/:id
 const NewMyProfilePage: React.FC = () => {
-  const { currentUser } = useAuth();
-  
+  const { currentUser, updateUser } = useAuth();
+
   const [name, setName] = useState(currentUser?.name || '');
   const [email, setEmail] = useState(currentUser?.email || '');
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleSave = () => {
-    console.log('Saving profile:', { name, email });
-    setIsEditing(false);
-    alert('Profile saved successfully! (UI only)');
+  const handleSave = async () => {
+    const success = await updateUser({ name, email });
+    if (success) setIsEditing(false);
   };
 
   const getInitials = (n: string) => n.charAt(0).toUpperCase();
@@ -38,6 +38,9 @@ const NewMyProfilePage: React.FC = () => {
                 <h2 className="text-2xl font-semibold text-gray-800">{name}</h2>
                 <p className="text-gray-600">{email}</p>
                 <p className="text-sm text-gray-500">Role: {currentUser?.role}</p>
+                {currentUser?.phoneNumber && (
+                  <p className="text-sm text-gray-500">Phone: {currentUser.phoneNumber}</p>
+                )}
               </div>
             )}
           </div>
