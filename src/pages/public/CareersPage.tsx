@@ -3,6 +3,7 @@ import Modal from '../../components/Modal';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { addApplication } from '../../utils/applicationData';
+import { toast } from 'sonner';
 
 const CareersPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,10 +31,10 @@ const CareersPage: React.FC = () => {
         name,
         email 
       });
-      alert(`Thank you for applying for the ${selectedJob.title} position!`);
+      toast.success(`Thank you for applying for the ${selectedJob.title} position!`);
       handleCloseModal();
     } else {
-      alert('Please fill in all fields.');
+      toast.error('Please fill in all fields.');
     }
   };
 

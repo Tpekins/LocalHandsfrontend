@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Card from '../../components/Card';
+import { toast } from 'sonner';
 
 const OnboardingStep = ({ title, children }: { title: string, children: React.ReactNode }) => (
   <div>
@@ -30,9 +31,7 @@ const ProviderOnboardingPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the data to your API
-    console.log('Onboarding data submitted:', { profileData, serviceData });
-    alert('Onboarding complete! Welcome to your dashboard.');
+    toast.success('Onboarding complete! Welcome to your dashboard.');
     navigate('/provider/dashboard');
   };
 

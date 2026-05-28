@@ -1,45 +1,70 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
-import { ServiceOrder } from '../../types';
+import { ServiceOrder, Category } from '../../types';
 import { formatCurrency } from '../../utils/currency';
 import Input from '../../components/Input';
 import Select from '../../components/Select';
 import { BriefcaseIcon, SearchIcon } from '../../components/icons/Icons';
+import api from '../../utils/api';
 
+// GET /api/serviceorder?status=PENDING + GET /api/category
 const BrowseJobsPage: React.FC = () => {
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showSuccessMessage, setShowSuccessMessage] = useState(location.state?.proposalSubmitted || false);
 
-  React.useEffect(() => {
+  const [jobs, setJobs] = useState<ServiceOrder[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const [jobsRes, categoriesRes] = await Promise.all([
+          api.get<ServiceOrder[]>('/serviceorder', { params: { status: 'PENDING' } }),
+          api.get<Category[]>('/category'),
+        ]);
+        setJobs(jobsRes.data);
+        setCategories(categoriesRes.data);
+      } catch {
+        /* degrade gracefully */
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     if (location.state?.proposalSubmitted) {
-      const timer = setTimeout(() => setShowSuccessMessage(false), 5000); // Hide after 5s
-      // Clear location state to prevent message on subsequent visits without new submission
-      window.history.replaceState({}, document.title)
+      const timer = setTimeout(() => setShowSuccessMessage(false), 5000);
+      window.history.replaceState({}, document.title);
       return () => clearTimeout(timer);
     }
   }, [location.state]);
 
-
-  const categoryOptions = [{ value: 'all', label: 'All Categories' }];
+  const categoryOptions = [
+    { value: 'all', label: 'All Categories' },
+    ...categories.map((c) => ({ value: String(c.id), label: c.name })),
+  ];
 
   const openJobs = useMemo(() => {
-    let jobs: ServiceOrder[] = [];
-
+    let result = [...jobs];
     if (searchTerm) {
-      jobs = jobs.filter(job =>
-        job.service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      result = result.filter((job) =>
+        job.service?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         job.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     if (selectedCategory !== 'all') {
-      jobs = jobs.filter(job => job.service.category?.id === Number(selectedCategory));
+      result = result.filter((job) => job.service?.category?.id === Number(selectedCategory));
     }
-    return jobs.sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }, [searchTerm, selectedCategory]);
+    return result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }, [searchTerm, selectedCategory, jobs]);
 
   return (
     <div className="space-y-8">
@@ -63,7 +88,7 @@ const BrowseJobsPage: React.FC = () => {
               className="pl-10"
               containerClassName="mb-0"
             />
-             <SearchIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 mt-3" />
+            <SearchIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 mt-3" />
           </div>
           <Select
             label="Filter by Category"
@@ -75,31 +100,32 @@ const BrowseJobsPage: React.FC = () => {
         </div>
       </Card>
 
-      {openJobs.length === 0 ? (
+      {isLoading ? (
+        <p className="text-center text-gray-500 py-8">Loading open jobs...</p>
+      ) : openJobs.length === 0 ? (
         <Card className="p-8 text-center">
           <BriefcaseIcon className="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <h2 className="text-xl font-semibold text-gray-700 mb-2">No Open Jobs Found</h2>
-          <p className="text-gray-500">There are no open jobs matching your criteria at the moment. Please check back later!</p>
+          <p className="text-gray-500">There are no open jobs matching your criteria at the moment.</p>
         </Card>
       ) : (
         <div className="space-y-6">
-          {openJobs.map((job: ServiceOrder) => (
+          {openJobs.map((job) => (
             <Card key={job.id} className="p-6 hover:shadow-xl transition-shadow duration-300 ease-in-out">
               <div className="flex flex-col sm:flex-row justify-between">
-                  <div>
-                    <h2 className="text-xl font-poppins font-semibold text-primary mb-1 group">
-                      <Link to={`${job.id}/apply`} className="hover:underline group-hover:text-accent">
-                        {job.service.title}
-                      </Link>
-                    </h2>
-                    <p className="text-sm text-gray-600">Client: {job.client.name}</p>
-                    <p className="text-sm text-gray-500">Category: {job.service.category?.name}</p>
-                    <p className="text-xs text-gray-400">Posted: {new Date(job.createdAt).toLocaleDateString()}</p>
-                  </div>
-                  <div className="mt-4 sm:mt-0 text-left sm:text-right">
-                    {job.budget && <p className="text-lg font-semibold text-gray-800">{formatCurrency(job.budget)}</p>}
+                <div>
+                  <h2 className="text-xl font-poppins font-semibold text-primary mb-1 group">
+                    <Link to={`/provider/job-details/${job.id}`} className="hover:underline group-hover:text-accent">
+                      {job.service?.title || 'Untitled Job'}
+                    </Link>
+                  </h2>
+                  <p className="text-sm text-gray-600">Client: {job.client?.name || 'Unknown'}</p>
+                  <p className="text-sm text-gray-500">Category: {job.service?.category?.name || 'N/A'}</p>
+                  <p className="text-xs text-gray-400">Posted: {new Date(job.createdAt).toLocaleDateString()}</p>
+                </div>
+                <div className="mt-4 sm:mt-0 text-left sm:text-right">
+                  {job.budget && <p className="text-lg font-semibold text-gray-800">{formatCurrency(job.budget)}</p>}
                   <Link to={`/provider/submit-proposal/${job.id}`}>
-
                     <Button variant="primary" size="md">View & Apply</Button>
                   </Link>
                 </div>

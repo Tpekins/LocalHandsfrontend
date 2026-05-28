@@ -1,23 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Service, Review as ReviewType, UserRole, User } from '../../types';
+import { Service, Review as ReviewType, UserRole } from '../../types';
 import { formatCurrency } from '../../utils/currency';
+import api from '../../utils/api';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import ReviewCard from '../../components/ReviewCard';
 import ReviewForm from '../../components/ReviewForm';
 
+/*
+ * ServiceDetailPage – GET /api/services/:id
+ *
+ * Data flow:
+ *   On mount → api.get(`/services/${serviceId}`) fetches a single service
+ *     → Backend includes: category, provider, proposals, bookings, assets
+ *     → Component extracts provider from service.provider
+ *
+ * Reviews are currently shown from a local state (no dedicated review-per-service
+ * endpoint yet). The review form submits to the local state for now.
+ */
 const ServiceDetailPage: React.FC = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const { serviceId } = useParams<{ serviceId: string }>();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [service, setService] = useState<Service | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const service = ([] as Service[]).find((s) => s.id === Number(serviceId));
-  const provider = undefined as User | undefined;
-  const reviews = [] as ReviewType[];
+  useEffect(() => {
+    const fetchService = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // → GET /api/services/:id → Backend includes provider, category, assets
+        const { data } = await api.get<Service>(`/services/${serviceId}`);
+        setService(data);
+
+        // Increment view count (fire-and-forget, non-blocking)
+        api.patch(`/services/${serviceId}/increment-views`).catch(() => {});
+      } catch (err: any) {
+        setError(err.response?.data?.message || 'Service not found.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (serviceId) {
+      fetchService();
+    }
+  }, [serviceId]);
+
+  const provider = service?.provider;
+  const reviews: ReviewType[] = []; // Reviews not yet linked per-service via API
 
   const handleRequestService = () => {
     if (!currentUser) {
@@ -44,13 +82,23 @@ const ServiceDetailPage: React.FC = () => {
   };
 
   const handleReviewSubmitted = (review: ReviewType) => {
-    console.log('Review submitted:', review);
+    reviews.push(review);
   };
 
-  if (!service || !provider) {
+  // Loading state
+  if (isLoading) {
     return (
       <div className="text-center py-20">
-        <h1 className="text-2xl text-gray-700">Service not found.</h1>
+        <p className="text-xl text-gray-600">Loading service details...</p>
+      </div>
+    );
+  }
+
+  // Error or not found
+  if (error || !service || !provider) {
+    return (
+      <div className="text-center py-20">
+        <h1 className="text-2xl text-gray-700">{error || 'Service not found.'}</h1>
         <Link to="/services">
           <Button variant="primary" className="mt-4">Back to Services</Button>
         </Link>
@@ -62,9 +110,9 @@ const ServiceDetailPage: React.FC = () => {
     <div className="container mx-auto py-8">
       <div className="bg-white shadow-xl rounded-lg overflow-hidden">
         <div className="relative">
-          <img 
-            src={service.assets[0]?.imageUrl || 'https://source.unsplash.com/random/1200x500?sig=service-detail'} 
-            alt={service.title} 
+          <img
+            src={service.assets?.[0]?.imageUrl || 'https://source.unsplash.com/random/1200x500?sig=service-detail'}
+            alt={service.title}
             className="w-full h-64 md:h-96 object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
@@ -118,7 +166,7 @@ const ServiceDetailPage: React.FC = () => {
           <h2 className="text-2xl font-poppins font-semibold text-gray-800 mb-6">Customer Reviews ({reviews.length})</h2>
           {reviews.length > 0 ? (
             <div className="space-y-6">
-              {reviews.map(review => (
+              {reviews.map((review) => (
                 <ReviewCard key={review.id} review={review} />
               ))}
             </div>

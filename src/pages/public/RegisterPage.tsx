@@ -13,6 +13,19 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import * as flags from 'country-flag-icons/react/3x2';
 
+/*
+ * RegisterPage – POST /api/auth/register
+ *
+ * Data flow:
+ *   User fills in name, email, phone, password, role
+ *     → AuthContext.register() calls api.post("/auth/register")
+ *     → Backend creates user + profile in the database (Prisma)
+ *     → Passwords are bcrypt-hashed before storage
+ *     → On success, redirects to /login with a toast message
+ *
+ * The backend enforces unique email and phone number constraints.
+ * No JWT is returned from register – the user must log in separately.
+ */
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -44,11 +57,12 @@ const RegisterPage: React.FC = () => {
 
     setIsLoading(true);
 
-    // Use the register function from AuthContext
+    // → AuthContext.register() → api.post("/auth/register") → Backend DB insert
     const result = await register(name, phone!, email, password, role);
 
     if (result.success) {
       toast.success(result.message);
+      // Redirect to login so user can authenticate with the new account
       navigate('/login', { state: { message: result.message } });
     } else {
       toast.error(result.message);

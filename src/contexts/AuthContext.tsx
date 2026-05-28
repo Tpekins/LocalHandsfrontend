@@ -4,6 +4,35 @@ import { UserRole, User } from "../types";
 import api from "../utils/api";
 import { toast } from "sonner";
 
+/*
+ * AuthContext – central authentication state for the entire application.
+ *
+ * CONNECTION MAP (Frontend ↔ Backend ↔ Database):
+ *
+ *   login()     → api.post("/auth/login")               → POST /api/auth/login
+ *     Backend: auth.controller.ts => auth.service.ts => bcrypt.compare()
+ *     DB:      queries User table by email/phone, returns user + JWT
+ *
+ *   register()  → api.post("/auth/register")            → POST /api/auth/register
+ *     Backend: auth.controller.ts => user.service.ts => bcrypt.hash()
+ *     DB:      INSERT into User + Profile tables
+ *
+ *   refreshProfile() → api.get("/auth/profile")         → GET /api/auth/profile
+ *     Backend: auth.controller.ts => JwtAuthGuard => user.service.findOne(id)
+ *     DB:      SELECT from User with include: { profile }
+ *
+ *   changePassword() → api.post("/auth/change-password")→ POST /api/auth/change-password
+ *     Backend: auth.controller.ts => JwtAuthGuard => auth.service.changePassword()
+ *     DB:      UPDATE User SET passwordHash = ...
+ *
+ *   updateUser() → api.patch(`/user/${id}`)            → PATCH /api/user/:id
+ *     Backend: user.controller.ts => JwtAuthGuard => user.service.update()
+ *     DB:      UPDATE User SET name/email/phone/role
+ *
+ * Token storage: localStorage key "token"
+ * Axios interceptor (src/utils/api.ts): auto-attaches Bearer token on every request
+ */
+
 interface AuthContextType {
   currentUser: User | null;
   currentRole: UserRole | null;
