@@ -100,7 +100,9 @@ export interface ServiceAsset {
 export interface Provider {
   id: number;
   userId: number;
+  user?: User;
   services: Service[];
+  availability?: Availability[];
   createdAt: string;
 }
 

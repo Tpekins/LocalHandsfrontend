@@ -1,21 +1,85 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { StarIcon } from '../../components/icons/Icons';
 import Button from '../../components/Button';
 import ReviewCard from '../../components/ReviewCard';
-import { User, Service, Review } from '../../types';
+import { User, Service, Review, Provider as ProviderType } from '../../types';
+import api from '../../utils/api';
 
+/*
+ * ProviderProfilePage – GET /api/provider/:id + GET /api/services/provider/:providerId
+ *
+ * Data flow:
+ *   On mount → api.get(`/provider/${providerId}`) fetches provider record
+ *     → Backend includes: user (name, email, role, createdAt), services, availability
+ *     → Extracts provider.user as the User object, provider.services as Service[]
+ *
+ *   Also fetches → api.get(`/services/provider/${providerId}`) for richer service list
+ *     → Falls back to provider.services if the second call fails
+ *
+ * Reviews are not yet linked per-provider via a dedicated API endpoint.
+ *
+ * Full chain: React → api.ts (Bearer token interceptor) → NestJS → Prisma → PostgreSQL
+ */
 const ProviderProfilePage: React.FC = () => {
-  useParams<{ providerId: string }>();
+  const { providerId } = useParams<{ providerId: string }>();
 
-  const provider = undefined as User | undefined;
-  const providerServices = [] as Service[];
-  const providerReviews = [] as Review[];
+  const [provider, setProvider] = useState<User | null>(null);
+  const [providerServices, setProviderServices] = useState<Service[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!provider) {
+  useEffect(() => {
+    const fetchProvider = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // → GET /api/provider/:id → Backend includes user + services + availability
+        const providerRes = await api.get<ProviderType>(`/provider/${providerId}`);
+        const providerData = providerRes.data;
+
+        // Extract user from the provider record (backend includes: user, services, availability)
+        const providerUser = (providerData as any).user as User || null;
+        setProvider(providerUser);
+
+        // Try fetching richer service data from the dedicated endpoint
+        try {
+          const servicesRes = await api.get<Service[]>(`/services/provider/${providerId}`);
+          setProviderServices(servicesRes.data);
+        } catch {
+          // Fallback: use services already included in the provider response
+          setProviderServices(providerData.services || []);
+        }
+      } catch (err: any) {
+        setError(err.response?.data?.message || 'Provider not found.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (providerId) {
+      fetchProvider();
+    }
+  }, [providerId]);
+
+  // Reviews not yet available per-provider via API
+  const providerReviews: Review[] = [];
+
+  // Loading state
+  if (isLoading) {
     return (
       <div className="text-center py-20">
-        <h1 className="text-2xl text-gray-700">Provider not found.</h1>
+        <p className="text-xl text-gray-600">Loading provider profile...</p>
+      </div>
+    );
+  }
+
+  // Error or not found
+  if (error || !provider) {
+    return (
+      <div className="text-center py-20">
+        <h1 className="text-2xl text-gray-700">{error || 'Provider not found.'}</h1>
         <Link to="/">
           <Button variant="primary" className="mt-4">Back to Home</Button>
         </Link>
@@ -60,9 +124,13 @@ const ProviderProfilePage: React.FC = () => {
         <h2 className="text-3xl font-poppins font-semibold text-gray-800 mb-6">Services Offered</h2>
         {providerServices.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {providerServices.map(service => (
+            {providerServices.map((service) => (
               <Link to={`/services/${service.id}`} key={service.id} className="block bg-white p-4 rounded-lg shadow hover:shadow-xl transition-shadow">
-                <img src={service.assets[0]?.imageUrl} alt={service.title} className="w-full h-40 object-cover rounded-md mb-4" />
+                <img
+                  src={service.assets?.[0]?.imageUrl || 'https://source.unsplash.com/random/400x300?sig=service'}
+                  alt={service.title}
+                  className="w-full h-40 object-cover rounded-md mb-4"
+                />
                 <h3 className="text-lg font-bold">{service.title}</h3>
                 <p className="text-primary">{service.category?.name}</p>
               </Link>
@@ -77,7 +145,7 @@ const ProviderProfilePage: React.FC = () => {
         <h2 className="text-3xl font-poppins font-semibold text-gray-800 mb-6">Reviews</h2>
         {providerReviews.length > 0 ? (
           <div className="space-y-6">
-            {providerReviews.map(review => (
+            {providerReviews.map((review) => (
               <ReviewCard key={review.id} review={review} />
             ))}
           </div>
