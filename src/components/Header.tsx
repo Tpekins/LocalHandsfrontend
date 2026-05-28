@@ -1,35 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { UserRole } from '../types';
+import { UserRole, Notification as ApiNotification } from '../types';
 import Button from './Button';
 import { APP_NAME, PUBLIC_NAV_ITEMS } from '../constants';
 import { MenuIcon, XIcon, LogoutIcon, CogIcon, BellIcon } from '../components/icons/Icons';
 import NotificationPanel, { PanelNotification } from './notifications/NotificationPanel';
+import api from '../utils/api';
 
-const mockNotifications: PanelNotification[] = [
-  {
-    id: '1',
-    type: 'admin',
-    message: 'A new job has been posted by a client.',
-    timestamp: '2025-06-25 23:55',
-    read: false,
-  },
-  {
-    id: '2',
-    type: 'client',
-    message: 'A new proposal has been received for your job post.',
-    timestamp: '2025-06-25 22:40',
-    read: true,
-  },
-  {
-    id: '3',
-    type: 'provider',
-    message: 'Your proposal for a job has been accepted.',
-    timestamp: '2025-06-25 20:10',
-    read: false,
-  },
-];
+/*
+ * Header — fetch notifications from GET /api/notifications?userId=
+ *
+ * Notifications are loaded from the Notification table when a user is
+ * authenticated. Each notification has: userId, message, type, read,
+ * createdAt. Mapped to PanelNotification for the slide-out panel.
+ */
 
 const Header: React.FC = () => {
   const { currentUser, currentRole, logout } = useAuth();
@@ -37,6 +22,27 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
+  const [notifications, setNotifications] = useState<PanelNotification[]>([]);
+
+  /* GET /api/notifications?userId= — load on mount and when user changes */
+  useEffect(() => {
+    if (!currentUser) {
+      setNotifications([]);
+      return;
+    }
+    api.get<ApiNotification[]>('/notifications', { params: { userId: currentUser.id } })
+      .then(({ data }) => {
+        const mapped: PanelNotification[] = data.map((n) => ({
+          id: String(n.id),
+          type: n.type,
+          message: n.message,
+          timestamp: n.createdAt,
+          read: n.read,
+        }));
+        setNotifications(mapped);
+      })
+      .catch(() => { /* silent — user sees empty panel */ });
+  }, [currentUser]);
 
   const getInitials = (name: string) => name.charAt(0).toUpperCase();
 
@@ -231,7 +237,7 @@ const Header: React.FC = () => {
       <NotificationPanel
         open={isNotificationPanelOpen}
         onClose={() => setIsNotificationPanelOpen(false)}
-        notifications={mockNotifications}
+        notifications={notifications}
       />
     </header>
   );
