@@ -17,7 +17,7 @@ const NewMyProfilePage: React.FC = () => {
     if (success) setIsEditing(false);
   };
 
-  const getInitials = (n: string) => n.charAt(0).toUpperCase();
+  const getInitials = (n: string) => n?.charAt(0)?.toUpperCase() ?? "";
 
   return (
     <div className="container mx-auto py-8 px-4">

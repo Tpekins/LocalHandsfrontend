@@ -30,7 +30,7 @@ const RegisterPage: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [phone, setPhone] = useState<string | undefined>(undefined);
+  const [phone, setPhone] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState<UserRole | null>(null);
   const [isRoleDropdownOpen, setRoleDropdownOpen] = useState(false);
@@ -58,7 +58,7 @@ const RegisterPage: React.FC = () => {
     setIsLoading(true);
 
     // → AuthContext.register() → api.post("/auth/register") → Backend DB insert
-    const result = await register(name, phone!, email, password, role);
+    const result = await register(name, phone, email, password, role);
 
     if (result.success) {
       toast.success(result.message);
@@ -122,11 +122,11 @@ const RegisterPage: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="user@example.com"
             />
-            <PhoneInput
+              <PhoneInput
               id="phone"
               name="phone"
               value={phone}
-              onChange={setPhone}
+              onChange={(value) => setPhone(value ?? '')}
               className="mb-4 w-full"
               flags={flags}
             />

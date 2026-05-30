@@ -119,7 +119,7 @@ const UserManagementPage: React.FC = () => {
               <tr key={user.id} className="hover:bg-lightGray transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm mr-3">{user.name.charAt(0).toUpperCase()}</div>
+                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm mr-3">{user.name?.charAt(0)?.toUpperCase() ?? ""}</div>
                     <div className="text-sm font-medium text-gray-900">{user.name}</div>
                   </div>
                 </td>

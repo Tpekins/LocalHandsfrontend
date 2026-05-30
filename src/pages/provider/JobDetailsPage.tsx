@@ -89,7 +89,7 @@ const JobDetailsPage: React.FC = () => {
                 <h3 className="text-lg font-poppins font-semibold text-gray-800 mb-3">About the Client</h3>
                 <div className="flex items-center">
                   <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold mr-4">
-                    {client.name.charAt(0).toUpperCase()}
+                    {client.name?.charAt(0)?.toUpperCase() ?? ""}
                   </div>
                   <div>
                     <p className="font-bold text-gray-800">{client.name}</p>

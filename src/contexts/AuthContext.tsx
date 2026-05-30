@@ -78,7 +78,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setCurrentUser(null);
       setCurrentRole(null);
       console.error('refreshProfile failed, logging out', err);
-      window.location.reload();
     }
   };
 
