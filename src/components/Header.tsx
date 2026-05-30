@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { UserRole, Notification as ApiNotification } from '../types';
-import Button from './Button';
-import { APP_NAME, PUBLIC_NAV_ITEMS } from '../constants';
-import { MenuIcon, XIcon, LogoutIcon, CogIcon, BellIcon } from '../components/icons/Icons';
-import NotificationPanel, { PanelNotification } from './notifications/NotificationPanel';
-import api from '../utils/api';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { UserRole, Notification as ApiNotification } from "../types";
+import Button from "./Button";
+import { APP_NAME, PUBLIC_NAV_ITEMS } from "../constants";
+import {
+  MenuIcon,
+  XIcon,
+  LogoutIcon,
+  CogIcon,
+  BellIcon,
+} from "../components/icons/Icons";
+import NotificationPanel, {
+  PanelNotification,
+} from "./notifications/NotificationPanel";
+import api from "../utils/api";
 
 /*
  * Header — fetch notifications from GET /api/notifications?userId=
@@ -30,7 +38,10 @@ const Header: React.FC = () => {
       setNotifications([]);
       return;
     }
-    api.get<ApiNotification[]>('/notifications', { params: { userId: currentUser.id } })
+    api
+      .get<ApiNotification[]>("/notifications", {
+        params: { userId: currentUser.id },
+      })
       .then(({ data }) => {
         const mapped: PanelNotification[] = data.map((n) => ({
           id: String(n.id),
@@ -41,23 +52,29 @@ const Header: React.FC = () => {
         }));
         setNotifications(mapped);
       })
-      .catch(() => { /* silent — user sees empty panel */ });
+      .catch(() => {
+        /* silent — user sees empty panel */
+      });
   }, [currentUser]);
 
-  const getInitials = (name: string) => name.charAt(0).toUpperCase();
+  const getInitials = (name: string) => name?.charAt(0)?.toUpperCase() ?? "";
 
   const handleLogout = () => {
     logout();
     setIsUserMenuOpen(false);
-    navigate('/');
+    navigate("/");
   };
-  
+
   const getDashboardPath = () => {
-    switch(currentRole) {
-      case UserRole.CLIENT: return '/client/dashboard';
-      case UserRole.PROVIDER: return '/provider/dashboard';
-      case UserRole.ADMIN: return '/admin/dashboard';
-      default: return '/';
+    switch (currentRole) {
+      case UserRole.CLIENT:
+        return "/client/dashboard";
+      case UserRole.PROVIDER:
+        return "/provider/dashboard";
+      case UserRole.ADMIN:
+        return "/admin/dashboard";
+      default:
+        return "/";
     }
   };
 
@@ -68,12 +85,14 @@ const Header: React.FC = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
             <img
-              src={'/assets/local-hands-logo.png'}
+              src={"/assets/local-hands-logo.png"}
               alt="Local Hands Logo"
               className="h-10 w-10 object-contain drop-shadow-sm transition-transform duration-200 group-hover:scale-105"
               style={{ minWidth: 40 }}
             />
-            <span className="text-3xl font-poppins font-bold text-primary">{APP_NAME}</span>
+            <span className="text-3xl font-poppins font-bold text-primary">
+              {APP_NAME}
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -100,7 +119,9 @@ const Header: React.FC = () => {
                   <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
                     {getInitials(currentUser.name)}
                   </div>
-                  <span className="text-sm font-medium text-gray-700 hidden lg:inline">{currentUser.name || currentUser.email}</span>
+                  <span className="text-sm font-medium text-gray-700 hidden lg:inline">
+                    {currentUser.name || currentUser.email}
+                  </span>
                 </button>
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
@@ -112,11 +133,11 @@ const Header: React.FC = () => {
                       My Dashboard
                     </Link>
                     <Link
-                      to={`/${(currentRole ? currentRole.toLowerCase() : 'client')}/settings`}
+                      to={`/${currentRole ? currentRole.toLowerCase() : "client"}/settings`}
                       onClick={() => setIsUserMenuOpen(false)}
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary"
                     >
-                       <CogIcon className="w-4 h-4 mr-2" /> Settings
+                      <CogIcon className="w-4 h-4 mr-2" /> Settings
                     </Link>
                     <button
                       type="button"
@@ -139,10 +160,18 @@ const Header: React.FC = () => {
               </div>
             ) : (
               <>
-                <Button variant="outline" size="md" onClick={() => navigate('/login')}>
+                <Button
+                  variant="outline"
+                  size="md"
+                  onClick={() => navigate("/login")}
+                >
                   Login
                 </Button>
-                <Button variant="primary" size="md" onClick={() => navigate('/register')}>
+                <Button
+                  variant="primary"
+                  size="md"
+                  onClick={() => navigate("/register")}
+                >
                   Sign Up
                 </Button>
               </>
@@ -155,7 +184,11 @@ const Header: React.FC = () => {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-gray-600 hover:text-primary focus:outline-none p-2"
             >
-              {isMobileMenuOpen ? <XIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
+              {isMobileMenuOpen ? (
+                <XIcon className="h-6 w-6" />
+              ) : (
+                <MenuIcon className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -177,58 +210,86 @@ const Header: React.FC = () => {
             ))}
           </nav>
           <div className="pt-4 pb-3 border-t border-gray-200">
-             {currentUser ? (
+            {currentUser ? (
               <>
                 <div className="px-5 flex items-center">
                   <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
                     {getInitials(currentUser.name)}
                   </div>
                   <div className="ml-3">
-                    <p className="text-base font-medium text-gray-800">{currentUser.name || currentUser.email}</p>
-                    <p className="text-sm font-medium text-gray-500">{currentUser.email}</p>
+                    <p className="text-base font-medium text-gray-800">
+                      {currentUser.name || currentUser.email}
+                    </p>
+                    <p className="text-sm font-medium text-gray-500">
+                      {currentUser.email}
+                    </p>
                   </div>
                 </div>
                 <div className="mt-3 px-2 space-y-1">
-                     <Link
-                      to={getDashboardPath()}
-                      onClick={() => { setIsMobileMenuOpen(false); }}
-                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
-                    >
-                      My Dashboard
-                    </Link>
-                     <Link
-                      to={`/${(currentRole ? currentRole.toLowerCase() : 'client')}/settings`}
-                      onClick={() => { setIsMobileMenuOpen(false); }}
-                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
-                    >
-                      <CogIcon className="w-5 h-5 mr-2" /> Settings
-                    </Link>
-                    <button
-                        type="button"
-                        onClick={() => {
-                          setIsNotificationPanelOpen(true);
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="flex items-center w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
-                    >
-                        <BellIcon className="w-5 h-5 mr-2" /> Notifications
-                    </button>
-                    <button
-                        onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
-                        className="w-full text-left flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
-                    >
-                        <LogoutIcon className="w-5 h-5 mr-2" /> Logout
-                    </button>
+                  <Link
+                    to={getDashboardPath()}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
+                  >
+                    My Dashboard
+                  </Link>
+                  <Link
+                    to={`/${currentRole ? currentRole.toLowerCase() : "client"}/settings`}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
+                  >
+                    <CogIcon className="w-5 h-5 mr-2" /> Settings
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsNotificationPanelOpen(true);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex items-center w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
+                  >
+                    <BellIcon className="w-5 h-5 mr-2" /> Notifications
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full text-left flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
+                  >
+                    <LogoutIcon className="w-5 h-5 mr-2" /> Logout
+                  </button>
                 </div>
-            </>) : (
-                <div className="px-2 space-y-2">
-                    <Button variant="outline" size="md" className="w-full" onClick={() => { navigate('/login'); setIsMobileMenuOpen(false); }}>
-                        Login
-                    </Button>
-                    <Button variant="primary" size="md" className="w-full" onClick={() => { navigate('/register'); setIsMobileMenuOpen(false); }}>
-                        Sign Up
-                    </Button>
-                </div>
+              </>
+            ) : (
+              <div className="px-2 space-y-2">
+                <Button
+                  variant="outline"
+                  size="md"
+                  className="w-full"
+                  onClick={() => {
+                    navigate("/login");
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Login
+                </Button>
+                <Button
+                  variant="primary"
+                  size="md"
+                  className="w-full"
+                  onClick={() => {
+                    navigate("/register");
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </div>
             )}
           </div>
         </div>
