@@ -149,7 +149,7 @@ const ServiceDetailPage: React.FC = () => {
               <h3 className="text-xl font-poppins font-semibold text-gray-800 mb-4">About the Provider</h3>
               <div className="flex items-center mb-3">
                 <div className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-xl font-bold mr-4">
-                  {provider.name?.charAt(0)?.toUpperCase() ?? ''}
+                  {provider.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-gray-700">{provider.name}</h4>
