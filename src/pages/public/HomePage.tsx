@@ -138,7 +138,7 @@ const FeaturedCategoriesSection: React.FC<{ categories: Category[]; isLoading: b
           <Link key={category.id} to={`/services?category=${category.id}`}>
             <Card className="p-6 text-center group hover:bg-primary transition-colors duration-300">
               <div className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-bold mx-auto mb-4 group-hover:bg-white group-hover:text-primary transition-colors">
-                {category.name.charAt(0)}
+                {category.name?.charAt(0)?.toUpperCase() ?? ""}
               </div>
               <h3 className="text-md font-poppins font-semibold text-gray-700 group-hover:text-white transition-colors">{category.name}</h3>
             </Card>

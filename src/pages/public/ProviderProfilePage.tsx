@@ -105,7 +105,7 @@ const ProviderProfilePage: React.FC = () => {
       .fill(0)
       .map((_, index) => (
         <StarIcon
-          key={index}?.charAt(0)?.toUpperCase() ?? ''
+          key={index}
           className={`w-5 h-5 ${index < Math.round(rating) ? "text-yellow-400" : "text-gray-300"}`}
           filled={index < Math.round(rating)}
         />
